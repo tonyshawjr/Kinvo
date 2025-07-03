@@ -13,38 +13,40 @@ function requireAdmin() {
 
 function generateInvoiceNumber($pdo) {
     try {
-        // Get all existing invoice numbers to find the highest
+        // Get current year and month
+        $currentYear = date('Y');
+        $currentMonth = date('m');
+        $yearMonthPrefix = $currentYear . $currentMonth;
+        
+        // Get all existing invoice numbers for the current month/year
         $stmt = $pdo->query("
             SELECT invoice_number 
             FROM invoices 
             WHERE invoice_number IS NOT NULL 
-            ORDER BY id DESC
+            AND invoice_number LIKE '{$yearMonthPrefix}%'
+            ORDER BY invoice_number DESC
         ");
         $invoices = $stmt->fetchAll();
         
-        $maxNum = 0;
+        $maxIncrement = 0;
         
         foreach ($invoices as $invoice) {
             $invoiceNum = $invoice['invoice_number'];
             
-            // Extract number from various formats
-            if (preg_match('/INV-(\d+)/', $invoiceNum, $matches)) {
-                $maxNum = max($maxNum, intval($matches[1]));
-            } elseif (preg_match('/^(\d+)$/', $invoiceNum, $matches)) {
-                $maxNum = max($maxNum, intval($matches[1]));
-            } elseif (preg_match('/\d+/', $invoiceNum, $matches)) {
-                $maxNum = max($maxNum, intval($matches[0]));
+            // Extract increment from YYYYMM## format
+            if (preg_match('/^' . preg_quote($yearMonthPrefix) . '(\d+)$/', $invoiceNum, $matches)) {
+                $maxIncrement = max($maxIncrement, intval($matches[1]));
             }
         }
         
         // Increment to get next number
-        $nextNum = $maxNum + 1;
+        $nextIncrement = $maxIncrement + 1;
         
-        return sprintf('INV-%04d', $nextNum);
+        return $yearMonthPrefix . $nextIncrement;
         
     } catch (Exception $e) {
-        // Fallback: use current timestamp
-        return 'INV-' . date('ymdHis');
+        // Fallback: use current year/month with timestamp
+        return date('Ym') . date('His');
     }
 }
 

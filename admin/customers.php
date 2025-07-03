@@ -102,7 +102,7 @@ $deletedName = $_GET['name'] ?? '';
                 <h2 class="text-3xl font-bold text-gray-900">Customer Management</h2>
                 <p class="text-gray-600 mt-1">View and manage all your customers</p>
             </div>
-            <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">
+            <a href="create-customer.php" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">
                 <i class="fas fa-user-plus mr-2"></i>Add New Customer
             </a>
         </div>
@@ -214,7 +214,7 @@ $deletedName = $_GET['name'] ?? '';
                     </div>
                     <h4 class="text-xl font-semibold text-gray-900 mb-2">No Customers Found</h4>
                     <p class="text-gray-600 mb-6">No customers match your current search.</p>
-                    <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium">
+                    <a href="create-customer.php" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium">
                         <i class="fas fa-user-plus mr-2"></i>Add First Customer
                     </a>
                 </div>
