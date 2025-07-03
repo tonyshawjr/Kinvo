@@ -88,10 +88,10 @@ if (!isset($businessSettings)) {
                 <div class="mt-8 pt-8 border-t border-gray-200">
                     <div class="flex flex-col md:flex-row justify-between items-center">
                         <p class="text-sm text-gray-500">
-                            &copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($businessSettings['business_name']); ?>. All rights reserved.
+                            &copy; <?php echo date('Y'); ?> Kinvo. All rights reserved.
                         </p>
                         <p class="text-sm text-gray-500 mt-2 md:mt-0">
-                            Powered by <?php echo htmlspecialchars($businessSettings['business_name']); ?>
+                            Powered by Kinvo
                         </p>
                     </div>
                 </div>
