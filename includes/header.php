@@ -11,102 +11,144 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
     ? $businessSettings['business_name'] 
     : 'Kinvo';
 ?>
-<!-- Navigation -->
-<nav class="bg-white/80 backdrop-blur-lg border-b border-gray-200/50 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-            <!-- Logo -->
-            <div class="flex items-center space-x-4">
-                <div class="flex-shrink-0">
-                    <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-receipt text-white text-lg"></i>
+<!-- Modern Header with Navigation Below -->
+<header class="bg-white sticky top-0 z-50 shadow-sm">
+    <!-- Top Bar with Logo and User Info -->
+    <div class="border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900"><?php echo htmlspecialchars($appName); ?></h1>
+                </div>
+
+                <!-- Right side - User and mobile menu -->
+                <div class="flex items-center space-x-6">
+                    <div class="hidden lg:flex items-center">
+                        <a href="logout.php" class="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">
+                            Logout
+                        </a>
                     </div>
+                    
+                    <!-- Mobile menu button -->
+                    <button id="mobile-menu-button" class="lg:hidden p-2 text-gray-600 hover:text-gray-900">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
                 </div>
-                <div>
-                    <h1 class="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent"><?php echo htmlspecialchars($appName); ?></h1>
-                    <p class="text-xs text-gray-500">Business Management</p>
-                </div>
-            </div>
-
-            <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center space-x-1">
-                <a href="dashboard.php" class="px-4 py-2 text-sm font-medium <?php echo $current_page === 'dashboard' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-chart-line mr-2"></i>Dashboard
-                </a>
-                <a href="create-invoice.php" class="px-4 py-2 text-sm font-medium <?php echo $current_page === 'create-invoice' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-plus mr-2"></i>New Invoice
-                </a>
-                <a href="invoices.php" class="px-4 py-2 text-sm font-medium <?php echo $current_page === 'invoices' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-file-invoice mr-2"></i>Invoices
-                </a>
-                <a href="customers.php" class="px-4 py-2 text-sm font-medium <?php echo in_array($current_page, ['customers', 'customer-detail', 'customer-edit']) ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-users mr-2"></i>Customers
-                </a>
-                <a href="payments.php" class="px-4 py-2 text-sm font-medium <?php echo $current_page === 'payments' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-credit-card mr-2"></i>Payments
-                </a>
-                <a href="settings.php" class="px-4 py-2 text-sm font-medium <?php echo $current_page === 'settings' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-cog mr-2"></i>Settings
-                </a>
-            </div>
-
-            <!-- Right side - User info and mobile menu -->
-            <div class="flex items-center space-x-3">
-                <div class="hidden sm:block text-right">
-                    <p class="text-sm font-medium text-gray-900">Admin</p>
-                    <p class="text-xs text-gray-500">Logged in</p>
-                </div>
-                <a href="logout.php" class="p-2 text-gray-400 hover:text-red-500 transition-colors" title="Logout">
-                    <i class="fas fa-sign-out-alt"></i>
-                </a>
-                
-                <!-- Mobile menu button -->
-                <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Mobile Navigation Menu -->
-        <div id="mobile-menu" class="md:hidden hidden border-t border-gray-200 bg-white">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="dashboard.php" class="block px-3 py-2 text-base font-medium <?php echo $current_page === 'dashboard' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-chart-line mr-3"></i>Dashboard
-                </a>
-                <a href="create-invoice.php" class="block px-3 py-2 text-base font-medium <?php echo $current_page === 'create-invoice' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-plus mr-3"></i>New Invoice
-                </a>
-                <a href="invoices.php" class="block px-3 py-2 text-base font-medium <?php echo $current_page === 'invoices' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-file-invoice mr-3"></i>Invoices
-                </a>
-                <a href="customers.php" class="block px-3 py-2 text-base font-medium <?php echo in_array($current_page, ['customers', 'customer-detail', 'customer-edit']) ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-users mr-3"></i>Customers
-                </a>
-                <a href="payments.php" class="block px-3 py-2 text-base font-medium <?php echo $current_page === 'payments' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-credit-card mr-3"></i>Payments
-                </a>
-                <a href="settings.php" class="block px-3 py-2 text-base font-medium <?php echo $current_page === 'settings' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'; ?> rounded-lg transition-colors">
-                    <i class="fas fa-cog mr-3"></i>Settings
-                </a>
             </div>
         </div>
     </div>
-</nav>
+
+    <!-- Desktop Navigation - Below Logo -->
+    <nav class="hidden lg:block border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8 py-4">
+                <a href="dashboard.php" class="text-base font-semibold <?php echo $current_page === 'dashboard' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                    Dashboard
+                </a>
+                <a href="create-invoice.php" class="text-base font-semibold <?php echo $current_page === 'create-invoice' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                    New Invoice
+                </a>
+                <a href="invoices.php" class="text-base font-semibold <?php echo $current_page === 'invoices' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                    Invoices
+                </a>
+                <a href="customers.php" class="text-base font-semibold <?php echo in_array($current_page, ['customers', 'customer-detail', 'customer-edit']) ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                    Customers
+                </a>
+                <a href="payments.php" class="text-base font-semibold <?php echo $current_page === 'payments' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                    Payments
+                </a>
+                <a href="settings.php" class="text-base font-semibold <?php echo $current_page === 'settings' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                    Settings
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu-overlay" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60] lg:hidden hidden opacity-0 transition-opacity duration-300"></div>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="fixed inset-y-0 right-0 w-full max-w-sm bg-white shadow-xl z-[70] lg:hidden transform translate-x-full transition-transform duration-300">
+    <div class="flex flex-col h-full">
+        <!-- Mobile Menu Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Menu</h2>
+            <button id="mobile-menu-close" class="p-2 text-gray-400 hover:text-gray-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <nav class="flex-1 px-6 py-8 space-y-6 overflow-y-auto">
+            <a href="dashboard.php" class="block text-lg font-semibold <?php echo $current_page === 'dashboard' ? 'text-gray-900' : 'text-gray-600'; ?>">
+                Dashboard
+            </a>
+            <a href="create-invoice.php" class="block text-lg font-semibold <?php echo $current_page === 'create-invoice' ? 'text-gray-900' : 'text-gray-600'; ?>">
+                New Invoice
+            </a>
+            <a href="invoices.php" class="block text-lg font-semibold <?php echo $current_page === 'invoices' ? 'text-gray-900' : 'text-gray-600'; ?>">
+                Invoices
+            </a>
+            <a href="customers.php" class="block text-lg font-semibold <?php echo in_array($current_page, ['customers', 'customer-detail', 'customer-edit']) ? 'text-gray-900' : 'text-gray-600'; ?>">
+                Customers
+            </a>
+            <a href="payments.php" class="block text-lg font-semibold <?php echo $current_page === 'payments' ? 'text-gray-900' : 'text-gray-600'; ?>">
+                Payments
+            </a>
+            <a href="settings.php" class="block text-lg font-semibold <?php echo $current_page === 'settings' ? 'text-gray-900' : 'text-gray-600'; ?>">
+                Settings
+            </a>
+        </nav>
+        
+        <!-- Mobile Menu Footer -->
+        <div class="p-6 border-t border-gray-200">
+            <a href="logout.php" class="block text-center text-sm font-semibold text-red-600 hover:text-red-700">
+                Logout
+            </a>
+        </div>
+    </div>
+</div>
 
 <!-- Mobile Menu Script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const menuButton = document.getElementById('mobile-menu-button');
+    const menuClose = document.getElementById('mobile-menu-close');
     const mobileMenu = document.getElementById('mobile-menu');
+    const overlay = document.getElementById('mobile-menu-overlay');
     
-    menuButton.addEventListener('click', function() {
-        mobileMenu.classList.toggle('hidden');
-    });
+    function openMenu() {
+        overlay.classList.remove('hidden');
+        setTimeout(() => {
+            overlay.classList.add('opacity-100');
+            mobileMenu.classList.remove('translate-x-full');
+        }, 10);
+        document.body.style.overflow = 'hidden';
+    }
     
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!menuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
-            mobileMenu.classList.add('hidden');
+    function closeMenu() {
+        overlay.classList.remove('opacity-100');
+        mobileMenu.classList.add('translate-x-full');
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+        }, 300);
+        document.body.style.overflow = '';
+    }
+    
+    menuButton.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeMenu);
+    
+    // Close on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !mobileMenu.classList.contains('translate-x-full')) {
+            closeMenu();
         }
     });
 });
