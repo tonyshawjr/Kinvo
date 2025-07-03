@@ -102,6 +102,39 @@ $monthlyChange = 0;
 if ($monthlyComparison['last_month'] > 0) {
     $monthlyChange = (($monthlyComparison['this_month'] - $monthlyComparison['last_month']) / $monthlyComparison['last_month']) * 100;
 }
+
+// REVENUE CHART DATA - Last 12 months
+$stmt = $pdo->query("
+    SELECT 
+        DATE_FORMAT(payment_date, '%Y-%m') as month,
+        SUM(amount) as total
+    FROM payments 
+    WHERE payment_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+    GROUP BY DATE_FORMAT(payment_date, '%Y-%m')
+    ORDER BY month ASC
+");
+$monthlyRevenue = $stmt->fetchAll();
+
+// Fill in missing months with 0
+$chartData = [];
+$chartLabels = [];
+for ($i = 11; $i >= 0; $i--) {
+    $date = date('Y-m', strtotime("-$i months"));
+    $monthName = date('M Y', strtotime("-$i months"));
+    $chartLabels[] = $monthName;
+    
+    $found = false;
+    foreach ($monthlyRevenue as $revenue) {
+        if ($revenue['month'] === $date) {
+            $chartData[] = (float)$revenue['total'];
+            $found = true;
+            break;
+        }
+    }
+    if (!$found) {
+        $chartData[] = 0;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -117,6 +150,7 @@ if ($monthlyComparison['last_month'] > 0) {
     ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <?php include '../includes/header.php'; ?>
@@ -142,79 +176,63 @@ if ($monthlyComparison['last_month'] > 0) {
 
         <!-- CRITICAL ALERTS -->
         <?php if (!empty($overdueInvoices)): ?>
-        <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
-            <div class="flex items-start space-x-4">
-                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
-                </div>
-                <div class="flex-1">
-                    <h3 class="text-lg font-semibold text-red-900 mb-2">⚠️ Overdue Invoices Need Attention</h3>
-                    <p class="text-red-700 mb-4"><?php echo count($overdueInvoices); ?> invoice<?php echo count($overdueInvoices) > 1 ? 's are' : ' is'; ?> past due. Consider following up with these customers.</p>
-                    <div class="space-y-2">
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Overdue Invoices Need Attention</h3>
+                    <p class="text-gray-600 mb-4"><?php echo count($overdueInvoices); ?> invoice<?php echo count($overdueInvoices) > 1 ? 's are' : ' is'; ?> past due. Consider following up with these customers.</p>
+                    <div class="space-y-3">
                         <?php foreach ($overdueInvoices as $invoice): ?>
-                        <div class="flex items-center justify-between bg-white p-3 rounded-lg border border-red-200">
+                        <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200">
                             <div>
-                                <span class="font-medium text-gray-900"><?php echo htmlspecialchars($invoice['customer_name']); ?></span>
-                                <span class="text-red-600 ml-2"><?php echo htmlspecialchars($invoice['invoice_number']); ?></span>
+                                <span class="font-semibold text-gray-900"><?php echo htmlspecialchars($invoice['customer_name']); ?></span>
+                                <span class="text-gray-600 ml-2"><?php echo htmlspecialchars($invoice['invoice_number']); ?></span>
                                 <span class="text-sm text-gray-500 ml-2"><?php echo $invoice['days_overdue']; ?> day<?php echo $invoice['days_overdue'] > 1 ? 's' : ''; ?> overdue</span>
                             </div>
                             <div class="flex items-center space-x-3">
-                                <span class="font-semibold text-red-600"><?php echo formatCurrency($invoice['balance_due']); ?></span>
-                                <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="text-sm bg-red-100 text-red-700 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors">
+                                <span class="font-semibold text-gray-900"><?php echo formatCurrency($invoice['balance_due']); ?></span>
+                                <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="text-sm bg-gray-900 text-white px-3 py-1 rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                                     View
                                 </a>
                             </div>
                         </div>
                         <?php endforeach; ?>
                     </div>
-                </div>
             </div>
         </div>
         <?php endif; ?>
 
+
         <!-- KEY METRICS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <!-- This Week's Income -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-dollar-sign text-gray-600 text-lg"></i>
-                    </div>
-                    <span class="text-sm text-gray-600 font-semibold">This Week</span>
+            <!-- Outstanding Money -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                <div class="text-center">
+                    <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Outstanding</p>
+                    <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($totalOutstanding); ?></p>
+                    <p class="text-sm text-gray-500">Total owed to you</p>
                 </div>
-                <div>
-                    <p class="text-3xl font-bold text-gray-900"><?php echo formatCurrency($thisWeekPayments['total']); ?></p>
+            </div>
+
+            <!-- This Week's Income -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                <div class="text-center">
+                    <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">This Week</p>
+                    <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($thisWeekPayments['total']); ?></p>
                     <p class="text-sm text-gray-500"><?php echo $thisWeekPayments['count']; ?> payment<?php echo $thisWeekPayments['count'] != 1 ? 's' : ''; ?> received</p>
                 </div>
             </div>
 
             <!-- Monthly Progress -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-trending-up text-gray-600 text-lg"></i>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                <div class="text-center">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">This Month</p>
+                        <span class="text-sm font-semibold text-gray-600">
+                            <?php echo $monthlyChange >= 0 ? '+' : ''; ?><?php echo number_format($monthlyChange, 1); ?>%
+                        </span>
                     </div>
-                    <span class="text-sm <?php echo $monthlyChange >= 0 ? 'text-green-600' : 'text-red-600'; ?> font-semibold">
-                        <?php echo $monthlyChange >= 0 ? '+' : ''; ?><?php echo number_format($monthlyChange, 1); ?>%
-                    </span>
-                </div>
-                <div>
-                    <p class="text-3xl font-bold text-gray-900"><?php echo formatCurrency($monthlyComparison['this_month']); ?></p>
-                    <p class="text-sm text-gray-500">This month vs last month</p>
-                </div>
-            </div>
-
-            <!-- Outstanding Money -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-clock text-gray-600 text-lg"></i>
-                    </div>
-                    <span class="text-sm text-gray-600 font-semibold">Pending</span>
-                </div>
-                <div>
-                    <p class="text-3xl font-bold text-gray-900"><?php echo formatCurrency($totalOutstanding); ?></p>
-                    <p class="text-sm text-gray-500">Total outstanding</p>
+                    <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($monthlyComparison['this_month']); ?></p>
+                    <p class="text-sm text-gray-500">vs last month</p>
                 </div>
             </div>
         </div>
@@ -222,27 +240,23 @@ if ($monthlyComparison['last_month'] > 0) {
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
             <!-- Due Soon -->
             <div class="xl:col-span-2 space-y-6">
+            <!-- Due This Week -->
+            <div>
                 <?php if (!empty($dueSoonInvoices)): ?>
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-calendar-alt mr-3 text-gray-600"></i>
-                            Due This Week
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            Due This Week (<?php echo count($dueSoonInvoices); ?>)
                         </h3>
-                        <p class="text-sm text-gray-600 mt-1">Follow up on these to ensure timely payment</p>
+                        <p class="text-sm text-gray-600 mt-1">Follow up to ensure timely payment</p>
                     </div>
                     <div class="p-6">
                         <div class="space-y-4">
                             <?php foreach ($dueSoonInvoices as $invoice): ?>
                             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                <div class="flex items-center space-x-4">
-                                    <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-clock text-gray-600"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-medium text-gray-900"><?php echo htmlspecialchars($invoice['customer_name']); ?></p>
-                                        <p class="text-sm text-gray-600"><?php echo htmlspecialchars($invoice['invoice_number']); ?> • Due <?php echo date('M d', strtotime($invoice['due_date'])); ?></p>
-                                    </div>
+                                <div>
+                                    <p class="font-semibold text-gray-900"><?php echo htmlspecialchars($invoice['customer_name']); ?></p>
+                                    <p class="text-sm text-gray-600"><?php echo htmlspecialchars($invoice['invoice_number']); ?> • Due <?php echo date('M d', strtotime($invoice['due_date'])); ?></p>
                                 </div>
                                 <div class="text-right">
                                     <p class="font-semibold text-gray-900"><?php echo formatCurrency($invoice['balance_due']); ?></p>
@@ -253,14 +267,36 @@ if ($monthlyComparison['last_month'] > 0) {
                         </div>
                     </div>
                 </div>
+                <?php else: ?>
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">All Caught Up!</h3>
+                    <p class="text-gray-600">No invoices due this week.</p>
+                </div>
                 <?php endif; ?>
+            </div>
 
-                <!-- Recent Payments -->
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="space-y-6">
+                <!-- Revenue Trend -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Revenue Trend</h3>
+                        <select id="chartPeriod" class="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                            <option value="12">Last 12 months</option>
+                            <option value="6">Last 6 months</option>
+                            <option value="3">Last 3 months</option>
+                        </select>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
                 <?php if (!empty($recentPayments)): ?>
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-check-circle mr-3 text-gray-600"></i>
+                        <h3 class="text-lg font-semibold text-gray-900">
                             Recent Payments
                         </h3>
                         <p class="text-sm text-gray-600 mt-1">Latest money received</p>
@@ -269,108 +305,98 @@ if ($monthlyComparison['last_month'] > 0) {
                         <div class="space-y-4">
                             <?php foreach ($recentPayments as $payment): ?>
                             <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-dollar-sign text-gray-600 text-sm"></i>
-                                    </div>
-                                    <div>
+                                <div>
                                         <p class="font-medium text-gray-900"><?php echo htmlspecialchars($payment['customer_name']); ?></p>
                                         <p class="text-sm text-gray-600"><?php echo htmlspecialchars($payment['method']); ?> • <?php echo date('M d', strtotime($payment['payment_date'])); ?></p>
-                                    </div>
                                 </div>
-                                <span class="font-semibold text-green-600">+<?php echo formatCurrency($payment['amount']); ?></span>
+                                <span class="font-semibold text-gray-900">+<?php echo formatCurrency($payment['amount']); ?></span>
                             </div>
                             <?php endforeach; ?>
                         </div>
                     </div>
+                </div>
+                <?php else: ?>
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">No Recent Payments</h3>
+                    <p class="text-gray-600">Payments will appear here once received.</p>
                 </div>
                 <?php endif; ?>
             </div>
 
-            <!-- Right Sidebar -->
-            <div class="space-y-6">
-                <!-- Top Customers -->
-                <?php if (!empty($topCustomers)): ?>
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-star mr-3 text-gray-600"></i>
-                            Top Customers
-                        </h3>
-                        <p class="text-sm text-gray-600 mt-1">Your best clients by revenue</p>
-                    </div>
-                    <div class="p-6">
-                        <div class="space-y-4">
-                            <?php foreach ($topCustomers as $customer): ?>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-user text-gray-600 text-sm"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-medium text-gray-900"><?php echo htmlspecialchars($customer['name']); ?></p>
-                                        <p class="text-xs text-gray-500"><?php echo $customer['invoice_count']; ?> invoice<?php echo $customer['invoice_count'] > 1 ? 's' : ''; ?></p>
-                                    </div>
-                                </div>
-                                <span class="font-semibold text-gray-900"><?php echo formatCurrency($customer['total_paid']); ?></span>
-                            </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-                <?php endif; ?>
-
-                <!-- Quick Actions -->
-                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <i class="fas fa-bolt mr-2 text-gray-600"></i>
-                        Quick Actions
-                    </h3>
-                    <div class="space-y-3">
-                        <a href="create-invoice.php" class="flex items-center p-3 bg-white rounded-lg hover:bg-gray-100 transition-colors group">
-                            <i class="fas fa-plus-circle text-gray-600 mr-3"></i>
-                            <span class="font-semibold text-gray-900 group-hover:text-gray-700">Create New Invoice</span>
-                        </a>
-                        <a href="payments.php" class="flex items-center p-3 bg-white rounded-lg hover:bg-gray-100 transition-colors group">
-                            <i class="fas fa-credit-card text-gray-600 mr-3"></i>
-                            <span class="font-semibold text-gray-900 group-hover:text-gray-700">Record Payment</span>
-                        </a>
-                        <a href="invoices.php?status=Unpaid" class="flex items-center p-3 bg-white rounded-lg hover:bg-gray-100 transition-colors group">
-                            <i class="fas fa-search text-gray-600 mr-3"></i>
-                            <span class="font-semibold text-gray-900 group-hover:text-gray-700">View Unpaid Invoices</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Today's Summary -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <i class="fas fa-calendar-day mr-2 text-gray-600"></i>
-                        Today's Summary
-                    </h3>
-                    <div class="space-y-3 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Date:</span>
-                            <span class="font-medium text-gray-900"><?php echo date('F d, Y'); ?></span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Overdue invoices:</span>
-                            <span class="font-medium text-red-600"><?php echo count($overdueInvoices); ?></span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Due this week:</span>
-                            <span class="font-medium text-yellow-600"><?php echo count($dueSoonInvoices); ?></span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">This week's income:</span>
-                            <span class="font-medium text-green-600"><?php echo formatCurrency($thisWeekPayments['total']); ?></span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </main>
 
     <?php include '../includes/footer.php'; ?>
+
+    <script>
+    // Revenue Chart
+    const chartData = <?php echo json_encode($chartData); ?>;
+    const chartLabels = <?php echo json_encode($chartLabels); ?>;
+    
+    let revenueChart;
+    
+    function initChart(months = 12) {
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        
+        // Slice data based on selected period
+        const dataSlice = chartData.slice(-months);
+        const labelSlice = chartLabels.slice(-months);
+        
+        if (revenueChart) {
+            revenueChart.destroy();
+        }
+        
+        revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labelSlice,
+                datasets: [{
+                    label: 'Revenue',
+                    data: dataSlice,
+                    borderColor: '#374151',
+                    backgroundColor: '#374151',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Initialize chart
+    document.addEventListener('DOMContentLoaded', function() {
+        initChart();
+        
+        // Handle period changes
+        document.getElementById('chartPeriod').addEventListener('change', function() {
+            initChart(parseInt(this.value));
+        });
+    });
+    </script>
 </body>
 </html>

@@ -91,7 +91,7 @@ if (!isset($businessSettings)) {
                             &copy; <?php echo date('Y'); ?> Kinvo. All rights reserved.
                         </p>
                         <p class="text-sm text-gray-500 mt-2 md:mt-0">
-                            Powered by Kinvo
+                            Powered by <strong>Kinvo</strong>
                         </p>
                     </div>
                 </div>
