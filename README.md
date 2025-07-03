@@ -130,6 +130,32 @@ Kinvo/
 - **Tailwind CSS** (via CDN)
 - **Minimal JavaScript** (for dynamic forms)
 
+## Design System
+
+The application follows a clean, minimal design system inspired by the login page:
+
+### Color Scheme
+- **Primary Background**: `bg-gray-50` (light gray background)
+- **Card Backgrounds**: `bg-white` with `border-gray-200` borders
+- **Primary Buttons**: `bg-gray-900` with `hover:bg-gray-800`
+- **Secondary Buttons**: `bg-gray-700` with `hover:bg-gray-600`
+- **Text Colors**: `text-gray-900` (primary), `text-gray-600` (secondary)
+- **Icons**: `text-gray-600` for consistency
+
+### Component Styling
+- **Border Radius**: `rounded-lg` for all cards and buttons
+- **Shadows**: `shadow-sm` for subtle depth
+- **Borders**: `border-gray-200` for all containers
+- **Typography**: `font-semibold` for buttons and labels
+- **Spacing**: Consistent padding and margins using Tailwind's spacing scale
+
+### Interactive Elements
+- **Hover States**: Gray tone variations (`hover:bg-gray-100`, `hover:text-gray-700`)
+- **Focus States**: Standard gray focus rings
+- **Transitions**: `transition-colors` for smooth interactions
+
+This design system ensures consistency across all pages while maintaining a professional, clean appearance.
+
 ## Security Notes
 
 1. **Change the admin password** in `config.php`
