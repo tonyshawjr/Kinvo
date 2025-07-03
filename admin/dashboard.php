@@ -116,25 +116,9 @@ if ($monthlyComparison['last_month'] > 0) {
     echo htmlspecialchars($appName);
     ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
     <?php include '../includes/header.php'; ?>
 
     <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -146,10 +130,10 @@ if ($monthlyComparison['last_month'] > 0) {
                     <p class="text-gray-600 mt-1">Here's what needs your attention today.</p>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">
+                    <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                         <i class="fas fa-plus mr-2"></i>Create Invoice
                     </a>
-                    <a href="payments.php" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all font-medium shadow-lg">
+                    <a href="payments.php" class="inline-flex items-center px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold">
                         <i class="fas fa-credit-card mr-2"></i>Record Payment
                     </a>
                 </div>
@@ -158,7 +142,7 @@ if ($monthlyComparison['last_month'] > 0) {
 
         <!-- CRITICAL ALERTS -->
         <?php if (!empty($overdueInvoices)): ?>
-        <div class="bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-500 rounded-2xl p-6 mb-8">
+        <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
@@ -191,12 +175,12 @@ if ($monthlyComparison['last_month'] > 0) {
         <!-- KEY METRICS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <!-- This Week's Income -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-dollar-sign text-green-600 text-lg"></i>
+                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-dollar-sign text-gray-600 text-lg"></i>
                     </div>
-                    <span class="text-sm text-green-600 font-medium">This Week</span>
+                    <span class="text-sm text-gray-600 font-semibold">This Week</span>
                 </div>
                 <div>
                     <p class="text-3xl font-bold text-gray-900"><?php echo formatCurrency($thisWeekPayments['total']); ?></p>
@@ -205,12 +189,12 @@ if ($monthlyComparison['last_month'] > 0) {
             </div>
 
             <!-- Monthly Progress -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-trending-up text-blue-600 text-lg"></i>
+                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-trending-up text-gray-600 text-lg"></i>
                     </div>
-                    <span class="text-sm <?php echo $monthlyChange >= 0 ? 'text-green-600' : 'text-red-600'; ?> font-medium">
+                    <span class="text-sm <?php echo $monthlyChange >= 0 ? 'text-green-600' : 'text-red-600'; ?> font-semibold">
                         <?php echo $monthlyChange >= 0 ? '+' : ''; ?><?php echo number_format($monthlyChange, 1); ?>%
                     </span>
                 </div>
@@ -221,12 +205,12 @@ if ($monthlyComparison['last_month'] > 0) {
             </div>
 
             <!-- Outstanding Money -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-clock text-orange-600 text-lg"></i>
+                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-clock text-gray-600 text-lg"></i>
                     </div>
-                    <span class="text-sm text-orange-600 font-medium">Pending</span>
+                    <span class="text-sm text-gray-600 font-semibold">Pending</span>
                 </div>
                 <div>
                     <p class="text-3xl font-bold text-gray-900"><?php echo formatCurrency($totalOutstanding); ?></p>
@@ -239,10 +223,10 @@ if ($monthlyComparison['last_month'] > 0) {
             <!-- Due Soon -->
             <div class="xl:col-span-2 space-y-6">
                 <?php if (!empty($dueSoonInvoices)): ?>
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
-                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 px-6 py-4 border-b border-gray-100">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-calendar-alt mr-3 text-yellow-600"></i>
+                            <i class="fas fa-calendar-alt mr-3 text-gray-600"></i>
                             Due This Week
                         </h3>
                         <p class="text-sm text-gray-600 mt-1">Follow up on these to ensure timely payment</p>
@@ -250,10 +234,10 @@ if ($monthlyComparison['last_month'] > 0) {
                     <div class="p-6">
                         <div class="space-y-4">
                             <?php foreach ($dueSoonInvoices as $invoice): ?>
-                            <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <div class="flex items-center space-x-4">
-                                    <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-clock text-yellow-600"></i>
+                                    <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-clock text-gray-600"></i>
                                     </div>
                                     <div>
                                         <p class="font-medium text-gray-900"><?php echo htmlspecialchars($invoice['customer_name']); ?></p>
@@ -262,7 +246,7 @@ if ($monthlyComparison['last_month'] > 0) {
                                 </div>
                                 <div class="text-right">
                                     <p class="font-semibold text-gray-900"><?php echo formatCurrency($invoice['balance_due']); ?></p>
-                                    <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="text-sm text-yellow-700 hover:text-yellow-800">View →</a>
+                                    <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="text-sm text-gray-700 hover:text-gray-900 font-medium">View →</a>
                                 </div>
                             </div>
                             <?php endforeach; ?>
@@ -273,10 +257,10 @@ if ($monthlyComparison['last_month'] > 0) {
 
                 <!-- Recent Payments -->
                 <?php if (!empty($recentPayments)): ?>
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-100">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-check-circle mr-3 text-green-600"></i>
+                            <i class="fas fa-check-circle mr-3 text-gray-600"></i>
                             Recent Payments
                         </h3>
                         <p class="text-sm text-gray-600 mt-1">Latest money received</p>
@@ -286,8 +270,8 @@ if ($monthlyComparison['last_month'] > 0) {
                             <?php foreach ($recentPayments as $payment): ?>
                             <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-dollar-sign text-green-600 text-sm"></i>
+                                    <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-dollar-sign text-gray-600 text-sm"></i>
                                     </div>
                                     <div>
                                         <p class="font-medium text-gray-900"><?php echo htmlspecialchars($payment['customer_name']); ?></p>
@@ -307,10 +291,10 @@ if ($monthlyComparison['last_month'] > 0) {
             <div class="space-y-6">
                 <!-- Top Customers -->
                 <?php if (!empty($topCustomers)): ?>
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
-                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-100">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-star mr-3 text-purple-600"></i>
+                            <i class="fas fa-star mr-3 text-gray-600"></i>
                             Top Customers
                         </h3>
                         <p class="text-sm text-gray-600 mt-1">Your best clients by revenue</p>
@@ -320,8 +304,8 @@ if ($monthlyComparison['last_month'] > 0) {
                             <?php foreach ($topCustomers as $customer): ?>
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-user text-purple-600 text-sm"></i>
+                                    <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-user text-gray-600 text-sm"></i>
                                     </div>
                                     <div>
                                         <p class="font-medium text-gray-900"><?php echo htmlspecialchars($customer['name']); ?></p>
@@ -337,31 +321,31 @@ if ($monthlyComparison['last_month'] > 0) {
                 <?php endif; ?>
 
                 <!-- Quick Actions -->
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <i class="fas fa-bolt mr-2 text-blue-600"></i>
+                        <i class="fas fa-bolt mr-2 text-gray-600"></i>
                         Quick Actions
                     </h3>
                     <div class="space-y-3">
-                        <a href="create-invoice.php" class="flex items-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors group">
-                            <i class="fas fa-plus-circle text-blue-600 mr-3"></i>
-                            <span class="font-medium text-gray-900 group-hover:text-blue-700">Create New Invoice</span>
+                        <a href="create-invoice.php" class="flex items-center p-3 bg-white rounded-lg hover:bg-gray-100 transition-colors group">
+                            <i class="fas fa-plus-circle text-gray-600 mr-3"></i>
+                            <span class="font-semibold text-gray-900 group-hover:text-gray-700">Create New Invoice</span>
                         </a>
-                        <a href="payments.php" class="flex items-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors group">
-                            <i class="fas fa-credit-card text-blue-600 mr-3"></i>
-                            <span class="font-medium text-gray-900 group-hover:text-blue-700">Record Payment</span>
+                        <a href="payments.php" class="flex items-center p-3 bg-white rounded-lg hover:bg-gray-100 transition-colors group">
+                            <i class="fas fa-credit-card text-gray-600 mr-3"></i>
+                            <span class="font-semibold text-gray-900 group-hover:text-gray-700">Record Payment</span>
                         </a>
-                        <a href="invoices.php?status=Unpaid" class="flex items-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors group">
-                            <i class="fas fa-search text-blue-600 mr-3"></i>
-                            <span class="font-medium text-gray-900 group-hover:text-blue-700">View Unpaid Invoices</span>
+                        <a href="invoices.php?status=Unpaid" class="flex items-center p-3 bg-white rounded-lg hover:bg-gray-100 transition-colors group">
+                            <i class="fas fa-search text-gray-600 mr-3"></i>
+                            <span class="font-semibold text-gray-900 group-hover:text-gray-700">View Unpaid Invoices</span>
                         </a>
                     </div>
                 </div>
 
                 <!-- Today's Summary -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <i class="fas fa-calendar-day mr-2 text-green-600"></i>
+                        <i class="fas fa-calendar-day mr-2 text-gray-600"></i>
                         Today's Summary
                     </h3>
                     <div class="space-y-3 text-sm">
