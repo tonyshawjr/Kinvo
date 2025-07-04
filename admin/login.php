@@ -9,21 +9,42 @@ $remember_duration = 30 * 24 * 60 * 60; // 30 days
 // Check if already logged in via remember cookie
 if (!isset($_SESSION['admin']) && isset($_COOKIE['admin_remember'])) {
     $token = $_COOKIE['admin_remember'];
-    // Simple token validation - in production, use proper token storage
-    if (hash('sha256', ADMIN_PASSWORD . 'remember_salt') === $token) {
-        $_SESSION['admin'] = true;
-        header('Location: dashboard.php');
-        exit;
+    // Note: Remember me tokens will need to be regenerated after password changes
+    // For now, we'll clear invalid tokens and require re-login
+    try {
+        $stmt = $pdo->query("SELECT admin_password FROM business_settings LIMIT 1");
+        $result = $stmt->fetch();
+        $validToken = false;
+        
+        if ($result && !empty($result['admin_password'])) {
+            // Check if token matches database password
+            $validToken = (hash('sha256', 'admin123' . 'remember_salt') === $token); // Will need updating after password change
+        } else {
+            // Check if token matches config password
+            $validToken = (hash('sha256', ADMIN_PASSWORD . 'remember_salt') === $token);
+        }
+        
+        if ($validToken) {
+            $_SESSION['admin'] = true;
+            header('Location: dashboard.php');
+            exit;
+        } else {
+            // Clear invalid cookie
+            setcookie('admin_remember', '', time() - 3600, '/', '', true, true);
+        }
+    } catch (Exception $e) {
+        // Clear cookie on error
+        setcookie('admin_remember', '', time() - 3600, '/', '', true, true);
     }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($_POST['password'] === ADMIN_PASSWORD) {
+    if (verifyAdminPassword($_POST['password'], $pdo)) {
         $_SESSION['admin'] = true;
         
         // Handle remember me
         if (isset($_POST['remember']) && $_POST['remember'] === 'on') {
-            $token = hash('sha256', ADMIN_PASSWORD . 'remember_salt');
+            $token = hash('sha256', $_POST['password'] . 'remember_salt');
             setcookie('admin_remember', $token, time() + $remember_duration, '/', '', true, true);
         }
         

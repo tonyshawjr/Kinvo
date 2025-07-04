@@ -116,25 +116,9 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
     echo htmlspecialchars($appName);
     ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
     <?php include '../includes/header.php'; ?>
 
     <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -144,16 +128,16 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                 <h2 class="text-3xl font-bold text-gray-900">All Invoices</h2>
                 <p class="text-gray-600 mt-1">Manage and track all your invoices</p>
             </div>
-            <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">
+            <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                 <i class="fas fa-plus mr-2"></i>Create New Invoice
             </a>
         </div>
 
         <!-- Filters -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-            <div class="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b border-gray-100">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-8">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                    <i class="fas fa-filter mr-3 text-blue-600"></i>
+                    <i class="fas fa-filter mr-3 text-gray-600"></i>
                     Filter & Search
                 </h3>
             </div>
@@ -163,11 +147,11 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                         <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
                         <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" 
                                placeholder="Customer name or invoice #"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                        <select name="status" class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <select name="status" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                             <option value="">All Statuses</option>
                             <option value="Unpaid" <?php echo $status === 'Unpaid' ? 'selected' : ''; ?>>🔴 Unpaid</option>
                             <option value="Partial" <?php echo $status === 'Partial' ? 'selected' : ''; ?>>🟡 Partial</option>
@@ -176,7 +160,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
-                        <select name="sort" class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <select name="sort" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                             <option value="date" <?php echo $sortBy === 'date' ? 'selected' : ''; ?>>📅 Invoice Date</option>
                             <option value="due_date" <?php echo $sortBy === 'due_date' ? 'selected' : ''; ?>>⏰ Due Date</option>
                             <option value="total" <?php echo $sortBy === 'total' ? 'selected' : ''; ?>>💰 Amount</option>
@@ -185,10 +169,10 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                         </select>
                     </div>
                     <div class="flex items-end space-x-3">
-                        <button type="submit" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium">
+                        <button type="submit" class="flex-1 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                             <i class="fas fa-search mr-2"></i>Filter
                         </button>
-                        <a href="invoices.php" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-medium">
+                        <a href="invoices.php" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold">
                             <i class="fas fa-times"></i>
                         </a>
                     </div>
@@ -205,49 +189,49 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             $totalPaid = array_sum(array_column($invoices, 'total_paid'));
             $totalOutstanding = $totalAmount - $totalPaid;
             ?>
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-500 mb-1">Total Invoices</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo $totalInvoices; ?></p>
                         <p class="text-sm text-gray-500">invoice<?php echo $totalInvoices != 1 ? 's' : ''; ?></p>
                     </div>
-                    <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-file-invoice text-blue-600 text-lg"></i>
+                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-file-invoice text-gray-600 text-lg"></i>
                     </div>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-500 mb-1">Total Amount</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($totalAmount); ?></p>
                         <p class="text-sm text-gray-500">invoiced</p>
                     </div>
-                    <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-dollar-sign text-green-600 text-lg"></i>
+                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-dollar-sign text-gray-600 text-lg"></i>
                     </div>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-500 mb-1">Outstanding</p>
                         <p class="text-2xl font-bold text-red-600"><?php echo formatCurrency($totalOutstanding); ?></p>
                         <p class="text-sm text-gray-500">unpaid</p>
                     </div>
-                    <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-lg"></i>
+                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-gray-600 text-lg"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Invoices List -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-100">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                    <i class="fas fa-list mr-3 text-blue-600"></i>
+                    <i class="fas fa-list mr-3 text-gray-600"></i>
                     Invoice List
                 </h3>
                 <p class="text-sm text-gray-600 mt-1"><?php echo count($invoices); ?> result<?php echo count($invoices) != 1 ? 's' : ''; ?> found</p>
@@ -260,7 +244,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                     </div>
                     <h4 class="text-xl font-semibold text-gray-900 mb-2">No Invoices Found</h4>
                     <p class="text-gray-600 mb-6">No invoices match your current filters.</p>
-                    <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium">
+                    <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                         <i class="fas fa-plus mr-2"></i>Create First Invoice
                     </a>
                 </div>
@@ -334,7 +318,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                                 <?php if ($invoice['property_name']): ?>
                                 <div class="text-gray-900 font-medium"><?php echo htmlspecialchars($invoice['property_name']); ?></div>
                                 <?php if ($invoice['property_type'] && $invoice['property_type'] !== 'Other'): ?>
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
                                     <?php echo htmlspecialchars($invoice['property_type']); ?>
                                 </span>
                                 <?php endif; ?>
@@ -368,11 +352,11 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-center space-x-2">
-                                    <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Invoice">
+                                    <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="View Invoice">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <?php if ($invoice['balance_due'] > 0): ?>
-                                    <a href="payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="Add Payment">
+                                    <a href="payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Add Payment">
                                         <i class="fas fa-plus-circle"></i>
                                     </a>
                                     <?php endif; ?>

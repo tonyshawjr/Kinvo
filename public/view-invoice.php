@@ -56,395 +56,529 @@ if (isset($_GET['id'])) {
     }
     ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            
             .no-print {
                 display: none !important;
             }
+            
             body {
                 background: white !important;
+                font-size: 11px !important;
+                line-height: 1.2 !important;
+                color: #000 !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
-            .shadow, .shadow-sm, .shadow-lg {
+            
+            .invoice-container {
+                border: 2px solid #000 !important;
                 box-shadow: none !important;
-            }
-            .border {
-                border-color: #e5e7eb !important;
-            }
-            .bg-gradient-to-r, .bg-gradient-to-br {
+                margin: 0 !important;
+                padding: 15px !important;
+                max-width: none !important;
+                width: 100% !important;
                 background: white !important;
             }
+            
+            /* Header styling for print - more compact */
+            .print-header {
+                border-bottom: 2px solid #000 !important;
+                padding-bottom: 10px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            .print-header h1 {
+                font-size: 16px !important;
+                font-weight: bold !important;
+                color: #000 !important;
+                margin-bottom: 4px !important;
+            }
+            
+            .print-header h2 {
+                font-size: 20px !important;
+                font-weight: bold !important;
+                color: #000 !important;
+                margin-bottom: 4px !important;
+            }
+            
+            .print-header .text-2xl {
+                font-size: 14px !important;
+                font-weight: bold !important;
+                color: #000 !important;
+            }
+            
+            .print-header .text-gray-600 {
+                font-size: 10px !important;
+                line-height: 1.3 !important;
+            }
+            
+            /* Bill To and Invoice Details sections - more compact */
+            .print-section {
+                margin-bottom: 12px !important;
+            }
+            
+            .print-section h3 {
+                font-size: 12px !important;
+                font-weight: bold !important;
+                color: #000 !important;
+                margin-bottom: 5px !important;
+                text-transform: uppercase !important;
+            }
+            
+            .print-section .border {
+                border: 1px solid #000 !important;
+                padding: 8px !important;
+                background: #f9f9f9 !important;
+            }
+            
+            .print-section .font-semibold {
+                font-weight: bold !important;
+                color: #000 !important;
+                font-size: 11px !important;
+            }
+            
+            .print-section table td {
+                padding: 2px 0 !important;
+                font-size: 10px !important;
+            }
+            
+            /* Table styling for print - more compact */
+            .print-table {
+                border-collapse: collapse !important;
+                width: 100% !important;
+                margin: 12px 0 !important;
+            }
+            
+            .print-table th {
+                background-color: #f0f0f0 !important;
+                border: 1px solid #000 !important;
+                padding: 6px !important;
+                font-weight: bold !important;
+                color: #000 !important;
+                text-align: left !important;
+                font-size: 10px !important;
+            }
+            
+            .print-table td {
+                border: 1px solid #000 !important;
+                padding: 6px !important;
+                color: #000 !important;
+                font-size: 10px !important;
+            }
+            
+            .print-table .text-right {
+                text-align: right !important;
+            }
+            
+            .print-table .text-center {
+                text-align: center !important;
+            }
+            
+            /* Totals section - more compact */
+            .print-totals {
+                border: 2px solid #000 !important;
+                background-color: #f9f9f9 !important;
+                padding: 8px !important;
+                margin-top: 12px !important;
+            }
+            
+            .print-totals table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+            
+            .print-totals td {
+                padding: 3px 0 !important;
+                color: #000 !important;
+                font-size: 10px !important;
+            }
+            
+            .print-totals .font-bold {
+                font-weight: bold !important;
+            }
+            
+            .print-totals .text-lg {
+                font-size: 12px !important;
+            }
+            
+            .print-totals .border-t-2 {
+                border-top: 2px solid #000 !important;
+            }
+            
+            /* Status badge for print */
+            .print-status {
+                display: inline-block !important;
+                padding: 2px 6px !important;
+                border: 1px solid #000 !important;
+                background: white !important;
+                color: #000 !important;
+                font-weight: bold !important;
+                font-size: 10px !important;
+            }
+            
+            /* Payment instructions - more compact */
+            .print-instructions {
+                margin-top: 12px !important;
+                border: 1px solid #000 !important;
+                padding: 8px !important;
+                background: #f9f9f9 !important;
+            }
+            
+            .print-instructions h3 {
+                font-size: 12px !important;
+                font-weight: bold !important;
+                color: #000 !important;
+                margin-bottom: 5px !important;
+                text-transform: uppercase !important;
+            }
+            
+            .print-instructions div {
+                color: #000 !important;
+                font-size: 10px !important;
+                line-height: 1.3 !important;
+            }
+            
+            /* Footer - more compact */
+            .print-footer {
+                margin-top: 15px !important;
+                padding-top: 8px !important;
+                border-top: 1px solid #000 !important;
+                text-align: center !important;
+            }
+            
+            .print-footer p {
+                color: #000 !important;
+                font-size: 10px !important;
+                margin: 0 !important;
+            }
+            
+            /* Property information styling - more compact */
+            .print-property {
+                margin-top: 6px !important;
+                padding-top: 6px !important;
+                border-top: 1px solid #ccc !important;
+            }
+            
+            .print-property .font-medium {
+                font-weight: bold !important;
+                color: #000 !important;
+                font-size: 10px !important;
+            }
+            
+            .print-property div {
+                font-size: 9px !important;
+                line-height: 1.2 !important;
+            }
+            
+            /* Grid layout adjustments for print */
+            .print-grid {
+                display: table !important;
+                width: 100% !important;
+                table-layout: fixed !important;
+            }
+            
+            .print-grid > div {
+                display: table-cell !important;
+                vertical-align: top !important;
+                width: 50% !important;
+                padding-right: 10px !important;
+            }
+            
+            .print-grid > div:last-child {
+                padding-right: 0 !important;
+            }
+        }
+        
+        @page {
+            margin: 0.5in;
+            size: letter;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
     <?php if ($error): ?>
     <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+        <div class="max-w-md w-full bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
             <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Invoice Not Found</h2>
-            <p class="text-gray-600 mb-6"><?php echo htmlspecialchars($error); ?></p>
-            <p class="text-sm text-gray-500">Please check the invoice link and try again.</p>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Invoice Not Found</h3>
+            <p class="text-gray-600"><?php echo htmlspecialchars($error); ?></p>
         </div>
     </div>
     <?php elseif ($invoice): ?>
     
     <!-- Invoice Container -->
-    <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <!-- Print-friendly Invoice -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-            <!-- Header Section -->
-            <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8 no-print">
-                <div class="flex flex-col md:flex-row md:items-center justify-between">
-                    <div class="mb-4 md:mb-0">
-                        <h1 class="text-3xl font-bold mb-2">Invoice Received</h1>
-                        <p class="text-blue-100">Thank you for your business!</p>
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <!-- Action Buttons (No Print) -->
+        <div class="flex justify-between items-center mb-6 no-print">
+            <h1 class="text-2xl font-bold text-gray-900">Invoice <?php echo htmlspecialchars($invoice['invoice_number']); ?></h1>
+            <div class="flex space-x-3">
+                <button onclick="window.print()" class="inline-flex items-center px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                    <i class="fas fa-print mr-2"></i>Print Invoice
+                </button>
+                <?php if (isAdmin()): ?>
+                <a href="/admin/manage-payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="inline-flex items-center px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-600 transition-colors font-semibold">
+                    <i class="fas fa-credit-card mr-2"></i>Manage Payments
+                </a>
+                <a href="/admin/edit-invoice.php?id=<?php echo $invoice['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
+                    <i class="fas fa-edit mr-2"></i>Edit Invoice
+                </a>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Professional Invoice Layout -->
+        <div class="bg-white invoice-container p-8">
+            <!-- Invoice Header -->
+            <div class="print-header pb-6 mb-8">
+                <div class="flex justify-between items-start print-grid">
+                    <!-- Business Information -->
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2"><?php echo htmlspecialchars($businessSettings['business_name']); ?></h1>
+                        <div class="text-gray-600 space-y-1">
+                            <?php if (!empty($businessSettings['business_phone'])): ?>
+                            <div><?php echo htmlspecialchars($businessSettings['business_phone']); ?></div>
+                            <?php endif; ?>
+                            <?php if (!empty($businessSettings['business_email'])): ?>
+                            <div><?php echo htmlspecialchars($businessSettings['business_email']); ?></div>
+                            <?php endif; ?>
+                            <?php if (!empty($businessSettings['business_ein'])): ?>
+                            <div>EIN: <?php echo htmlspecialchars($businessSettings['business_ein']); ?></div>
+                            <?php endif; ?>
+                        </div>
                     </div>
+                    
+                    <!-- Invoice Title & Number -->
                     <div class="text-right">
+                        <h2 class="text-4xl font-bold text-gray-900 mb-2">INVOICE</h2>
+                        <div class="text-2xl font-bold text-gray-900 mb-4"><?php echo htmlspecialchars($invoice['invoice_number']); ?></div>
+                        
                         <?php 
                         $status = getInvoiceStatus($invoice, $pdo);
-                        $statusColors = [
-                            'Paid' => 'bg-green-500',
-                            'Partial' => 'bg-yellow-500', 
-                            'Unpaid' => 'bg-red-500'
+                        $statusStyles = [
+                            'Paid' => 'bg-green-100 text-green-800 border-green-200',
+                            'Partial' => 'bg-yellow-100 text-yellow-800 border-yellow-200', 
+                            'Unpaid' => 'bg-red-100 text-red-800 border-red-200'
                         ];
                         ?>
-                        <span class="inline-flex px-4 py-2 text-sm font-semibold rounded-full text-white <?php echo $statusColors[$status] ?? 'bg-gray-500'; ?>">
-                            <i class="fas fa-circle mr-2 text-xs"></i>
+                        <div class="inline-flex px-4 py-2 rounded-lg border font-semibold print-status <?php echo $statusStyles[$status] ?? 'bg-gray-100 text-gray-800 border-gray-200'; ?>">
                             <?php echo $status; ?>
-                        </span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Invoice Content -->
-            <div class="p-8">
-                <!-- Business & Invoice Info -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    <!-- Business Info -->
-                    <div>
-                        <div class="mb-4">
-                            <h2 class="text-2xl font-bold text-gray-900"><?php echo htmlspecialchars($businessSettings['business_name']); ?></h2>
-                            <?php if (!empty($businessSettings['business_ein'])): ?>
-                            <p class="text-gray-600">EIN: <?php echo htmlspecialchars($businessSettings['business_ein']); ?></p>
-                            <?php endif; ?>
-                        </div>
-                        <div class="space-y-2 text-gray-600">
-                            <div class="flex items-center">
-                                <i class="fas fa-phone w-5 mr-3 text-blue-600"></i>
-                                <span><?php echo htmlspecialchars($businessSettings['business_phone']); ?></span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-envelope w-5 mr-3 text-blue-600"></i>
-                                <span><?php echo htmlspecialchars($businessSettings['business_email']); ?></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Invoice Details -->
-                    <div class="text-right">
-                        <h3 class="text-3xl font-bold text-gray-900 mb-2">INVOICE</h3>
-                        <div class="text-2xl font-bold text-blue-600 mb-4">#<?php echo htmlspecialchars($invoice['invoice_number']); ?></div>
-                        <div class="space-y-2">
-                            <div class="flex justify-end items-center">
-                                <span class="text-gray-600 w-24">Issue Date:</span>
-                                <span class="font-medium text-gray-900"><?php echo date('M d, Y', strtotime($invoice['date'])); ?></span>
-                            </div>
-                            <div class="flex justify-end items-center">
-                                <span class="text-gray-600 w-24">Due Date:</span>
-                                <span class="font-medium text-gray-900"><?php echo date('M d, Y', strtotime($invoice['due_date'])); ?></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bill To Section -->
-                <div class="mb-8">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Customer Info -->
-                        <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-6 border border-gray-200">
-                            <h4 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                                <i class="fas fa-user mr-2 text-blue-600"></i>
-                                Customer
-                            </h4>
-                            <div class="space-y-3">
-                                <p class="font-semibold text-gray-900 text-lg"><?php echo htmlspecialchars($invoice['customer_name']); ?></p>
-                                <?php if ($invoice['customer_email']): ?>
-                                <div class="flex items-center text-gray-600">
-                                    <i class="fas fa-envelope w-4 mr-2 text-blue-600 flex-shrink-0"></i>
-                                    <span class="text-sm"><?php echo htmlspecialchars($invoice['customer_email']); ?></span>
-                                </div>
-                                <?php endif; ?>
-                                <?php if ($invoice['customer_phone']): ?>
-                                <div class="flex items-center text-gray-600">
-                                    <i class="fas fa-phone w-4 mr-2 text-blue-600 flex-shrink-0"></i>
-                                    <span class="text-sm"><?php echo htmlspecialchars($invoice['customer_phone']); ?></span>
-                                </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-
-                        <!-- Service Location -->
+            <!-- Invoice Details & Bill To -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 print-grid">
+                <!-- Bill To -->
+                <div class="print-section">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">BILL TO:</h3>
+                    <div class="border border-gray-300 p-4 bg-gray-50">
+                        <div class="font-semibold text-gray-900 text-lg mb-2"><?php echo htmlspecialchars($invoice['customer_name']); ?></div>
+                        <?php if ($invoice['customer_email']): ?>
+                        <div class="text-gray-600"><?php echo htmlspecialchars($invoice['customer_email']); ?></div>
+                        <?php endif; ?>
+                        <?php if ($invoice['customer_phone']): ?>
+                        <div class="text-gray-600"><?php echo htmlspecialchars($invoice['customer_phone']); ?></div>
+                        <?php endif; ?>
+                        
                         <?php if ($invoice['property_name']): ?>
-                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
-                            <h4 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                                <i class="fas fa-map-marker-alt mr-2 text-green-600"></i>
-                                Service Location
-                            </h4>
-                            <div class="space-y-2">
-                                <div class="flex items-center space-x-2">
-                                    <p class="font-medium text-gray-800"><?php echo htmlspecialchars($invoice['property_name']); ?></p>
-                                    <?php if ($invoice['property_type'] && $invoice['property_type'] !== 'Other'): ?>
-                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                        <?php echo htmlspecialchars($invoice['property_type']); ?>
-                                    </span>
-                                    <?php endif; ?>
-                                </div>
-                                <?php if ($invoice['property_address']): ?>
-                                <p class="text-sm text-gray-600 leading-relaxed"><?php echo nl2br(htmlspecialchars($invoice['property_address'])); ?></p>
-                                <?php endif; ?>
-                            </div>
+                        <div class="mt-3 pt-3 border-t border-gray-200 print-property">
+                            <div class="font-medium text-gray-900">Service Location:</div>
+                            <div class="text-gray-600"><?php echo htmlspecialchars($invoice['property_name']); ?></div>
+                            <?php if ($invoice['property_address']): ?>
+                            <div class="text-gray-600 text-sm"><?php echo nl2br(htmlspecialchars($invoice['property_address'])); ?></div>
+                            <?php endif; ?>
                         </div>
                         <?php endif; ?>
                     </div>
                 </div>
 
-                <!-- Line Items -->
-                <div class="mb-8">
-                    <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <i class="fas fa-list mr-2 text-blue-600"></i>
-                        Services & Items
-                    </h4>
-                    <div class="overflow-x-auto">
+                <!-- Invoice Details -->
+                <div class="print-section">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">INVOICE DETAILS:</h3>
+                    <div class="border border-gray-300 p-4 bg-gray-50">
                         <table class="w-full">
-                            <thead>
-                                <tr class="bg-gradient-to-r from-gray-50 to-blue-50 border-y border-gray-200">
-                                    <th class="text-left py-4 px-6 font-semibold text-gray-900">Description</th>
-                                    <th class="text-center py-4 px-6 font-semibold text-gray-900">Qty</th>
-                                    <th class="text-right py-4 px-6 font-semibold text-gray-900">Rate</th>
-                                    <th class="text-right py-4 px-6 font-semibold text-gray-900">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($lineItems as $item): ?>
-                                <tr class="border-b border-gray-100 hover:bg-gray-50">
-                                    <td class="py-4 px-6">
-                                        <p class="font-medium text-gray-900"><?php echo htmlspecialchars($item['description']); ?></p>
-                                    </td>
-                                    <td class="py-4 px-6 text-center text-gray-700">
-                                        <?php echo number_format($item['quantity'], $item['quantity'] == floor($item['quantity']) ? 0 : 2); ?>
-                                    </td>
-                                    <td class="py-4 px-6 text-right text-gray-700">
-                                        <?php echo formatCurrency($item['unit_price']); ?>
-                                    </td>
-                                    <td class="py-4 px-6 text-right font-semibold text-gray-900">
-                                        <?php echo formatCurrency($item['total']); ?>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
+                            <tr>
+                                <td class="py-2 text-gray-600 font-medium">Invoice Date:</td>
+                                <td class="py-2 text-gray-900 text-right"><?php echo date('M d, Y', strtotime($invoice['date'])); ?></td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 text-gray-600 font-medium">Due Date:</td>
+                                <td class="py-2 text-gray-900 text-right"><?php echo date('M d, Y', strtotime($invoice['due_date'])); ?></td>
+                            </tr>
+                            <?php if ($totalPaid > 0): ?>
+                            <tr>
+                                <td class="py-2 text-gray-600 font-medium">Amount Paid:</td>
+                                <td class="py-2 text-green-600 text-right font-semibold"><?php echo formatCurrency($totalPaid); ?></td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 text-gray-600 font-medium">Balance Due:</td>
+                                <td class="py-2 <?php echo $balance > 0 ? 'text-red-600' : 'text-green-600'; ?> text-right font-semibold"><?php echo formatCurrency($balance); ?></td>
+                            </tr>
+                            <?php endif; ?>
                         </table>
                     </div>
                 </div>
+            </div>
 
-                <!-- Totals Section -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                    <!-- Quick Payment Links -->
-                    <?php if (!empty($businessSettings['cashapp_username']) || !empty($businessSettings['venmo_username'])): ?>
-                    <div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                            <i class="fas fa-mobile-alt mr-2 text-green-600"></i>
-                            Pay Now - Quick Links
-                        </h4>
-                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-200">
-                            <div class="space-y-4">
-                                <?php if (!empty($businessSettings['cashapp_username'])): ?>
-                                <a href="https://cash.app/$<?php echo htmlspecialchars($businessSettings['cashapp_username']); ?>/<?php echo number_format($balance, 2, '.', ''); ?>" 
-                                   target="_blank" 
-                                   class="flex items-center justify-between p-4 bg-white rounded-xl border border-green-200 hover:border-green-300 hover:shadow-md transition-all group">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-                                            <i class="fas fa-dollar-sign text-white"></i>
-                                        </div>
-                                        <div>
-                                            <p class="font-semibold text-gray-900">Cash App</p>
-                                            <p class="text-sm text-gray-600">$<?php echo htmlspecialchars($businessSettings['cashapp_username']); ?></p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-2 text-green-600 group-hover:text-green-700">
-                                        <span class="text-sm font-medium">Pay Now</span>
-                                        <i class="fas fa-external-link-alt"></i>
-                                    </div>
-                                </a>
-                                <?php endif; ?>
-                                
-                                <?php if (!empty($businessSettings['venmo_username'])): ?>
-                                <a href="https://account.venmo.com/payment-link?amount=<?php echo number_format($balance, 2, '.', ''); ?>&recipients=<?php echo htmlspecialchars($businessSettings['venmo_username']); ?>&txn=pay" 
-                                   target="_blank" 
-                                   class="flex items-center justify-between p-4 bg-white rounded-xl border border-green-200 hover:border-green-300 hover:shadow-md transition-all group">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-                                            <i class="fab fa-venmo text-white"></i>
-                                        </div>
-                                        <div>
-                                            <p class="font-semibold text-gray-900">Venmo</p>
-                                            <p class="text-sm text-gray-600">@<?php echo htmlspecialchars($businessSettings['venmo_username']); ?></p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-2 text-blue-600 group-hover:text-blue-700">
-                                        <span class="text-sm font-medium">Pay Now</span>
-                                        <i class="fas fa-external-link-alt"></i>
-                                    </div>
-                                </a>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                    <?php endif; ?>
+            <!-- Line Items Table -->
+            <div class="mb-8">
+                <table class="w-full print-table">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-400 px-4 py-3 text-left font-semibold text-gray-900">DESCRIPTION</th>
+                            <th class="border border-gray-400 px-4 py-3 text-center font-semibold text-gray-900">QTY</th>
+                            <th class="border border-gray-400 px-4 py-3 text-right font-semibold text-gray-900">RATE</th>
+                            <th class="border border-gray-400 px-4 py-3 text-right font-semibold text-gray-900">AMOUNT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($lineItems as $item): ?>
+                        <tr>
+                            <td class="border border-gray-400 px-4 py-3 text-gray-900"><?php echo htmlspecialchars($item['description']); ?></td>
+                            <td class="border border-gray-400 px-4 py-3 text-center text-gray-900">
+                                <?php echo number_format($item['quantity'], $item['quantity'] == floor($item['quantity']) ? 0 : 2); ?>
+                            </td>
+                            <td class="border border-gray-400 px-4 py-3 text-right text-gray-900">
+                                <?php echo formatCurrency($item['unit_price']); ?>
+                            </td>
+                            <td class="border border-gray-400 px-4 py-3 text-right font-semibold text-gray-900">
+                                <?php echo formatCurrency($item['total']); ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
 
-                    <!-- Payment Instructions -->
-                    <?php if ($invoice['notes']): ?>
-                    <div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                            <i class="fas fa-credit-card mr-2 text-blue-600"></i>
-                            Payment Instructions
-                        </h4>
-                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-                            <p class="text-gray-700 whitespace-pre-line leading-relaxed"><?php echo htmlspecialchars($invoice['notes']); ?></p>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-
-                    <!-- Invoice Totals -->
-                    <div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                            <i class="fas fa-calculator mr-2 text-blue-600"></i>
-                            Invoice Summary
-                        </h4>
-                        <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 border border-gray-200">
-                            <div class="space-y-3">
-                                <div class="flex justify-between text-lg">
-                                    <span class="text-gray-600">Subtotal:</span>
-                                    <span class="font-semibold text-gray-900"><?php echo formatCurrency($invoice['subtotal']); ?></span>
-                                </div>
-                                <?php if ($invoice['tax_amount'] > 0): ?>
-                                <div class="flex justify-between text-lg">
-                                    <span class="text-gray-600">Tax (<?php echo number_format($invoice['tax_rate'], 2); ?>%):</span>
-                                    <span class="font-semibold text-gray-900"><?php echo formatCurrency($invoice['tax_amount']); ?></span>
-                                </div>
-                                <?php endif; ?>
-                                <div class="border-t border-gray-300 pt-3">
-                                    <div class="flex justify-between text-2xl">
-                                        <span class="font-bold text-gray-900">Total:</span>
-                                        <span class="font-bold text-blue-600"><?php echo formatCurrency($invoice['total']); ?></span>
-                                    </div>
-                                </div>
-                                <?php if ($totalPaid > 0): ?>
-                                <div class="border-t border-gray-300 pt-3 space-y-2">
-                                    <div class="flex justify-between text-lg text-green-600">
-                                        <span class="font-medium">Amount Paid:</span>
-                                        <span class="font-semibold">-<?php echo formatCurrency($totalPaid); ?></span>
-                                    </div>
-                                    <div class="flex justify-between text-xl">
-                                        <span class="font-bold text-gray-900">Balance Due:</span>
-                                        <span class="font-bold <?php echo $balance > 0 ? 'text-red-600' : 'text-green-600'; ?>">
-                                            <?php echo formatCurrency($balance); ?>
-                                        </span>
-                                    </div>
-                                </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+            <!-- Totals Section -->
+            <div class="flex justify-end mb-8">
+                <div class="w-full max-w-sm">
+                    <div class="print-totals border border-gray-400 bg-gray-50 p-4">
+                        <table class="w-full">
+                            <tr>
+                                <td class="py-2 text-gray-600 font-medium">Subtotal:</td>
+                                <td class="py-2 text-gray-900 text-right font-semibold"><?php echo formatCurrency($invoice['subtotal']); ?></td>
+                            </tr>
+                            <?php if ($invoice['tax_amount'] > 0): ?>
+                            <tr>
+                                <td class="py-2 text-gray-600 font-medium">Tax (<?php echo number_format($invoice['tax_rate'], 2); ?>%):</td>
+                                <td class="py-2 text-gray-900 text-right font-semibold"><?php echo formatCurrency($invoice['tax_amount']); ?></td>
+                            </tr>
+                            <?php endif; ?>
+                            <tr class="border-t-2 border-gray-400">
+                                <td class="py-3 text-gray-900 font-bold text-lg">TOTAL:</td>
+                                <td class="py-3 text-gray-900 text-right font-bold text-lg"><?php echo formatCurrency($invoice['total']); ?></td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
+            </div>
 
-                <!-- Payment History -->
-                <?php if (!empty($payments)): ?>
-                <div class="mb-8">
-                    <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <i class="fas fa-history mr-2 text-green-600"></i>
-                        Payment History
-                    </h4>
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-200">
-                        <div class="space-y-3">
-                            <?php foreach ($payments as $payment): ?>
-                            <div class="flex justify-between items-center p-3 bg-white rounded-lg border border-green-100">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-check text-green-600 text-sm"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-medium text-gray-900"><?php echo htmlspecialchars($payment['method']); ?></p>
-                                        <p class="text-sm text-gray-600">
-                                            <?php echo date('M d, Y', strtotime($payment['payment_date'])); ?>
-                                            <?php if ($payment['notes']): ?>
-                                            • <?php echo htmlspecialchars($payment['notes']); ?>
-                                            <?php endif; ?>
-                                        </p>
-                                    </div>
-                                </div>
-                                <span class="font-semibold text-green-600"><?php echo formatCurrency($payment['amount']); ?></span>
-                            </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
+            <!-- Payment Instructions -->
+            <?php if (!empty($businessSettings['payment_instructions'])): ?>
+            <div class="mb-8 print-instructions">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">PAYMENT INSTRUCTIONS:</h3>
+                <div class="border border-gray-300 p-4 bg-gray-50">
+                    <div class="text-gray-700 whitespace-pre-line"><?php echo htmlspecialchars($businessSettings['payment_instructions']); ?></div>
                 </div>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="flex flex-col sm:flex-row justify-between items-center mt-8 space-y-4 sm:space-y-0 no-print">
-            <div class="flex space-x-3">
-                <button onclick="window.print()" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all font-medium shadow-lg">
-                    <i class="fas fa-print mr-2"></i>Print Invoice
-                </button>
-                <?php if (isAdmin()): ?>
-                <a href="/admin/edit-invoice.php?id=<?php echo $invoice['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">
-                    <i class="fas fa-edit mr-2"></i>Edit Invoice
-                </a>
-                <?php endif; ?>
-            </div>
-            <?php if (isAdmin()): ?>
-            <div class="flex space-x-3">
-                <?php if ($balance > 0): ?>
-                <a href="/admin/payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all font-medium shadow-lg">
-                    <i class="fas fa-plus-circle mr-2"></i>Add Payment
-                </a>
-                <?php endif; ?>
-                <?php if (!empty($payments)): ?>
-                <a href="/admin/manage-payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all font-medium shadow-lg">
-                    <i class="fas fa-cog mr-2"></i>Manage Payments
-                </a>
-                <?php endif; ?>
             </div>
             <?php endif; ?>
-        </div>
 
-        <!-- Footer -->
-        <div class="text-center mt-8 text-gray-500 text-sm no-print">
-            <p>Generated by <?php echo htmlspecialchars($businessSettings['business_name']); ?> • Professional Business Management</p>
+            <!-- Notes (Screen only, not printed) -->
+            <?php if ($invoice['notes']): ?>
+            <div class="mb-8 no-print">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">NOTES:</h3>
+                <div class="border border-gray-300 p-4 bg-gray-50">
+                    <div class="text-gray-700 whitespace-pre-line"><?php echo htmlspecialchars($invoice['notes']); ?></div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Payment History (No Print) -->
+            <?php if (!empty($payments)): ?>
+            <div class="no-print">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment History:</h3>
+                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                    <?php foreach ($payments as $payment): ?>
+                    <div class="border-b border-gray-200 p-4 bg-white last:border-b-0">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-medium text-gray-900"><?php echo htmlspecialchars($payment['method']); ?> - <?php echo formatCurrency($payment['amount']); ?></div>
+                                <div class="text-sm text-gray-600">
+                                    <?php echo date('M d, Y', strtotime($payment['payment_date'])); ?>
+                                    <?php if ($payment['notes']): ?>
+                                    • <?php echo htmlspecialchars($payment['notes']); ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <div class="text-green-600 font-semibold">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Quick Payment Links (No Print) -->
+            <?php if (!empty($businessSettings['cashapp_username']) || !empty($businessSettings['venmo_username'])): ?>
+            <div class="no-print mt-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Payment Options:</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <?php if (!empty($businessSettings['cashapp_username'])): ?>
+                    <a href="https://cash.app/$<?php echo htmlspecialchars($businessSettings['cashapp_username']); ?>/<?php echo number_format($balance, 2, '.', ''); ?>" 
+                       target="_blank" 
+                       class="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-dollar-sign text-white"></i>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-900">Cash App</div>
+                                <div class="text-sm text-gray-600">$<?php echo htmlspecialchars($businessSettings['cashapp_username']); ?></div>
+                            </div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-green-600"></i>
+                    </a>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($businessSettings['venmo_username'])): ?>
+                    <a href="https://account.venmo.com/payment-link?amount=<?php echo number_format($balance, 2, '.', ''); ?>&recipients=<?php echo htmlspecialchars($businessSettings['venmo_username']); ?>&txn=pay" 
+                       target="_blank" 
+                       class="flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fab fa-venmo text-white"></i>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-900">Venmo</div>
+                                <div class="text-sm text-gray-600">@<?php echo htmlspecialchars($businessSettings['venmo_username']); ?></div>
+                            </div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-blue-600"></i>
+                    </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Footer -->
+            <div class="text-center mt-12 pt-8 border-t border-gray-300 print-footer">
+                <p class="text-gray-600 text-sm">Thank you for your business!</p>
+            </div>
         </div>
     </div>
-
     <?php endif; ?>
 </body>
 </html>

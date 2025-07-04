@@ -25,14 +25,9 @@ if (!isset($businessSettings)) {
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Company Info -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4"><?php echo htmlspecialchars($businessSettings['business_name']); ?></h3>
-                        <p class="text-sm text-gray-600 mb-4">Professional business management system.</p>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Kinvo</h3>
+                        <p class="text-sm text-gray-600 mb-4">Professional invoice management system.</p>
                         <div class="flex space-x-4">
-                            <?php if (!empty($businessSettings['cashapp_username'])): ?>
-                            <a href="https://cash.app/$<?php echo htmlspecialchars($businessSettings['cashapp_username']); ?>" target="_blank" class="text-gray-400 hover:text-green-600 transition-colors" title="Cash App">
-                                <i class="fas fa-dollar-sign"></i>
-                            </a>
-                            <?php endif; ?>
                             <?php if (!empty($businessSettings['venmo_username'])): ?>
                             <a href="https://venmo.com/u/<?php echo htmlspecialchars($businessSettings['venmo_username']); ?>" target="_blank" class="text-gray-400 hover:text-blue-600 transition-colors" title="Venmo">
                                 <i class="fab fa-venmo"></i>

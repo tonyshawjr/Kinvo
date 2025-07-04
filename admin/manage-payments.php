@@ -96,28 +96,12 @@ $balance = $invoice['total'] - $totalPaid;
     echo htmlspecialchars($appName);
     ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
     <?php include '../includes/header.php'; ?>
 
-    <main class="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
             <div class="flex items-center space-x-4">
@@ -132,23 +116,23 @@ $balance = $invoice['total'] - $totalPaid;
         </div>
 
         <?php if ($success): ?>
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 mb-8">
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
-                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-check-circle text-green-600 text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold text-green-900 mb-2">Success!</h3>
-                    <p class="text-green-700"><?php echo htmlspecialchars($success); ?></p>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Success!</h3>
+                    <p class="text-gray-600"><?php echo htmlspecialchars($success); ?></p>
                 </div>
             </div>
         </div>
         <?php endif; ?>
 
         <?php if ($error): ?>
-        <div class="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-2xl p-6 mb-8">
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
-                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
                 </div>
                 <div>
@@ -160,9 +144,9 @@ $balance = $invoice['total'] - $totalPaid;
         <?php endif; ?>
 
         <!-- Invoice Summary -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
             <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <i class="fas fa-calculator mr-3 text-blue-600"></i>
+                <i class="fas fa-calculator mr-3 text-gray-600"></i>
                 Payment Summary
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -186,8 +170,8 @@ $balance = $invoice['total'] - $totalPaid;
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Add New Payment Form -->
             <div class="lg:col-span-1">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-100">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                             <i class="fas fa-plus mr-3 text-green-600"></i>
                             Add New Payment
@@ -200,13 +184,13 @@ $balance = $invoice['total'] - $totalPaid;
                             <label class="block text-sm font-medium text-gray-700 mb-2">Amount *</label>
                             <input type="number" name="amount" step="0.01" min="0" max="<?php echo $balance; ?>" 
                                    value="<?php echo $balance > 0 ? number_format($balance, 2, '.', '') : ''; ?>" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method *</label>
                             <select name="method" required
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                 <option value="Cash">Cash</option>
                                 <option value="Check">Check</option>
                                 <option value="Credit Card">Credit Card</option>
@@ -222,16 +206,16 @@ $balance = $invoice['total'] - $totalPaid;
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Payment Date *</label>
                             <input type="date" name="payment_date" value="<?php echo date('Y-m-d'); ?>" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
                             <textarea name="notes" rows="3" placeholder="Payment reference, confirmation number, etc."
-                                      class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"></textarea>
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all resize-none"></textarea>
                         </div>
 
-                        <button type="submit" class="w-full px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all font-medium shadow-lg">
+                        <button type="submit" class="w-full px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                             <i class="fas fa-plus mr-2"></i>Add Payment
                         </button>
                     </form>
@@ -240,10 +224,10 @@ $balance = $invoice['total'] - $totalPaid;
 
             <!-- Existing Payments -->
             <div class="lg:col-span-2">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-100">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-history mr-3 text-blue-600"></i>
+                            <i class="fas fa-history mr-3 text-gray-600"></i>
                             Payment History
                         </h3>
                         <p class="text-sm text-gray-600 mt-1"><?php echo count($payments); ?> payment<?php echo count($payments) != 1 ? 's' : ''; ?></p>
@@ -260,12 +244,12 @@ $balance = $invoice['total'] - $totalPaid;
                         <?php else: ?>
                         <div class="space-y-4">
                             <?php foreach ($payments as $payment): ?>
-                            <div class="border border-gray-200 rounded-xl p-4" id="payment-<?php echo $payment['id']; ?>">
+                            <div class="border border-gray-200 rounded-lg p-4" id="payment-<?php echo $payment['id']; ?>">
                                 <div class="flex items-start justify-between">
                                     <div class="flex-1">
                                         <div class="flex items-center space-x-3 mb-2">
                                             <span class="font-semibold text-lg text-green-600"><?php echo formatCurrency($payment['amount']); ?></span>
-                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
                                                 <?php echo htmlspecialchars($payment['method']); ?>
                                             </span>
                                         </div>
@@ -282,7 +266,7 @@ $balance = $invoice['total'] - $totalPaid;
                                     </div>
                                     <div class="flex items-center space-x-2 ml-4">
                                         <button onclick="editPayment(<?php echo $payment['id']; ?>)" 
-                                                class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit Payment">
+                                                class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Edit Payment">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button onclick="deletePayment(<?php echo $payment['id']; ?>)" 
@@ -302,13 +286,13 @@ $balance = $invoice['total'] - $totalPaid;
                                             <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
                                             <input type="number" name="amount" value="<?php echo $payment['amount']; ?>" 
                                                    step="0.01" min="0" required
-                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-200 transition-all">
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                         </div>
                                         
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">Method</label>
                                             <select name="method" required
-                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-200 transition-all">
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                                 <option value="Cash" <?php echo $payment['method'] === 'Cash' ? 'selected' : ''; ?>>Cash</option>
                                                 <option value="Check" <?php echo $payment['method'] === 'Check' ? 'selected' : ''; ?>>Check</option>
                                                 <option value="Credit Card" <?php echo $payment['method'] === 'Credit Card' ? 'selected' : ''; ?>>Credit Card</option>
@@ -324,17 +308,17 @@ $balance = $invoice['total'] - $totalPaid;
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
                                             <input type="date" name="payment_date" value="<?php echo $payment['payment_date']; ?>" required
-                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-200 transition-all">
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                         </div>
                                         
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
                                             <input type="text" name="notes" value="<?php echo htmlspecialchars($payment['notes']); ?>"
-                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-200 transition-all">
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                         </div>
                                         
                                         <div class="md:col-span-2 flex space-x-3">
-                                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                            <button type="submit" class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
                                                 <i class="fas fa-save mr-1"></i>Save
                                             </button>
                                             <button type="button" onclick="cancelEdit(<?php echo $payment['id']; ?>)" 

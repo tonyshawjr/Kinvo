@@ -42,44 +42,142 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->exec("ALTER TABLE business_settings ADD COLUMN mileage_rate DECIMAL(5,3) DEFAULT 0.650 AFTER default_hourly_rate");
         }
         
+        // Check if admin_password column exists, add it if missing
+        $stmt = $pdo->query("SHOW COLUMNS FROM business_settings LIKE 'admin_password'");
+        if ($stmt->rowCount() == 0) {
+            $pdo->exec("ALTER TABLE business_settings ADD COLUMN admin_password VARCHAR(255) AFTER payment_instructions");
+            
+            // If this is a new installation or migration, set default password
+            $defaultHash = password_hash('admin123', PASSWORD_DEFAULT);
+            $pdo->prepare("UPDATE business_settings SET admin_password = ? WHERE admin_password IS NULL OR admin_password = ''")->execute([$defaultHash]);
+        } else {
+            // Check if password is empty and set default
+            $stmt = $pdo->query("SELECT admin_password FROM business_settings LIMIT 1");
+            $result = $stmt->fetch();
+            if (!$result || empty($result['admin_password'])) {
+                $defaultHash = password_hash('admin123', PASSWORD_DEFAULT);
+                $pdo->prepare("UPDATE business_settings SET admin_password = ?")->execute([$defaultHash]);
+            }
+        }
+        
+        // Handle password change if provided
+        $passwordChanged = false;
+        if (!empty($_POST['current_password']) && !empty($_POST['new_password']) && !empty($_POST['confirm_password'])) {
+            // Verify current password
+            if (!verifyAdminPassword($_POST['current_password'], $pdo)) {
+                throw new Exception('Current password is incorrect.');
+            }
+            
+            // Validate new password
+            if ($_POST['new_password'] !== $_POST['confirm_password']) {
+                throw new Exception('New passwords do not match.');
+            }
+            
+            if (strlen($_POST['new_password']) < 6) {
+                throw new Exception('New password must be at least 6 characters long.');
+            }
+            
+            // Hash the new password
+            $hashedPassword = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
+            $passwordChanged = true;
+        }
+        
         // Check if settings exist
         $stmt = $pdo->query("SELECT COUNT(*) FROM business_settings");
         $exists = $stmt->fetchColumn() > 0;
         
         if ($exists) {
-            $stmt = $pdo->prepare("
-                UPDATE business_settings SET 
-                business_name = ?, 
-                business_phone = ?, 
-                business_email = ?, 
-                business_ein = ?,
-                cashapp_username = ?,
-                venmo_username = ?,
-                default_hourly_rate = ?,
-                mileage_rate = ?,
-                payment_instructions = ?,
-                updated_at = NOW()
-            ");
+            if ($passwordChanged) {
+                $stmt = $pdo->prepare("
+                    UPDATE business_settings SET 
+                    business_name = ?, 
+                    business_phone = ?, 
+                    business_email = ?, 
+                    business_ein = ?,
+                    cashapp_username = ?,
+                    venmo_username = ?,
+                    default_hourly_rate = ?,
+                    mileage_rate = ?,
+                    payment_instructions = ?,
+                    admin_password = ?,
+                    updated_at = NOW()
+                ");
+                $stmt->execute([
+                    $_POST['business_name'],
+                    $_POST['business_phone'],
+                    $_POST['business_email'],
+                    $_POST['business_ein'],
+                    $_POST['cashapp_username'],
+                    $_POST['venmo_username'],
+                    $_POST['default_hourly_rate'],
+                    $_POST['mileage_rate'],
+                    $_POST['payment_instructions'],
+                    $hashedPassword
+                ]);
+            } else {
+                $stmt = $pdo->prepare("
+                    UPDATE business_settings SET 
+                    business_name = ?, 
+                    business_phone = ?, 
+                    business_email = ?, 
+                    business_ein = ?,
+                    cashapp_username = ?,
+                    venmo_username = ?,
+                    default_hourly_rate = ?,
+                    mileage_rate = ?,
+                    payment_instructions = ?,
+                    updated_at = NOW()
+                ");
+                $stmt->execute([
+                    $_POST['business_name'],
+                    $_POST['business_phone'],
+                    $_POST['business_email'],
+                    $_POST['business_ein'],
+                    $_POST['cashapp_username'],
+                    $_POST['venmo_username'],
+                    $_POST['default_hourly_rate'],
+                    $_POST['mileage_rate'],
+                    $_POST['payment_instructions']
+                ]);
+            }
         } else {
-            $stmt = $pdo->prepare("
-                INSERT INTO business_settings (business_name, business_phone, business_email, business_ein, cashapp_username, venmo_username, default_hourly_rate, mileage_rate, payment_instructions) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ");
+            if ($passwordChanged) {
+                $stmt = $pdo->prepare("
+                    INSERT INTO business_settings (business_name, business_phone, business_email, business_ein, cashapp_username, venmo_username, default_hourly_rate, mileage_rate, payment_instructions, admin_password) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ");
+                $stmt->execute([
+                    $_POST['business_name'],
+                    $_POST['business_phone'],
+                    $_POST['business_email'],
+                    $_POST['business_ein'],
+                    $_POST['cashapp_username'],
+                    $_POST['venmo_username'],
+                    $_POST['default_hourly_rate'],
+                    $_POST['mileage_rate'],
+                    $_POST['payment_instructions'],
+                    $hashedPassword
+                ]);
+            } else {
+                $stmt = $pdo->prepare("
+                    INSERT INTO business_settings (business_name, business_phone, business_email, business_ein, cashapp_username, venmo_username, default_hourly_rate, mileage_rate, payment_instructions) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ");
+                $stmt->execute([
+                    $_POST['business_name'],
+                    $_POST['business_phone'],
+                    $_POST['business_email'],
+                    $_POST['business_ein'],
+                    $_POST['cashapp_username'],
+                    $_POST['venmo_username'],
+                    $_POST['default_hourly_rate'],
+                    $_POST['mileage_rate'],
+                    $_POST['payment_instructions']
+                ]);
+            }
         }
         
-        $stmt->execute([
-            $_POST['business_name'],
-            $_POST['business_phone'],
-            $_POST['business_email'],
-            $_POST['business_ein'],
-            $_POST['cashapp_username'],
-            $_POST['venmo_username'],
-            $_POST['default_hourly_rate'],
-            $_POST['mileage_rate'],
-            $_POST['payment_instructions']
-        ]);
-        
-        $success = true;
+        $success = $passwordChanged ? "Settings updated successfully! Admin password has been changed." : "Settings updated successfully!";
         
         // Refresh settings
         $businessSettings = getBusinessSettings($pdo);
@@ -102,28 +200,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo htmlspecialchars($appName);
     ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
     <?php include '../includes/header.php'; ?>
 
-    <main class="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
             <h2 class="text-3xl font-bold text-gray-900">Business Settings</h2>
@@ -131,27 +213,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <?php if ($success): ?>
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 mb-8">
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
-                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-check-circle text-green-600 text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold text-green-900 mb-2">Settings Updated Successfully!</h3>
-                    <p class="text-green-700">Your business settings have been saved and will appear on all new invoices.</p>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Settings Updated Successfully!</h3>
+                    <p class="text-gray-600">Your business settings have been saved and will appear on all new invoices.</p>
                 </div>
             </div>
         </div>
         <?php endif; ?>
 
         <?php if ($error): ?>
-        <div class="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-2xl p-6 mb-8">
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
-                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold text-red-900 mb-2">Error Updating Settings</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Error Updating Settings</h3>
                     <p class="text-red-700"><?php echo htmlspecialchars($error); ?></p>
                 </div>
             </div>
@@ -161,10 +243,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Settings Form -->
             <div class="lg:col-span-2">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-100">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-building mr-3 text-blue-600"></i>
+                            <i class="fas fa-building mr-3 text-gray-600"></i>
                             Business Information
                         </h3>
                     </div>
@@ -177,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <input type="text" name="business_name" required
                                        value="<?php echo htmlspecialchars($businessSettings['business_name']); ?>"
                                        placeholder="Your Business Name"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                 <p class="mt-1 text-sm text-gray-500">This will appear prominently on all invoices</p>
                             </div>
 
@@ -188,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <input type="tel" name="business_phone" required
                                        value="<?php echo htmlspecialchars($businessSettings['business_phone']); ?>"
                                        placeholder="(555) 123-4567"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                 <p class="mt-1 text-sm text-gray-500">Include area code for professional appearance</p>
                             </div>
                         </div>
@@ -200,7 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="email" name="business_email" required
                                    value="<?php echo htmlspecialchars($businessSettings['business_email']); ?>"
                                    placeholder="business@example.com"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                             <p class="mt-1 text-sm text-gray-500">Contact email for customer inquiries and support</p>
                         </div>
 
@@ -212,7 +294,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                    value="<?php echo htmlspecialchars($businessSettings['business_ein'] ?? ''); ?>"
                                    placeholder="12-3456789"
                                    maxlength="20"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                             <p class="mt-1 text-sm text-gray-500">Employer Identification Number - will appear on invoices if provided</p>
                         </div>
 
@@ -222,12 +304,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <i class="fas fa-mobile-alt mr-1"></i>Cash App Username (Optional)
                                 </label>
                                 <div class="flex">
-                                    <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">$</span>
+                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">$</span>
                                     <input type="text" name="cashapp_username"
                                            value="<?php echo htmlspecialchars($businessSettings['cashapp_username'] ?? ''); ?>"
                                            placeholder="username"
                                            maxlength="50"
-                                           class="flex-1 px-4 py-3 border border-gray-300 rounded-r-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                           class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                 </div>
                                 <p class="mt-1 text-sm text-gray-500">Creates direct payment link: cash.app/$username</p>
                             </div>
@@ -236,12 +318,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <i class="fab fa-venmo mr-1"></i>Venmo Username (Optional)
                                 </label>
                                 <div class="flex">
-                                    <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">@</span>
+                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">@</span>
                                     <input type="text" name="venmo_username"
                                            value="<?php echo htmlspecialchars($businessSettings['venmo_username'] ?? ''); ?>"
                                            placeholder="username"
                                            maxlength="50"
-                                           class="flex-1 px-4 py-3 border border-gray-300 rounded-r-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                           class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                 </div>
                                 <p class="mt-1 text-sm text-gray-500">Creates direct payment link with invoice amount pre-filled</p>
                             </div>
@@ -253,11 +335,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <i class="fas fa-clock mr-1"></i>Default Hourly Rate *
                                 </label>
                                 <div class="flex">
-                                    <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">$</span>
+                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">$</span>
                                     <input type="number" name="default_hourly_rate" step="0.01" min="0" required
                                            value="<?php echo htmlspecialchars($businessSettings['default_hourly_rate'] ?? '45.00'); ?>"
                                            placeholder="45.00"
-                                           class="flex-1 px-4 py-3 border border-gray-300 rounded-r-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                           class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                 </div>
                                 <p class="mt-1 text-sm text-gray-500">Default rate per hour - can be overridden per customer</p>
                             </div>
@@ -266,12 +348,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <i class="fas fa-car mr-1"></i>Mileage Rate *
                                 </label>
                                 <div class="flex">
-                                    <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">$</span>
+                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">$</span>
                                     <input type="number" name="mileage_rate" step="0.001" min="0" required
                                            value="<?php echo htmlspecialchars($businessSettings['mileage_rate'] ?? '0.650'); ?>"
                                            placeholder="0.650"
-                                           class="flex-1 px-4 py-3 border border-gray-300 rounded-r-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
-                                    <span class="inline-flex items-center px-3 rounded-r-xl border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">per mile</span>
+                                           class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                    <span class="inline-flex items-center px-3 rounded-r-lg border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">per mile</span>
                                 </div>
                                 <p class="mt-1 text-sm text-gray-500">Standard IRS rate is $0.650 per mile (2023)</p>
                             </div>
@@ -282,18 +364,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <i class="fas fa-credit-card mr-1"></i>Payment Instructions *
                             </label>
                             <textarea name="payment_instructions" rows="6" required
-                                      class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all resize-none"
                                       placeholder="Example: Payment is due within 7 days. Please pay via:&#10;• Zelle: 555-123-4567&#10;• Venmo: @yourusername&#10;• Cash App: $yourusername"><?php echo htmlspecialchars($businessSettings['payment_instructions']); ?></textarea>
                             <p class="mt-1 text-sm text-gray-500">
                                 These instructions will appear on every invoice. Include your preferred payment methods with account details.
                             </p>
                         </div>
 
+                        <!-- Password Change Section -->
+                        <div class="border-t border-gray-200 pt-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-lock mr-3 text-gray-600"></i>
+                                Change Admin Password
+                            </h4>
+                            <p class="text-sm text-gray-600 mb-4">Leave blank to keep current password unchanged.</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Current Password
+                                    </label>
+                                    <input type="password" name="current_password"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all"
+                                           placeholder="Enter current password">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        New Password
+                                    </label>
+                                    <input type="password" name="new_password"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all"
+                                           placeholder="Enter new password">
+                                    <p class="mt-1 text-sm text-gray-500">Minimum 6 characters</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Confirm New Password
+                                    </label>
+                                    <input type="password" name="confirm_password"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all"
+                                           placeholder="Confirm new password">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                            <a href="dashboard.php" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium">
+                            <a href="dashboard.php" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
                                 <i class="fas fa-times mr-2"></i>Cancel
                             </a>
-                            <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">
+                            <button type="submit" class="px-8 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                                 <i class="fas fa-save mr-2"></i>Save Settings
                             </button>
                         </div>
@@ -304,8 +423,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Info Panel -->
             <div class="space-y-6">
                 <!-- Tips -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-100">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                             <i class="fas fa-lightbulb mr-3 text-purple-600"></i>
                             Pro Tips
@@ -334,10 +453,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <!-- System Information -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b border-gray-100">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-info-circle mr-3 text-blue-600"></i>
+                            <i class="fas fa-info-circle mr-3 text-gray-600"></i>
                             System Information
                         </h3>
                     </div>
@@ -355,43 +474,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <span class="text-gray-600">Site URL:</span>
                                 <span class="text-gray-900 font-medium"><?php echo SITE_URL; ?></span>
                             </div>
-                            <div class="border-t pt-4 mt-4">
-                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                                    <div class="flex items-start space-x-2">
-                                        <i class="fas fa-key text-yellow-600 mt-0.5"></i>
-                                        <div>
-                                            <p class="text-sm font-medium text-yellow-800">Admin Password</p>
-                                            <p class="text-xs text-yellow-700">Change in includes/config.php</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Database Setup -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-100">
-                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-database mr-3 text-green-600"></i>
-                            Database Setup
-                        </h3>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-700 mb-4 text-sm">
-                            If you haven't set up your database yet, import the schema file into your MySQL database.
-                        </p>
-                        <div class="bg-gray-100 p-4 rounded-xl">
-                            <code class="text-sm text-gray-800 break-all">
-                                mysql -u <?php echo DB_USER; ?> -p <?php echo DB_NAME; ?> < database_schema.sql
-                            </code>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-2">
-                            Run this command from your project directory after creating the database.
-                        </p>
-                    </div>
-                </div>
             </div>
         </div>
     </main>
