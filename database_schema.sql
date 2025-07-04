@@ -92,3 +92,89 @@ CREATE TABLE IF NOT EXISTS business_settings (
 );
 
 -- Business settings will be populated by the installation wizard
+
+-- CLIENT PORTAL TABLES
+-- ===================
+
+-- Client authentication table
+CREATE TABLE IF NOT EXISTS client_auth (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    pin VARCHAR(255) NOT NULL, -- Hashed 4-digit PIN
+    pin_reset_token VARCHAR(64) NULL,
+    pin_reset_expires DATETIME NULL,
+    last_login TIMESTAMP NULL,
+    login_attempts INT DEFAULT 0,
+    locked_until TIMESTAMP NULL,
+    remember_token VARCHAR(64) NULL,
+    remember_expires TIMESTAMP NULL,
+    is_active BOOLEAN DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+);
+
+-- Client activity log
+CREATE TABLE IF NOT EXISTS client_activity (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    action VARCHAR(100) NOT NULL,
+    description TEXT,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+);
+
+-- Client documents table
+CREATE TABLE IF NOT EXISTS client_documents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    invoice_id INT NULL,
+    filename VARCHAR(255) NOT NULL,
+    original_filename VARCHAR(255) NOT NULL,
+    file_size INT NOT NULL,
+    mime_type VARCHAR(100) NOT NULL,
+    uploaded_by ENUM('client', 'admin') DEFAULT 'client',
+    is_visible_to_client BOOLEAN DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE
+);
+
+-- Client payment methods (for quick access)
+CREATE TABLE IF NOT EXISTS client_payment_methods (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    method_type ENUM('Cash App', 'Venmo', 'Zelle', 'PayPal', 'Bank Transfer', 'Other') NOT NULL,
+    account_info VARCHAR(255), -- Username or last 4 digits, etc.
+    is_preferred BOOLEAN DEFAULT 0,
+    is_active BOOLEAN DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+);
+
+-- Client preferences
+CREATE TABLE IF NOT EXISTS client_preferences (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    email_notifications BOOLEAN DEFAULT 1,
+    sms_notifications BOOLEAN DEFAULT 0,
+    invoice_reminders BOOLEAN DEFAULT 1,
+    payment_confirmations BOOLEAN DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+);
+
+-- Add indexes for performance
+CREATE INDEX idx_client_auth_email ON client_auth(email);
+CREATE INDEX idx_client_auth_customer ON client_auth(customer_id);
+CREATE INDEX idx_client_activity_customer ON client_activity(customer_id);
+CREATE INDEX idx_client_activity_date ON client_activity(created_at);
+CREATE INDEX idx_client_documents_customer ON client_documents(customer_id);
+CREATE INDEX idx_client_documents_invoice ON client_documents(invoice_id);
+CREATE INDEX idx_client_payment_methods_customer ON client_payment_methods(customer_id);
+CREATE INDEX idx_client_preferences_customer ON client_preferences(customer_id);

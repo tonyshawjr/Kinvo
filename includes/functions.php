@@ -118,3 +118,95 @@ function getBusinessSettings($pdo) {
         'payment_instructions' => 'Pay via Zelle to 910-XXX-XXXX'
     ];
 }
+
+// Client authentication functions
+function generateClientPIN() {
+    return str_pad(rand(1000, 9999), 4, '0', STR_PAD_LEFT);
+}
+
+function hashClientPIN($pin) {
+    return password_hash($pin, PASSWORD_DEFAULT);
+}
+
+function verifyClientPIN($pin, $hash) {
+    return password_verify($pin, $hash);
+}
+
+function isClientLoggedIn() {
+    return isset($_SESSION['client_id']) && isset($_SESSION['client_email']);
+}
+
+function requireClientLogin() {
+    if (!isClientLoggedIn()) {
+        header('Location: /client/login.php');
+        exit;
+    }
+}
+
+function logClientActivity($pdo, $customer_id, $action, $description = null) {
+    try {
+        $stmt = $pdo->prepare("INSERT INTO client_activity (customer_id, action, description, ip_address, user_agent) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([
+            $customer_id,
+            $action,
+            $description,
+            $_SERVER['REMOTE_ADDR'] ?? null,
+            $_SERVER['HTTP_USER_AGENT'] ?? null
+        ]);
+    } catch (Exception $e) {
+        error_log("Failed to log client activity: " . $e->getMessage());
+    }
+}
+
+function getClientByEmail($pdo, $email) {
+    $stmt = $pdo->prepare("
+        SELECT c.*, ca.pin, ca.login_attempts, ca.locked_until, ca.is_active
+        FROM customers c
+        JOIN client_auth ca ON c.id = ca.customer_id
+        WHERE ca.email = ?
+    ");
+    $stmt->execute([$email]);
+    return $stmt->fetch();
+}
+
+function createClientAuth($pdo, $customer_id, $email, $pin) {
+    $hashedPin = hashClientPIN($pin);
+    $stmt = $pdo->prepare("INSERT INTO client_auth (customer_id, email, pin) VALUES (?, ?, ?)");
+    return $stmt->execute([$customer_id, $email, $hashedPin]);
+}
+
+function updateClientLastLogin($pdo, $customer_id) {
+    $stmt = $pdo->prepare("UPDATE client_auth SET last_login = CURRENT_TIMESTAMP, login_attempts = 0 WHERE customer_id = ?");
+    $stmt->execute([$customer_id]);
+}
+
+function incrementLoginAttempts($pdo, $email) {
+    $stmt = $pdo->prepare("UPDATE client_auth SET login_attempts = login_attempts + 1 WHERE email = ?");
+    $stmt->execute([$email]);
+}
+
+function lockClientAccount($pdo, $email, $minutes = 30) {
+    $stmt = $pdo->prepare("UPDATE client_auth SET locked_until = DATE_ADD(NOW(), INTERVAL ? MINUTE) WHERE email = ?");
+    $stmt->execute([$minutes, $email]);
+}
+
+function generateRememberToken($pdo, $customer_id) {
+    $token = bin2hex(random_bytes(32));
+    $expires = date('Y-m-d H:i:s', strtotime('+30 days'));
+    
+    $stmt = $pdo->prepare("UPDATE client_auth SET remember_token = ?, remember_expires = ? WHERE customer_id = ?");
+    $stmt->execute([$token, $expires, $customer_id]);
+    
+    return $token;
+}
+
+function validateRememberToken($pdo, $token) {
+    $stmt = $pdo->prepare("
+        SELECT c.*, ca.customer_id
+        FROM client_auth ca
+        JOIN customers c ON c.id = ca.customer_id
+        WHERE ca.remember_token = ? AND ca.remember_expires > NOW() AND ca.is_active = 1
+    ");
+    $stmt->execute([$token]);
+    return $stmt->fetch();
+}

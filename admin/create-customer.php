@@ -29,8 +29,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("INSERT INTO customers (name, email, phone) VALUES (?, ?, ?)");
         $stmt->execute([$customerName, $customerEmail, $customerPhone]);
         
-        $success = true;
         $customerId = $pdo->lastInsertId();
+        
+        // Create client portal access if email provided
+        $clientPin = null;
+        if (!empty($customerEmail)) {
+            $clientPin = generateClientPIN();
+            $created = createClientAuth($pdo, $customerId, $customerEmail, $clientPin);
+            
+            if ($created) {
+                // Create default preferences
+                $stmt = $pdo->prepare("INSERT INTO client_preferences (customer_id) VALUES (?)");
+                $stmt->execute([$customerId]);
+                
+                // Log the portal creation
+                logClientActivity($pdo, $customerId, 'account_created', 'Client portal access created by admin');
+            }
+        }
+        
+        $success = true;
         
     } catch (Exception $e) {
         $error = $e->getMessage();
@@ -78,6 +95,30 @@ $businessSettings = getBusinessSettings($pdo);
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Customer Created Successfully!</h3>
                     <p class="text-gray-600 mb-4">Customer "<?php echo htmlspecialchars($_POST['customer_name']); ?>" has been added to your system.</p>
+                    
+                    <?php if ($clientPin): ?>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-user-shield text-blue-600 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-blue-900">Client Portal Access Created</h4>
+                                <p class="text-sm text-blue-700 mt-1">
+                                    A client portal has been created for this customer.
+                                </p>
+                                <div class="mt-2 p-3 bg-white rounded border border-blue-200">
+                                    <p class="text-sm"><strong>Email:</strong> <?php echo htmlspecialchars($_POST['customer_email']); ?></p>
+                                    <p class="text-sm"><strong>PIN:</strong> <span class="font-mono bg-gray-100 px-2 py-1 rounded"><?php echo $clientPin; ?></span></p>
+                                    <p class="text-sm"><strong>Login URL:</strong> <a href="/client/login.php?email=<?php echo urlencode($_POST['customer_email']); ?>" class="text-blue-600 hover:text-blue-500" target="_blank">/client/login.php</a></p>
+                                </div>
+                                <p class="text-xs text-blue-600 mt-2">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Send these credentials to your customer so they can access their invoices and payment history.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    
                     <div class="flex gap-4">
                         <a href="create-invoice.php?customer_id=<?php echo $customerId; ?>" class="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-semibold">
                             <i class="fas fa-file-invoice mr-2"></i>Create Invoice
