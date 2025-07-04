@@ -13,6 +13,9 @@ if (!$customerId) {
     exit;
 }
 
+// Add authorization check for customer ownership
+requireResourceOwnership($pdo, 'customer', $customerId);
+
 // Get customer information
 $stmt = $pdo->prepare("SELECT * FROM customers WHERE id = ?");
 $stmt->execute([$customerId]);
@@ -68,11 +71,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $success = "Property added successfully!";
             } elseif ($_POST['action'] === 'toggle') {
                 $propertyId = $_POST['property_id'];
+                // Verify property belongs to this customer
+                $stmt = $pdo->prepare("SELECT id FROM customer_properties WHERE id = ? AND customer_id = ?");
+                $stmt->execute([$propertyId, $customerId]);
+                if (!$stmt->fetch()) {
+                    http_response_code(404);
+                    die('Property not found or access denied.');
+                }
+                
                 $stmt = $pdo->prepare("UPDATE customer_properties SET is_active = NOT is_active WHERE id = ? AND customer_id = ?");
                 $stmt->execute([$propertyId, $customerId]);
                 $success = "Property status updated!";
             } elseif ($_POST['action'] === 'delete') {
                 $propertyId = $_POST['property_id'];
+                // Verify property belongs to this customer
+                $stmt = $pdo->prepare("SELECT id FROM customer_properties WHERE id = ? AND customer_id = ?");
+                $stmt->execute([$propertyId, $customerId]);
+                if (!$stmt->fetch()) {
+                    http_response_code(404);
+                    die('Property not found or access denied.');
+                }
                 
                 // Check if property has invoices (only if property_id column exists)
                 $invoiceCount = 0;

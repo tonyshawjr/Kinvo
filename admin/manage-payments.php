@@ -13,6 +13,9 @@ if (!$invoiceId) {
     exit;
 }
 
+// Add authorization check for invoice ownership
+requireInvoiceOwnership($pdo, $invoiceId);
+
 // Get invoice information
 $stmt = $pdo->prepare("
     SELECT i.*, c.name as customer_name

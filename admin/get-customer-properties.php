@@ -13,6 +13,9 @@ if (!$customerId) {
     exit;
 }
 
+// Add authorization check for customer ownership
+requireResourceOwnership($pdo, 'customer', $customerId);
+
 try {
     $stmt = $pdo->prepare("SELECT * FROM customer_properties WHERE customer_id = ? AND is_active = 1 ORDER BY property_name");
     $stmt->execute([$customerId]);
