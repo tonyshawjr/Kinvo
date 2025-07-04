@@ -201,10 +201,10 @@ foreach ($monthlyPayments as $payment) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
     <?php include '../includes/header.php'; ?>
 
-    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
             <div class="mb-4 lg:mb-0">
@@ -218,29 +218,32 @@ foreach ($monthlyPayments as $payment) {
                     </div>
                 </div>
             </div>
-            <div class="flex space-x-3">
-                <a href="customer-edit.php?id=<?php echo $customer['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all font-medium shadow-lg">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="customer-statement.php?customer_id=<?php echo $customer['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                    <i class="fas fa-file-invoice-dollar mr-2"></i>Generate Statement
+                </a>
+                <a href="customer-edit.php?id=<?php echo $customer['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold">
                     <i class="fas fa-edit mr-2"></i>Edit Customer
                 </a>
-                <a href="create-invoice.php?customer_id=<?php echo $customer['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">
+                <a href="create-invoice.php?customer_id=<?php echo $customer['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                     <i class="fas fa-plus mr-2"></i>New Invoice
                 </a>
             </div>
         </div>
 
         <!-- Customer Info Card -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-100">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-8">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                    <i class="fas fa-user mr-3 text-blue-600"></i>
+                    <i class="fas fa-user mr-3 text-gray-600"></i>
                     Contact Information
                 </h3>
             </div>
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-user text-blue-600"></i>
+                        <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-user text-gray-600"></i>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Customer Name</p>
@@ -248,13 +251,13 @@ foreach ($monthlyPayments as $payment) {
                         </div>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-envelope text-green-600"></i>
+                        <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-envelope text-gray-600"></i>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Email Address</p>
                             <?php if ($customer['email']): ?>
-                            <a href="mailto:<?php echo htmlspecialchars($customer['email']); ?>" class="font-semibold text-blue-600 hover:text-blue-700">
+                            <a href="mailto:<?php echo htmlspecialchars($customer['email']); ?>" class="font-semibold text-gray-900 hover:text-gray-700">
                                 <?php echo htmlspecialchars($customer['email']); ?>
                             </a>
                             <?php else: ?>
@@ -263,8 +266,8 @@ foreach ($monthlyPayments as $payment) {
                         </div>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-phone text-purple-600"></i>
+                        <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-phone text-gray-600"></i>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Phone Number</p>
@@ -283,58 +286,38 @@ foreach ($monthlyPayments as $payment) {
 
         <!-- Statistics Overview -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Total Invoices</p>
-                        <p class="text-2xl font-bold text-gray-900"><?php echo $stats['total_invoices']; ?></p>
-                        <div class="flex items-center space-x-2 mt-2 text-xs">
-                            <span class="text-green-600"><?php echo $stats['paid_invoices']; ?> paid</span>
-                            <span class="text-gray-400">•</span>
-                            <span class="text-red-600"><?php echo $stats['unpaid_invoices']; ?> unpaid</span>
-                        </div>
-                    </div>
-                    <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-file-invoice text-blue-600 text-lg"></i>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                <div class="text-center">
+                    <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Total Invoices</p>
+                    <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo $stats['total_invoices']; ?></p>
+                    <div class="flex items-center justify-center space-x-2 text-xs">
+                        <span class="text-gray-500"><?php echo $stats['paid_invoices']; ?> paid</span>
+                        <span class="text-gray-400">•</span>
+                        <span class="text-gray-500"><?php echo $stats['unpaid_invoices']; ?> unpaid</span>
                     </div>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
-                        <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($stats['total_paid']); ?></p>
-                        <p class="text-sm text-gray-500 mt-1">from <?php echo formatCurrency($stats['total_invoiced']); ?> invoiced</p>
-                    </div>
-                    <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-dollar-sign text-green-600 text-lg"></i>
-                    </div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                <div class="text-center">
+                    <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Total Revenue</p>
+                    <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($stats['total_paid']); ?></p>
+                    <p class="text-sm text-gray-500">from <?php echo formatCurrency($stats['total_invoiced']); ?> invoiced</p>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Outstanding</p>
-                        <p class="text-2xl font-bold text-red-600"><?php echo formatCurrency($stats['total_outstanding']); ?></p>
-                        <p class="text-sm text-gray-500 mt-1">amount due</p>
-                    </div>
-                    <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-lg"></i>
-                    </div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                <div class="text-center">
+                    <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Outstanding</p>
+                    <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($stats['total_outstanding']); ?></p>
+                    <p class="text-sm text-gray-500">amount due</p>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Average Invoice</p>
-                        <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($stats['avg_invoice_amount']); ?></p>
-                        <?php if ($stats['first_invoice_date']): ?>
-                        <p class="text-sm text-gray-500 mt-1">Customer since <?php echo date('M Y', strtotime($stats['first_invoice_date'])); ?></p>
-                        <?php endif; ?>
-                    </div>
-                    <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-chart-bar text-purple-600 text-lg"></i>
-                    </div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                <div class="text-center">
+                    <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Average Invoice</p>
+                    <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($stats['avg_invoice_amount']); ?></p>
+                    <?php if ($stats['first_invoice_date']): ?>
+                    <p class="text-sm text-gray-500">Customer since <?php echo date('M Y', strtotime($stats['first_invoice_date'])); ?></p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -343,10 +326,10 @@ foreach ($monthlyPayments as $payment) {
             <div class="xl:col-span-2 space-y-8">
                 <!-- Revenue Chart -->
                 <?php if ($stats['total_invoices'] > 0): ?>
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-100">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-chart-line mr-3 text-purple-600"></i>
+                            <i class="fas fa-chart-line mr-3 text-gray-600"></i>
                             Monthly Revenue (Last 12 Months)
                         </h3>
                     </div>
@@ -357,10 +340,10 @@ foreach ($monthlyPayments as $payment) {
                 <?php endif; ?>
 
                 <!-- Invoices List -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-100">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-file-invoice mr-3 text-blue-600"></i>
+                            <i class="fas fa-file-invoice mr-3 text-gray-600"></i>
                             All Invoices
                         </h3>
                         <p class="text-sm text-gray-600 mt-1"><?php echo count($invoices); ?> total invoice<?php echo count($invoices) != 1 ? 's' : ''; ?></p>
@@ -373,7 +356,7 @@ foreach ($monthlyPayments as $payment) {
                             </div>
                             <h4 class="text-lg font-semibold text-gray-900 mb-2">No Invoices Yet</h4>
                             <p class="text-gray-600 mb-6">This customer doesn't have any invoices.</p>
-                            <a href="create-invoice.php?customer_id=<?php echo $customer['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium">
+                            <a href="create-invoice.php?customer_id=<?php echo $customer['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                                 <i class="fas fa-plus mr-2"></i>Create First Invoice
                             </a>
                         </div>
@@ -458,10 +441,10 @@ foreach ($monthlyPayments as $payment) {
             <div class="space-y-6">
                 <!-- Recent Payments -->
                 <?php if (!empty($recentPayments)): ?>
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-100">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-credit-card mr-3 text-green-600"></i>
+                            <i class="fas fa-credit-card mr-3 text-gray-600"></i>
                             Recent Payments
                         </h3>
                     </div>
@@ -477,7 +460,7 @@ foreach ($monthlyPayments as $payment) {
                                         <span><?php echo date('M d, Y', strtotime($payment['payment_date'])); ?></span>
                                     </div>
                                 </div>
-                                <span class="font-semibold text-green-600"><?php echo formatCurrency($payment['amount']); ?></span>
+                                <span class="font-semibold text-gray-900"><?php echo formatCurrency($payment['amount']); ?></span>
                             </div>
                             <?php endforeach; ?>
                         </div>
@@ -486,28 +469,28 @@ foreach ($monthlyPayments as $payment) {
                 <?php endif; ?>
 
                 <!-- Quick Actions -->
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <i class="fas fa-bolt mr-2 text-blue-600"></i>
+                        <i class="fas fa-bolt mr-2 text-gray-600"></i>
                         Quick Actions
                     </h3>
                     <div class="space-y-3">
-                        <a href="create-invoice.php?customer_id=<?php echo $customer['id']; ?>" class="flex items-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors group">
-                            <i class="fas fa-plus-circle text-blue-600 mr-3"></i>
-                            <span class="font-medium text-gray-900 group-hover:text-blue-700">Create New Invoice</span>
+                        <a href="create-invoice.php?customer_id=<?php echo $customer['id']; ?>" class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
+                            <i class="fas fa-plus-circle text-gray-600 mr-3"></i>
+                            <span class="font-medium text-gray-900 group-hover:text-gray-700">Create New Invoice</span>
                         </a>
-                        <a href="customer-edit.php?id=<?php echo $customer['id']; ?>" class="flex items-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors group">
-                            <i class="fas fa-edit text-blue-600 mr-3"></i>
-                            <span class="font-medium text-gray-900 group-hover:text-blue-700">Edit Customer Info</span>
+                        <a href="customer-edit.php?id=<?php echo $customer['id']; ?>" class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
+                            <i class="fas fa-edit text-gray-600 mr-3"></i>
+                            <span class="font-medium text-gray-900 group-hover:text-gray-700">Edit Customer Info</span>
                         </a>
-                        <a href="customer-properties.php?customer_id=<?php echo $customer['id']; ?>" class="flex items-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors group">
-                            <i class="fas fa-building text-blue-600 mr-3"></i>
-                            <span class="font-medium text-gray-900 group-hover:text-blue-700">Manage Properties</span>
+                        <a href="customer-properties.php?customer_id=<?php echo $customer['id']; ?>" class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
+                            <i class="fas fa-building text-gray-600 mr-3"></i>
+                            <span class="font-medium text-gray-900 group-hover:text-gray-700">Manage Properties</span>
                         </a>
                         <?php if ($customer['email']): ?>
-                        <a href="mailto:<?php echo htmlspecialchars($customer['email']); ?>" class="flex items-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors group">
-                            <i class="fas fa-envelope text-blue-600 mr-3"></i>
-                            <span class="font-medium text-gray-900 group-hover:text-blue-700">Send Email</span>
+                        <a href="mailto:<?php echo htmlspecialchars($customer['email']); ?>" class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
+                            <i class="fas fa-envelope text-gray-600 mr-3"></i>
+                            <span class="font-medium text-gray-900 group-hover:text-gray-700">Send Email</span>
                         </a>
                         <?php endif; ?>
                         <?php if ($customer['phone']): ?>
