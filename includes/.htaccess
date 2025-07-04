@@ -1,0 +1,13 @@
+# Deny access to sensitive configuration files
+<Files "config.php">
+    Require all denied
+</Files>
+
+<Files "example_config.php">
+    Require all denied
+</Files>
+
+# Allow access to other includes files
+<Files "*.php">
+    Require all granted
+</Files>

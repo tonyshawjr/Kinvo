@@ -1,8 +1,12 @@
 <?php
 session_start();
-require_once '../includes/config.php';
+define('SECURE_CONFIG_LOADER', true);
+require_once '../includes/config_loader.php';
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
+
+// Set security headers
+setSecurityHeaders(false, true);
 
 requireClientLogin();
 

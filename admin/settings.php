@@ -2,6 +2,9 @@
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 
+// Set security headers
+setSecurityHeaders(true, true);
+
 requireAdmin();
 
 $success = false;
@@ -11,6 +14,7 @@ $error = '';
 $businessSettings = getBusinessSettings($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken(); // Validate CSRF token
     try {
         // Check if business_ein column exists, add it if missing
         $stmt = $pdo->query("SHOW COLUMNS FROM business_settings LIKE 'business_ein'");
@@ -46,18 +50,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->query("SHOW COLUMNS FROM business_settings LIKE 'admin_password'");
         if ($stmt->rowCount() == 0) {
             $pdo->exec("ALTER TABLE business_settings ADD COLUMN admin_password VARCHAR(255) AFTER payment_instructions");
-            
-            // If this is a new installation or migration, set default password
-            $defaultHash = password_hash('admin123', PASSWORD_DEFAULT);
-            $pdo->prepare("UPDATE business_settings SET admin_password = ? WHERE admin_password IS NULL OR admin_password = ''")->execute([$defaultHash]);
-        } else {
-            // Check if password is empty and set default
-            $stmt = $pdo->query("SELECT admin_password FROM business_settings LIMIT 1");
-            $result = $stmt->fetch();
-            if (!$result || empty($result['admin_password'])) {
-                $defaultHash = password_hash('admin123', PASSWORD_DEFAULT);
-                $pdo->prepare("UPDATE business_settings SET admin_password = ?")->execute([$defaultHash]);
-            }
+        }
+        
+        // Check if remember token columns exist, add them if missing
+        $stmt = $pdo->query("SHOW COLUMNS FROM business_settings LIKE 'remember_token'");
+        if ($stmt->rowCount() == 0) {
+            $pdo->exec("ALTER TABLE business_settings ADD COLUMN remember_token VARCHAR(64) NULL AFTER admin_password");
+        }
+        
+        $stmt = $pdo->query("SHOW COLUMNS FROM business_settings LIKE 'remember_expires'");
+        if ($stmt->rowCount() == 0) {
+            $pdo->exec("ALTER TABLE business_settings ADD COLUMN remember_expires DATETIME NULL AFTER remember_token");
+        }
+        
+        // Check if admin password is empty - admin must set their own password
+        $stmt = $pdo->query("SELECT admin_password FROM business_settings LIMIT 1");
+        $result = $stmt->fetch();
+        if (!$result || empty($result['admin_password'])) {
+            // Don't set a default password - force admin to set one through the settings page
+            $error = 'Admin password must be set. Please set your password below.';
         }
         
         // Handle password change if provided
@@ -73,8 +84,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception('New passwords do not match.');
             }
             
-            if (strlen($_POST['new_password']) < 6) {
-                throw new Exception('New password must be at least 6 characters long.');
+            // Use comprehensive password strength validation
+            $passwordErrors = validatePasswordStrength($_POST['new_password']);
+            if (!empty($passwordErrors)) {
+                throw new Exception('Password requirements not met: ' . implode(', ', $passwordErrors));
             }
             
             // Hash the new password
@@ -251,6 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </h3>
                     </div>
                     <form method="POST" class="p-6 space-y-6">
+                        <?php echo getCSRFTokenField(); ?>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">

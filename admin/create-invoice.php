@@ -2,6 +2,9 @@
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 
+// Set security headers
+setSecurityHeaders(true, true);
+
 requireAdmin();
 
 $success = false;
@@ -31,43 +34,66 @@ if ($selectedCustomerId) {
 $businessSettings = getBusinessSettings($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken(); // Validate CSRF token
     try {
         $pdo->beginTransaction();
         
         // Handle customer - create new or use existing
-        if ($_POST['customer_type'] === 'new') {
+        $customerType = validateSelect($_POST['customer_type'] ?? '', ['new', 'existing'], 'Customer Type', true);
+        
+        if ($customerType === 'new') {
+            // Validate new customer data
+            $validatedCustomerData = validateCustomerData($_POST);
+            
             $stmt = $pdo->prepare("INSERT INTO customers (name, email, phone) VALUES (?, ?, ?)");
             $stmt->execute([
-                $_POST['customer_name'],
-                $_POST['customer_email'],
-                $_POST['customer_phone']
+                $validatedCustomerData['name'],
+                $validatedCustomerData['email'],
+                $validatedCustomerData['phone']
             ]);
             $customerId = $pdo->lastInsertId();
         } else {
-            $customerId = $_POST['customer_id'];
+            $customerId = validateInteger($_POST['customer_id'] ?? '', 'Customer ID', true, 1);
         }
         
         // Calculate totals
         $subtotal = 0;
         $items = [];
         
+        // Validate line items
+        if (!isset($_POST['item_description']) || !is_array($_POST['item_description'])) {
+            throw new InvalidArgumentException('Invoice must have at least one line item.');
+        }
+        
         foreach ($_POST['item_description'] as $index => $description) {
             if (!empty($description)) {
-                $quantity = floatval($_POST['item_quantity'][$index]);
-                $unitPrice = floatval($_POST['item_price'][$index]);
-                $lineTotal = $quantity * $unitPrice;
+                // Validate each line item
+                $validatedDescription = validateAndSanitizeString($description, 500, "Item {$index} description", true);
+                $validatedQuantity = validateCurrency($_POST['item_quantity'][$index] ?? '', "Item {$index} quantity", true);
+                $validatedUnitPrice = validateCurrency($_POST['item_price'][$index] ?? '', "Item {$index} price", true);
+                
+                $lineTotal = $validatedQuantity * $validatedUnitPrice;
                 $subtotal += $lineTotal;
                 
                 $items[] = [
-                    'description' => $description,
-                    'quantity' => $quantity,
-                    'unit_price' => $unitPrice,
+                    'description' => $validatedDescription,
+                    'quantity' => $validatedQuantity,
+                    'unit_price' => $validatedUnitPrice,
                     'total' => $lineTotal
                 ];
             }
         }
         
-        $taxRate = floatval($_POST['tax_rate'] ?? 0);
+        if (empty($items)) {
+            throw new InvalidArgumentException('Invoice must have at least one line item.');
+        }
+        
+        // Validate tax rate
+        $taxRate = validateCurrency($_POST['tax_rate'] ?? '0', 'Tax Rate', false, true);
+        if ($taxRate > 100) {
+            throw new InvalidArgumentException('Tax rate cannot exceed 100%.');
+        }
+        
         $taxAmount = $subtotal * ($taxRate / 100);
         $total = $subtotal + $taxAmount;
         
@@ -128,9 +154,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $success = true;
         $invoiceUrl = "/public/view-invoice.php?id=" . $uniqueId;
         
+    } catch (InvalidArgumentException $e) {
+        $pdo->rollBack();
+        $error = $e->getMessage();
     } catch (Exception $e) {
         $pdo->rollBack();
-        $error = "Error creating invoice: " . $e->getMessage();
+        handleDatabaseError('invoice creation', $e, 'invoice management');
     }
 }
 ?>
@@ -224,6 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="POST" class="space-y-6 sm:space-y-8">
+            <?php echo getCSRFTokenField(); ?>
             <!-- Customer Section -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">

@@ -9,6 +9,7 @@ $step = $_GET['step'] ?? 1;
 
 // Handle reset confirmation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
+    requireCSRFToken(); // Validate CSRF token
     if ($_POST['confirm_reset'] === 'DELETE EVERYTHING') {
         try {
             // Get table prefix if exists
@@ -27,7 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
             // Drop each table
             foreach ($tables as $table) {
                 $fullTableName = $prefix . $table;
-                $pdo->exec("DROP TABLE IF EXISTS `$fullTableName`");
+                // Properly escape table name to prevent injection
+                $quotedTableName = '`' . str_replace('`', '``', $fullTableName) . '`';
+                $pdo->exec("DROP TABLE IF EXISTS $quotedTableName");
             }
             
             // Delete config file
@@ -187,6 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
                 </h3>
             </div>
             <form method="POST" class="p-6">
+                <?php echo getCSRFTokenField(); ?>
                 <div class="text-center mb-6">
                     <div class="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full mb-4">
                         <span class="text-red-600 text-3xl">💣</span>

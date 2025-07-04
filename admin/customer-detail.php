@@ -2,6 +2,9 @@
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 
+// Set security headers
+setSecurityHeaders(true, true);
+
 requireAdmin();
 
 $customerId = $_GET['id'] ?? null;
@@ -13,8 +16,12 @@ if (!$customerId) {
     exit;
 }
 
+// Verify customer exists and access is authorized
+requireResourceOwnership($pdo, 'customer', $customerId);
+
 // Handle portal creation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_portal'])) {
+    requireCSRFToken();
     try {
         // Get customer info
         $stmt = $pdo->prepare("SELECT * FROM customers WHERE id = ?");
@@ -282,6 +289,7 @@ foreach ($monthlyPayments as $payment) {
                     </a>
                 <?php elseif ($customer['email']): ?>
                     <form method="POST" class="inline">
+                        <?php echo getCSRFTokenField(); ?>
                         <button type="submit" name="create_portal" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors font-semibold">
                             <i class="fas fa-plus mr-2"></i>Create Portal
                         </button>

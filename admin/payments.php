@@ -2,6 +2,9 @@
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 
+// Set security headers
+setSecurityHeaders(true, true);
+
 requireAdmin();
 
 $success = false;
@@ -10,10 +13,14 @@ $selectedInvoiceId = $_GET['invoice_id'] ?? null;
 
 // Handle payment actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken();
     try {
         $pdo->beginTransaction();
         
         if ($_POST['action'] === 'add') {
+            // Add authorization check for invoice ownership
+            requireInvoiceOwnership($pdo, $_POST['invoice_id']);
+            
             // Add new payment
             $stmt = $pdo->prepare("
                 INSERT INTO payments (invoice_id, method, amount, payment_date, notes) 
@@ -32,6 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $invoiceIdToUpdate = $_POST['invoice_id'];
             
         } elseif ($_POST['action'] === 'edit' && isset($_POST['payment_id'])) {
+            // Add authorization check for payment ownership
+            requirePaymentOwnership($pdo, $_POST['payment_id']);
+            
             // Edit existing payment
             $stmt = $pdo->prepare("
                 UPDATE payments 
@@ -54,6 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success = "Payment updated successfully!";
             
         } elseif ($_POST['action'] === 'delete' && isset($_POST['payment_id'])) {
+            // Add authorization check for payment ownership
+            requirePaymentOwnership($pdo, $_POST['payment_id']);
+            
             // Get invoice ID before deleting
             $stmt = $pdo->prepare("SELECT invoice_id FROM payments WHERE id = ?");
             $stmt->execute([$_POST['payment_id']]);
@@ -200,6 +213,7 @@ $recentPayments = $stmt->fetchAll();
             </div>
             <div class="p-6">
                 <form method="POST" class="space-y-6">
+                    <?php echo getCSRFTokenField(); ?>
                     <input type="hidden" name="action" value="add">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                         <div class="lg:col-span-2">
@@ -379,6 +393,7 @@ $recentPayments = $stmt->fetchAll();
                             <!-- Edit Form (Hidden by default) -->
                             <div id="edit-form-<?php echo $payment['id']; ?>" class="hidden mt-4 pt-4 border-t border-gray-200">
                                 <form method="POST" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <?php echo getCSRFTokenField(); ?>
                                     <input type="hidden" name="action" value="edit">
                                     <input type="hidden" name="payment_id" value="<?php echo $payment['id']; ?>">
                                     
@@ -478,6 +493,7 @@ $recentPayments = $stmt->fetchAll();
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.innerHTML = `
+                    <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="payment_id" value="${paymentId}">
                 `;

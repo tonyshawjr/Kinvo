@@ -2,6 +2,9 @@
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 
+// Set security headers
+setSecurityHeaders(true, true);
+
 requireAdmin();
 
 // Get filter parameters
@@ -57,14 +60,16 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $invoices = $stmt->fetchAll();
 
-// Debug: Log what we got from the database
-if (isset($_GET['debug4'])) {
-    echo "<pre>SQL: " . $sql . "\n\n";
-    echo "Raw results from database:\n";
-    foreach ($invoices as $i => $inv) {
-        echo "[$i] ID: {$inv['id']}, Number: {$inv['invoice_number']}\n";
-    }
-    echo "\nTotal rows: " . count($invoices) . "</pre>";
+// Secure debug: Only allow in debug mode
+if (isset($_GET['debug4']) && defined('APP_DEBUG') && APP_DEBUG) {
+    logSecureError("Debug mode accessed for invoices", [
+        'sql' => $sql,
+        'params' => $params,
+        'result_count' => count($invoices)
+    ], 'DEBUG');
+    
+    echo "<pre>Debug mode enabled. Check error logs for SQL details.\n";
+    echo "Total rows: " . count($invoices) . "</pre>";
     exit;
 }
 

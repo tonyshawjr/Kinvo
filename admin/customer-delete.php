@@ -11,6 +11,9 @@ if (!$customerId) {
     exit;
 }
 
+// Verify customer exists and access is authorized
+requireResourceOwnership($pdo, 'customer', $customerId);
+
 // Get customer information
 $stmt = $pdo->prepare("SELECT * FROM customers WHERE id = ?");
 $stmt->execute([$customerId]);
