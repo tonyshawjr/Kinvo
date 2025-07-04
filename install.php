@@ -1,15 +1,17 @@
 <?php
 /**
  * Kinvo Installation Wizard
- * Simple installation process for shared hosting
+ * Professional multi-step installation process
  */
 
 session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 // Check if already installed
-if (file_exists('includes/config.php')) {
+if (file_exists('includes/config.php') && file_exists('includes/.installed')) {
     require_once 'includes/config.php';
-    if (defined('DB_HOST') && file_exists('includes/.installed')) {
+    if (defined('DB_HOST')) {
         header('Location: admin/login.php');
         exit;
     }
@@ -18,94 +20,252 @@ if (file_exists('includes/config.php')) {
 $step = $_GET['step'] ?? 1;
 $error = '';
 $success = '';
+$warnings = [];
+
+// Function to check PHP extensions
+function checkExtension($name) {
+    return extension_loaded($name);
+}
+
+// Function to check if a directory is writable
+function checkWritable($path) {
+    return is_writable($path);
+}
+
+// Function to get PHP version info
+function getPHPVersionInfo() {
+    $version = PHP_VERSION;
+    $versionParts = explode('.', $version);
+    return [
+        'full' => $version,
+        'major' => (int)$versionParts[0],
+        'minor' => (int)$versionParts[1],
+        'isSupported' => version_compare($version, '7.4.0', '>=')
+    ];
+}
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($step) {
+        case 1:
+            // Requirements check - just move to next step
+            header('Location: ?step=2');
+            exit;
+            break;
+            
         case 2:
-            // Database connection test
+            // Database connection
             try {
-                $host = $_POST['db_host'];
-                $name = $_POST['db_name'];
-                $user = $_POST['db_user'];
+                $host = trim($_POST['db_host']);
+                $name = trim($_POST['db_name']);
+                $user = trim($_POST['db_user']);
                 $pass = $_POST['db_pass'];
+                $prefix = ''; // No table prefix support
                 
-                $pdo = new PDO("mysql:host=$host;dbname=$name", $user, $pass);
+                // Test connection
+                $dsn = "mysql:host=$host";
+                $pdo = new PDO($dsn, $user, $pass);
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 
-                // Store in session for next step
+                // Check if database exists
+                $stmt = $pdo->query("SHOW DATABASES LIKE '$name'");
+                if ($stmt->rowCount() == 0) {
+                    // Try to create database
+                    $pdo->exec("CREATE DATABASE IF NOT EXISTS `$name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                }
+                
+                // Connect to the database
+                $pdo = new PDO("mysql:host=$host;dbname=$name;charset=utf8mb4", $user, $pass);
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                
+                // Store in session
                 $_SESSION['db_config'] = [
                     'host' => $host,
                     'name' => $name,
                     'user' => $user,
-                    'pass' => $pass
+                    'pass' => $pass,
+                    'prefix' => $prefix
                 ];
                 
-                $success = "Database connection successful!";
-                $step = 3;
+                header('Location: ?step=3');
+                exit;
+                
             } catch (Exception $e) {
                 $error = "Database connection failed: " . $e->getMessage();
             }
             break;
             
         case 3:
-            // Create tables and config
+            // Install database tables
             try {
                 $db = $_SESSION['db_config'];
-                $pdo = new PDO("mysql:host={$db['host']};dbname={$db['name']}", $db['user'], $db['pass']);
+                $pdo = new PDO("mysql:host={$db['host']};dbname={$db['name']};charset=utf8mb4", $db['user'], $db['pass']);
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 
-                // Create tables
-                $sql = file_get_contents('database_schema.sql');
-                $pdo->exec($sql);
+                // Check if tables already exist
+                $requiredTables = ['customers', 'invoices', 'invoice_items', 'payments', 'customer_properties', 'business_settings'];
+                $existingTables = [];
+                $missingTables = [];
+                
+                foreach ($requiredTables as $table) {
+                    $stmt = $pdo->query("SHOW TABLES LIKE '$table'");
+                    if ($stmt->rowCount() > 0) {
+                        $existingTables[] = $table;
+                    } else {
+                        $missingTables[] = $table;
+                    }
+                }
+                
+                // Store table status in session for display
+                $_SESSION['existing_tables'] = $existingTables;
+                $_SESSION['missing_tables'] = $missingTables;
+                
+                // If some tables exist, only create missing ones
+                if (!empty($missingTables)) {
+                    // Read and execute schema
+                    $schema = file_get_contents('database_schema.sql');
+                    
+                    // Split by semicolon and execute each statement
+                    $statements = array_filter(array_map('trim', explode(';', $schema)));
+                    foreach ($statements as $statement) {
+                        if (!empty($statement)) {
+                            $pdo->exec($statement);
+                        }
+                    }
+                }
+                
+                $_SESSION['db_installed'] = true;
+                header('Location: ?step=4');
+                exit;
+                
+            } catch (Exception $e) {
+                $error = "Database installation failed: " . $e->getMessage();
+            }
+            break;
+            
+        case 4:
+            // Business configuration
+            try {
+                $db = $_SESSION['db_config'];
+                $pdo = new PDO("mysql:host={$db['host']};dbname={$db['name']};charset=utf8mb4", $db['user'], $db['pass']);
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                
+                // Store site URL in session
+                $_SESSION['site_url'] = trim($_POST['site_url']);
+                
+                // Prepare data
+                $business_name = trim($_POST['business_name']) ?: 'Your Business Name';
+                $business_phone = trim($_POST['business_phone']) ?: '';
+                $business_email = trim($_POST['business_email']) ?: '';
+                $business_ein = trim($_POST['business_ein']) ?: '';
+                $default_hourly_rate = floatval($_POST['default_hourly_rate']) ?: 45.00;
+                $mileage_rate = floatval($_POST['mileage_rate']) ?: 0.650;
+                $payment_instructions = trim($_POST['payment_instructions']) ?: 'Payment is due within 30 days.';
+                
+                // Check if business settings already exist
+                $stmt = $pdo->query("SELECT COUNT(*) FROM business_settings");
+                $exists = $stmt->fetchColumn() > 0;
+                
+                if ($exists) {
+                    // Update existing
+                    $stmt = $pdo->prepare("UPDATE business_settings SET 
+                        business_name = ?, business_phone = ?, business_email = ?, 
+                        business_ein = ?, default_hourly_rate = ?, mileage_rate = ?, 
+                        payment_instructions = ? WHERE 1");
+                    $stmt->execute([
+                        $business_name, $business_phone, $business_email,
+                        $business_ein, $default_hourly_rate, $mileage_rate,
+                        $payment_instructions
+                    ]);
+                } else {
+                    // Insert new
+                    $stmt = $pdo->prepare("INSERT INTO business_settings 
+                        (business_name, business_phone, business_email, business_ein, 
+                         default_hourly_rate, mileage_rate, payment_instructions) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?)");
+                    $stmt->execute([
+                        $business_name, $business_phone, $business_email,
+                        $business_ein, $default_hourly_rate, $mileage_rate,
+                        $payment_instructions
+                    ]);
+                }
+                
+                $_SESSION['business_configured'] = true;
+                header('Location: ?step=5');
+                exit;
+                
+            } catch (Exception $e) {
+                $error = "Business configuration failed: " . $e->getMessage();
+            }
+            break;
+            
+        case 5:
+            // Admin account setup
+            try {
+                $db = $_SESSION['db_config'];
+                $pdo = new PDO("mysql:host={$db['host']};dbname={$db['name']};charset=utf8mb4", $db['user'], $db['pass']);
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                
+                $admin_password = $_POST['admin_password'];
+                $confirm_password = $_POST['confirm_password'];
+                
+                if (strlen($admin_password) < 6) {
+                    throw new Exception("Password must be at least 6 characters long.");
+                }
+                
+                if ($admin_password !== $confirm_password) {
+                    throw new Exception("Passwords do not match.");
+                }
+                
+                // Hash password and update
+                $hashed = password_hash($admin_password, PASSWORD_DEFAULT);
+                $stmt = $pdo->prepare("UPDATE business_settings SET admin_password = ?");
+                $stmt->execute([$hashed]);
                 
                 // Create config file
+                $siteUrl = $_SESSION['site_url'] ?? ('http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']));
+                $siteUrl = rtrim($siteUrl, '/');
+                
                 $config_content = "<?php\n";
+                $config_content .= "/**\n";
+                $config_content .= " * Kinvo Configuration File\n";
+                $config_content .= " * Generated by installer on " . date('Y-m-d H:i:s') . "\n";
+                $config_content .= " */\n\n";
                 $config_content .= "// Database Configuration\n";
-                $config_content .= "define('DB_HOST', '{$db['host']}');\n";
-                $config_content .= "define('DB_NAME', '{$db['name']}');\n";
-                $config_content .= "define('DB_USER', '{$db['user']}');\n";
-                $config_content .= "define('DB_PASS', '{$db['pass']}');\n\n";
+                $config_content .= "define('DB_HOST', '" . addslashes($db['host']) . "');\n";
+                $config_content .= "define('DB_NAME', '" . addslashes($db['name']) . "');\n";
+                $config_content .= "define('DB_USER', '" . addslashes($db['user']) . "');\n";
+                $config_content .= "define('DB_PASS', '" . addslashes($db['pass']) . "');\n\n";
                 $config_content .= "// Site Configuration\n";
-                $config_content .= "define('SITE_URL', 'http://' . \$_SERVER['HTTP_HOST'] . dirname(\$_SERVER['SCRIPT_NAME']));\n";
-                $config_content .= "define('ADMIN_PASSWORD', 'admin123'); // Will be migrated to database\n\n";
-                $config_content .= "// Start session\n";
+                $config_content .= "define('SITE_NAME', 'Kinvo');\n";
+                $config_content .= "define('SITE_URL', '" . addslashes($siteUrl) . "');\n";
+                $config_content .= "define('ADMIN_PASSWORD', 'deprecated'); // Now stored in database\n\n";
+                $config_content .= "// Error Reporting (set to 0 in production)\n";
+                $config_content .= "error_reporting(0);\n";
+                $config_content .= "ini_set('display_errors', 0);\n\n";
+                $config_content .= "// Timezone\n";
+                $config_content .= "date_default_timezone_set('America/New_York');\n\n";
+                $config_content .= "// Session Configuration\n";
                 $config_content .= "if (session_status() === PHP_SESSION_NONE) {\n";
                 $config_content .= "    session_start();\n";
                 $config_content .= "}\n";
                 
-                file_put_contents('includes/config.php', $config_content);
+                // Write config file
+                if (!file_put_contents('includes/config.php', $config_content)) {
+                    throw new Exception("Could not write configuration file. Please check permissions.");
+                }
                 
-                // Setup business settings
-                $business_name = $_POST['business_name'] ?: 'Your Business Name';
-                $business_phone = $_POST['business_phone'] ?: '';
-                $business_email = $_POST['business_email'] ?: '';
-                $admin_password = password_hash($_POST['admin_password'] ?: 'admin123', PASSWORD_DEFAULT);
-                
-                $stmt = $pdo->prepare("
-                    INSERT INTO business_settings 
-                    (business_name, business_phone, business_email, payment_instructions, admin_password) 
-                    VALUES (?, ?, ?, ?, ?)
-                ");
-                $stmt->execute([
-                    $business_name,
-                    $business_phone, 
-                    $business_email,
-                    "Payment is due within 30 days. Please contact us for payment methods.",
-                    $admin_password
-                ]);
-                
-                // Create install marker
+                // Create installed marker
                 file_put_contents('includes/.installed', date('Y-m-d H:i:s'));
                 
                 // Clear session
-                unset($_SESSION['db_config']);
+                session_destroy();
                 
-                $step = 4;
-                $success = "Installation completed successfully!";
+                header('Location: ?step=6');
+                exit;
                 
             } catch (Exception $e) {
-                $error = "Installation failed: " . $e->getMessage();
+                $error = $e->getMessage();
             }
             break;
     }
@@ -116,224 +276,570 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Install Kinvo - Invoice Management System</title>
+    <title>Install Kinvo - Professional Invoice Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-2xl">
+<body class="bg-gray-50 min-h-screen">
+    <div class="min-h-screen flex flex-col">
         <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">
-                <i class="fas fa-file-invoice text-blue-600 mr-3"></i>Kinvo
-            </h1>
-            <p class="text-gray-600">Professional Invoice Management System</p>
-            <p class="text-sm text-gray-500 mt-2">Installation Wizard</p>
-        </div>
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-4xl mx-auto px-4 py-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <h1 class="text-2xl font-bold text-gray-900">
+                            Kinvo Installation
+                        </h1>
+                    </div>
+                    <span class="text-sm text-gray-500">Version 1.0</span>
+                </div>
+            </div>
+        </header>
 
         <!-- Progress Bar -->
-        <div class="mb-8">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-sm font-medium text-gray-700">Installation Progress</span>
-                <span class="text-sm font-medium text-gray-700"><?php echo min($step, 4); ?>/4</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-                <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: <?php echo (min($step, 4) / 4) * 100; ?>%"></div>
+        <div class="bg-white border-b border-gray-200">
+            <div class="max-w-4xl mx-auto px-4 py-4">
+                <div class="flex items-center justify-between text-sm">
+                    <?php
+                    $steps = [
+                        1 => ['title' => 'Requirements'],
+                        2 => ['title' => 'Database'],
+                        3 => ['title' => 'Install'],
+                        4 => ['title' => 'Business'],
+                        5 => ['title' => 'Admin'],
+                        6 => ['title' => 'Complete']
+                    ];
+                    
+                    foreach ($steps as $num => $info):
+                        $isActive = $num == $step;
+                        $isCompleted = $num < $step;
+                    ?>
+                    <div class="flex items-center <?php echo $num < 6 ? 'flex-1' : ''; ?>">
+                        <div class="flex items-center">
+                            <div class="<?php echo $isCompleted ? 'bg-gray-900' : ($isActive ? 'bg-gray-600' : 'bg-gray-300'); ?> rounded-full w-8 h-8 flex items-center justify-center text-white font-semibold text-sm">
+                                <?php echo $num; ?>
+                            </div>
+                            <span class="ml-2 <?php echo $isActive ? 'font-semibold text-gray-900' : 'text-gray-500'; ?>">
+                                <?php echo $info['title']; ?>
+                            </span>
+                        </div>
+                        <?php if ($num < 6): ?>
+                        <div class="flex-1 mx-4">
+                            <div class="h-1 bg-gray-200 rounded">
+                                <div class="h-1 <?php echo $isCompleted ? 'bg-gray-900' : 'bg-gray-200'; ?> rounded"></div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
 
-        <!-- Installation Card -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            
-            <?php if ($step == 1): ?>
-            <!-- Step 1: Welcome -->
-            <div class="p-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">
-                    <i class="fas fa-home text-blue-600 mr-2"></i>Welcome to Kinvo
-                </h2>
-                <p class="text-gray-600 mb-6">This installation wizard will help you set up Kinvo on your shared hosting account.</p>
-                
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <h3 class="font-semibold text-blue-900 mb-2">Before you begin:</h3>
-                    <ul class="text-sm text-blue-800 space-y-1">
-                        <li>• Make sure you have your database credentials ready</li>
-                        <li>• Ensure PHP 7.4+ and MySQL 5.7+ are available</li>
-                        <li>• Have your business information prepared</li>
-                    </ul>
-                </div>
-                
-                <div class="flex justify-end">
-                    <a href="?step=2" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
-                        Get Started <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <?php elseif ($step == 2): ?>
-            <!-- Step 2: Database Setup -->
-            <div class="p-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">
-                    <i class="fas fa-database text-blue-600 mr-2"></i>Database Configuration
-                </h2>
-                <p class="text-gray-600 mb-6">Enter your database connection details. You can find these in your hosting control panel.</p>
+        <!-- Main Content -->
+        <main class="flex-1">
+            <div class="max-w-4xl mx-auto px-4 py-8">
                 
                 <?php if ($error): ?>
                 <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                    <div class="flex items-center">
-                        <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
-                        <span class="text-red-800"><?php echo htmlspecialchars($error); ?></span>
+                    <div>
+                        <h3 class="font-semibold text-red-900">Installation Error</h3>
+                        <p class="text-red-700 mt-1"><?php echo htmlspecialchars($error); ?></p>
                     </div>
                 </div>
                 <?php endif; ?>
-                
-                <?php if ($success): ?>
-                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                    <div class="flex items-center">
-                        <i class="fas fa-check-circle text-green-600 mr-2"></i>
-                        <span class="text-green-800"><?php echo htmlspecialchars($success); ?></span>
-                    </div>
-                </div>
-                <?php endif; ?>
-                
-                <form method="POST" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Database Host</label>
-                            <input type="text" name="db_host" value="localhost" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                            <p class="text-xs text-gray-500 mt-1">Usually "localhost"</p>
+
+                <?php if ($step == 1): ?>
+                <!-- Step 1: Requirements Check -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">System Requirements Check</h2>
+                    
+                    <?php
+                    $phpVersion = getPHPVersionInfo();
+                    $requirements = [
+                        [
+                            'name' => 'PHP Version',
+                            'required' => '7.4+',
+                            'current' => $phpVersion['full'],
+                            'status' => $phpVersion['isSupported'],
+                            'critical' => true
+                        ],
+                        [
+                            'name' => 'PDO Extension',
+                            'required' => 'Enabled',
+                            'current' => checkExtension('pdo') ? 'Enabled' : 'Disabled',
+                            'status' => checkExtension('pdo'),
+                            'critical' => true
+                        ],
+                        [
+                            'name' => 'PDO MySQL',
+                            'required' => 'Enabled',
+                            'current' => checkExtension('pdo_mysql') ? 'Enabled' : 'Disabled',
+                            'status' => checkExtension('pdo_mysql'),
+                            'critical' => true
+                        ],
+                        [
+                            'name' => 'Session Support',
+                            'required' => 'Enabled',
+                            'current' => function_exists('session_start') ? 'Enabled' : 'Disabled',
+                            'status' => function_exists('session_start'),
+                            'critical' => true
+                        ],
+                        [
+                            'name' => 'JSON Support',
+                            'required' => 'Enabled',
+                            'current' => checkExtension('json') ? 'Enabled' : 'Disabled',
+                            'status' => checkExtension('json'),
+                            'critical' => false
+                        ]
+                    ];
+                    
+                    $canContinue = true;
+                    ?>
+                    
+                    <div class="space-y-3 mb-6">
+                        <?php foreach ($requirements as $req): ?>
+                        <?php if (!$req['status'] && $req['critical']) $canContinue = false; ?>
+                        <div class="flex items-center justify-between p-3 rounded-lg <?php echo $req['status'] ? 'bg-green-50' : 'bg-red-50'; ?>">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full <?php echo $req['status'] ? 'bg-green-600' : 'bg-red-600'; ?> flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-xs"><?php echo $req['status'] ? '✓' : '✗'; ?></span>
+                                </div>
+                                <div>
+                                    <span class="font-medium text-gray-900"><?php echo $req['name']; ?></span>
+                                    <span class="text-sm text-gray-500 ml-2">(Required: <?php echo $req['required']; ?>)</span>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium <?php echo $req['status'] ? 'text-green-600' : 'text-red-600'; ?>">
+                                <?php echo $req['current']; ?>
+                            </span>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Database Name</label>
-                            <input type="text" name="db_name" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Database Username</label>
-                            <input type="text" name="db_user" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Database Password</label>
-                            <input type="password" name="db_pass" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                     
-                    <div class="flex justify-between pt-4">
-                        <a href="?step=1" class="inline-flex items-center px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                            <i class="fas fa-arrow-left mr-2"></i>Back
-                        </a>
-                        <button type="submit" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
-                            Test Connection <i class="fas fa-arrow-right ml-2"></i>
-                        </button>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">File Permissions</h3>
+                    <?php
+                    $permissions = [
+                        ['path' => 'includes/', 'name' => 'Includes Directory'],
+                        ['path' => 'includes/config.php', 'name' => 'Config File', 'create' => true]
+                    ];
+                    ?>
+                    
+                    <div class="space-y-3 mb-6">
+                        <?php foreach ($permissions as $perm): ?>
+                        <?php 
+                        $isWritable = isset($perm['create']) ? checkWritable(dirname($perm['path'])) : checkWritable($perm['path']);
+                        if (!$isWritable) $canContinue = false;
+                        ?>
+                        <div class="flex items-center justify-between p-3 rounded-lg <?php echo $isWritable ? 'bg-green-50' : 'bg-red-50'; ?>">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full <?php echo $isWritable ? 'bg-green-600' : 'bg-red-600'; ?> flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-xs"><?php echo $isWritable ? '✓' : '✗'; ?></span>
+                                </div>
+                                <span class="font-medium text-gray-900"><?php echo $perm['name']; ?></span>
+                            </div>
+                            <span class="text-sm font-medium <?php echo $isWritable ? 'text-green-600' : 'text-red-600'; ?>">
+                                <?php echo $isWritable ? 'Writable' : 'Not Writable'; ?>
+                            </span>
+                        </div>
+                        <?php endforeach; ?>
                     </div>
-                </form>
-            </div>
-            
-            <?php elseif ($step == 3): ?>
-            <!-- Step 3: Business Setup -->
-            <div class="p-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">
-                    <i class="fas fa-building text-blue-600 mr-2"></i>Business Information
-                </h2>
-                <p class="text-gray-600 mb-6">Set up your business details and admin account.</p>
-                
-                <?php if ($error): ?>
-                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                    <div class="flex items-center">
-                        <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
-                        <span class="text-red-800"><?php echo htmlspecialchars($error); ?></span>
+                    
+                    <?php if (!$canContinue): ?>
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                        <div>
+                            <h4 class="font-semibold text-yellow-900">Action Required</h4>
+                            <p class="text-yellow-700 mt-1">Please fix the above issues before continuing. Contact your hosting provider if you need assistance.</p>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <div class="flex justify-end">
+                        <form method="POST">
+                            <button type="submit" <?php echo !$canContinue ? 'disabled' : ''; ?>
+                                    class="<?php echo $canContinue ? 'bg-gray-900 hover:bg-gray-800' : 'bg-gray-400 cursor-not-allowed'; ?> text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                Continue
+                            </button>
+                        </form>
                     </div>
                 </div>
-                <?php endif; ?>
                 
-                <form method="POST" class="space-y-6">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Business Details</h3>
+                <?php elseif ($step == 2): ?>
+                <!-- Step 2: Database Configuration -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Database Configuration</h2>
+                    <p class="text-gray-600 mb-6">Enter your MySQL database connection details. You can find these in your hosting control panel.</p>
+                    
+                    <form method="POST" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Business Name</label>
-                                <input type="text" name="business_name" 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                            </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Business Phone</label>
-                                <input type="tel" name="business_phone" 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Database Host
+                                </label>
+                                <input type="text" name="db_host" value="<?php echo $_POST['db_host'] ?? 'localhost'; ?>" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                                <p class="text-xs text-gray-500 mt-1">Usually "localhost" for shared hosting</p>
                             </div>
+                            
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Business Email</label>
-                                <input type="email" name="business_email" 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Database Name
+                                </label>
+                                <input type="text" name="db_name" value="<?php echo $_POST['db_name'] ?? ''; ?>" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                                <p class="text-xs text-gray-500 mt-1">The name of your MySQL database</p>
                             </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Database Username
+                                </label>
+                                <input type="text" name="db_user" value="<?php echo $_POST['db_user'] ?? ''; ?>" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Database Password
+                                </label>
+                                <input type="password" name="db_pass" value="<?php echo $_POST['db_pass'] ?? ''; ?>"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="text-sm text-blue-700">
+                                <p>If the database doesn't exist, the installer will try to create it.</p>
+                                <p class="mt-1">Make sure your database user has CREATE privileges.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <a href="?step=1" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                                Back
+                            </a>
+                            <button type="submit" class="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium">
+                                Test Connection
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <?php elseif ($step == 3): ?>
+                <!-- Step 3: Database Installation -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Database Installation</h2>
+                    
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-center">
+                            <div class="w-6 h-6 rounded-full bg-green-600 flex items-center justify-center mr-3">
+                                <span class="text-white font-bold text-xs">✓</span>
+                            </div>
+                            <span class="text-green-800">Database connection successful!</span>
                         </div>
                     </div>
                     
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Admin Account</h3>
+                    <?php
+                    // Check for existing tables when first visiting step 3
+                    if (!isset($_SESSION['existing_tables']) && isset($_SESSION['db_config'])) {
+                        try {
+                            $db = $_SESSION['db_config'];
+                            $pdo = new PDO("mysql:host={$db['host']};dbname={$db['name']};charset=utf8mb4", $db['user'], $db['pass']);
+                            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                            
+                            $requiredTables = ['customers', 'invoices', 'invoice_items', 'payments', 'customer_properties', 'business_settings'];
+                            $existingTables = [];
+                            
+                            foreach ($requiredTables as $table) {
+                                $stmt = $pdo->query("SHOW TABLES LIKE '$table'");
+                                if ($stmt->rowCount() > 0) {
+                                    $existingTables[] = $table;
+                                }
+                            }
+                            
+                            $_SESSION['existing_tables'] = $existingTables;
+                        } catch (Exception $e) {
+                            $_SESSION['existing_tables'] = [];
+                        }
+                    }
+                    
+                    // Check if we have existing table information
+                    $existingTables = $_SESSION['existing_tables'] ?? [];
+                    $missingTables = $_SESSION['missing_tables'] ?? [];
+                    $hasExistingTables = !empty($existingTables);
+                    
+                    $tables = [
+                        'customers' => 'Customer information and contacts',
+                        'invoices' => 'Invoice records and details', 
+                        'invoice_items' => 'Individual line items for invoices',
+                        'payments' => 'Payment tracking and history',
+                        'customer_properties' => 'Customer locations and properties',
+                        'business_settings' => 'Business configuration and settings'
+                    ];
+                    ?>
+                    
+                    <?php if ($hasExistingTables): ?>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <p class="text-blue-800 font-medium">Existing database detected! The installer will use existing tables and only create missing ones.</p>
+                    </div>
+                    <?php else: ?>
+                    <p class="text-gray-600 mb-6">The installer will now create the necessary database tables.</p>
+                    <?php endif; ?>
+                    
+                    <div class="space-y-3 mb-6">
+                        <h3 class="font-semibold text-gray-900">Database Tables:</h3>
+                        <?php foreach ($tables as $table => $desc): ?>
+                        <?php 
+                        $tableExists = in_array($table, $existingTables);
+                        ?>
+                        <div class="flex items-center p-3 rounded-lg <?php echo $tableExists ? 'bg-green-50' : 'bg-gray-50'; ?>">
+                            <div class="w-6 h-6 rounded flex items-center justify-center mr-3 <?php echo $tableExists ? 'bg-green-600' : 'bg-gray-600'; ?>">
+                                <span class="text-white font-bold text-xs"><?php echo $tableExists ? '✓' : 'T'; ?></span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-900"><?php echo $table; ?></span>
+                                <span class="text-sm text-gray-500 ml-2">- <?php echo $desc; ?></span>
+                                <?php if ($tableExists): ?>
+                                <span class="ml-2 text-xs text-green-600 font-medium">(Exists)</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    
+                    <form method="POST">
+                        <div class="flex justify-between">
+                            <a href="?step=2" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                                Back
+                            </a>
+                            <button type="submit" class="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium">
+                                <?php echo $hasExistingTables ? 'Continue with Database' : 'Install Database'; ?>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <?php elseif ($step == 4): ?>
+                <!-- Step 4: Business Configuration -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Business Configuration</h2>
+                    <p class="text-gray-600 mb-6">Set up your business information. You can change these settings later.</p>
+                    
+                    <form method="POST" class="space-y-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Admin Password</label>
-                            <input type="password" name="admin_password" value="admin123" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                            <p class="text-xs text-gray-500 mt-1">Default is "admin123" - you can change this later</p>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Site Configuration</h3>
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Site URL
+                                </label>
+                                <?php 
+                                $detectedUrl = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
+                                $detectedUrl = rtrim($detectedUrl, '/');
+                                ?>
+                                <input type="url" name="site_url" value="<?php echo $_POST['site_url'] ?? $detectedUrl; ?>" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                                <p class="text-xs text-gray-500 mt-1">This URL will be used for invoice links and system paths</p>
+                            </div>
                         </div>
-                    </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Business Information</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Business Name
+                                    </label>
+                                    <input type="text" name="business_name" value="<?php echo $_POST['business_name'] ?? ''; ?>"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Business Phone
+                                    </label>
+                                    <input type="tel" name="business_phone" value="<?php echo $_POST['business_phone'] ?? ''; ?>"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Business Email
+                                    </label>
+                                    <input type="email" name="business_email" value="<?php echo $_POST['business_email'] ?? ''; ?>"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Business EIN
+                                    </label>
+                                    <input type="text" name="business_ein" value="<?php echo $_POST['business_ein'] ?? ''; ?>"
+                                           placeholder="12-3456789"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Default Rates</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Default Hourly Rate
+                                    </label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-2 text-gray-500">$</span>
+                                        <input type="number" name="default_hourly_rate" value="<?php echo $_POST['default_hourly_rate'] ?? '45.00'; ?>" 
+                                               step="0.01" min="0"
+                                               class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Mileage Rate
+                                    </label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-2 text-gray-500">$</span>
+                                        <input type="number" name="mileage_rate" value="<?php echo $_POST['mileage_rate'] ?? '0.650'; ?>" 
+                                               step="0.001" min="0"
+                                               class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                                        <span class="absolute right-3 top-2 text-gray-500">per mile</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Payment Instructions
+                            </label>
+                            <textarea name="payment_instructions" rows="4"
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900"><?php echo $_POST['payment_instructions'] ?? 'Payment is due within 30 days. Please contact us for payment methods.'; ?></textarea>
+                            <p class="text-xs text-gray-500 mt-1">These instructions will appear on all invoices</p>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <a href="?step=3" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                                Back
+                            </a>
+                            <button type="submit" class="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium">
+                                Continue
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <?php elseif ($step == 5): ?>
+                <!-- Step 5: Admin Account -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Admin Account Setup</h2>
+                    <p class="text-gray-600 mb-6">Create a secure password for the admin account.</p>
                     
-                    <div class="flex justify-between pt-4">
-                        <a href="?step=2" class="inline-flex items-center px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                            <i class="fas fa-arrow-left mr-2"></i>Back
-                        </a>
-                        <button type="submit" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold">
-                            Install Kinvo <i class="fas fa-check ml-2"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-            
-            <?php elseif ($step == 4): ?>
-            <!-- Step 4: Complete -->
-            <div class="p-8 text-center">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-check text-green-600 text-2xl"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Installation Complete!</h2>
-                <p class="text-gray-600 mb-6">Kinvo has been successfully installed and configured.</p>
-                
-                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 text-left">
-                    <h3 class="font-semibold text-green-900 mb-2">What's Next?</h3>
-                    <ul class="text-sm text-green-800 space-y-1">
-                        <li>• Login to your admin dashboard</li>
-                        <li>• Complete your business settings</li>
-                        <li>• Create your first customer</li>
-                        <li>• Generate your first invoice</li>
-                    </ul>
-                </div>
-                
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                    <div class="flex items-start">
-                        <i class="fas fa-exclamation-triangle text-yellow-600 mr-2 mt-1"></i>
-                        <div class="text-left">
-                            <p class="font-semibold text-yellow-900">Security Reminder</p>
-                            <p class="text-sm text-yellow-800">For security, consider deleting this install.php file after installation.</p>
+                    <form method="POST" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Admin Password
+                            </label>
+                            <input type="password" name="admin_password" required
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                            <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
                         </div>
-                    </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Confirm Password
+                            </label>
+                            <input type="password" name="confirm_password" required
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+                        </div>
+                        
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                            <div class="text-sm text-yellow-700">
+                                <p class="font-semibold">Important Security Notice</p>
+                                <p class="mt-1">Choose a strong password and keep it secure. This is the only account that can access the admin panel.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <a href="?step=4" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                                Back
+                            </a>
+                            <button type="submit" class="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium">
+                                Complete Installation
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 
-                <a href="admin/login.php" class="inline-flex items-center px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Login to Kinvo
-                </a>
+                <?php elseif ($step == 6): ?>
+                <!-- Step 6: Installation Complete -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="text-center">
+                        <div class="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
+                            <span class="text-green-600 text-3xl font-bold">✓</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">Installation Complete!</h2>
+                        <p class="text-gray-600 mb-8">Kinvo has been successfully installed and configured.</p>
+                        
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6 text-left max-w-2xl mx-auto">
+                            <h3 class="font-semibold text-green-900 mb-3">Next Steps:</h3>
+                            <ul class="space-y-2 text-sm text-green-800">
+                                <li class="flex items-start">
+                                    <div class="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center mt-0.5 mr-2">
+                                        <span class="text-white text-xs font-bold">✓</span>
+                                    </div>
+                                    <span>Delete the install.php file for security</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center mt-0.5 mr-2">
+                                        <span class="text-white text-xs font-bold">✓</span>
+                                    </div>
+                                    <span>Login to your admin dashboard</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center mt-0.5 mr-2">
+                                        <span class="text-white text-xs font-bold">✓</span>
+                                    </div>
+                                    <span>Add your first customer</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center mt-0.5 mr-2">
+                                        <span class="text-white text-xs font-bold">✓</span>
+                                    </div>
+                                    <span>Create your first invoice</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 max-w-2xl mx-auto">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-red-600 flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold text-xs">!</span>
+                                </div>
+                                <div class="text-left">
+                                    <p class="font-semibold text-red-900">Security Warning</p>
+                                    <p class="text-sm text-red-700">Please delete install.php immediately to prevent unauthorized access.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="admin/login.php" class="inline-flex items-center px-8 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium text-lg">
+                            Go to Admin Login
+                        </a>
+                    </div>
+                </div>
+                <?php endif; ?>
+                
             </div>
-            <?php endif; ?>
-            
-        </div>
+        </main>
         
         <!-- Footer -->
-        <div class="text-center mt-8">
-            <p class="text-sm text-gray-500">
+        <footer class="bg-white border-t border-gray-200 mt-auto">
+            <div class="max-w-4xl mx-auto px-4 py-6 text-center text-sm text-gray-500">
                 Kinvo v1.0 - Professional Invoice Management System
-            </p>
-        </div>
+            </div>
+        </footer>
     </div>
 </body>
 </html>

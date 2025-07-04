@@ -3,25 +3,34 @@
 
 # Deny access to sensitive files
 <FilesMatch "\.(sql|md|txt|log)$">
-    Order deny,allow
-    Deny from all
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
 </FilesMatch>
-
-# Deny access to includes directory
-<Directory "includes">
-    Order deny,allow
-    Deny from all
-</Directory>
 
 # Protect config files
 <Files "config.php">
-    Order deny,allow
-    Deny from all
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
 </Files>
 
 <Files ".installed">
-    Order deny,allow
-    Deny from all
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
 </Files>
 
 # Redirect to HTTPS if available
