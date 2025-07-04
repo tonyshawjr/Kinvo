@@ -150,25 +150,9 @@ $recentPayments = $stmt->fetchAll();
     echo htmlspecialchars($appName);
     ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
     <?php include '../includes/header.php'; ?>
 
     <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -179,23 +163,23 @@ $recentPayments = $stmt->fetchAll();
         </div>
 
         <?php if ($success): ?>
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 mb-8">
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
-                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-check-circle text-green-600 text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold text-green-900 mb-2">Success!</h3>
-                    <p class="text-green-700"><?php echo htmlspecialchars($success); ?></p>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Success!</h3>
+                    <p class="text-gray-600"><?php echo htmlspecialchars($success); ?></p>
                 </div>
             </div>
         </div>
         <?php endif; ?>
 
         <?php if ($error): ?>
-        <div class="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-2xl p-6 mb-8">
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
-                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
                 </div>
                 <div>
@@ -207,8 +191,8 @@ $recentPayments = $stmt->fetchAll();
         <?php endif; ?>
 
         <!-- Add Payment Form -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-            <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-100">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-8">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                     <i class="fas fa-plus-circle mr-3 text-green-600"></i>
                     Record New Payment
@@ -220,7 +204,7 @@ $recentPayments = $stmt->fetchAll();
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                         <div class="lg:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Select Invoice *</label>
-                            <select name="invoice_id" required class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                            <select name="invoice_id" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                 <option value="">Choose an invoice...</option>
                                 <?php foreach ($unpaidInvoices as $invoice): ?>
                                 <option value="<?php echo $invoice['id']; ?>" <?php echo $selectedInvoiceId == $invoice['id'] ? 'selected' : ''; ?>>
@@ -233,7 +217,7 @@ $recentPayments = $stmt->fetchAll();
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method *</label>
-                            <select name="method" required class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                            <select name="method" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                 <option value="">Select method...</option>
                                 <option value="Zelle">💰 Zelle</option>
                                 <option value="Venmo">📱 Venmo</option>
@@ -247,19 +231,19 @@ $recentPayments = $stmt->fetchAll();
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Amount *</label>
-                            <input type="number" name="amount" step="0.01" required placeholder="0.00" class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                            <input type="number" name="amount" step="0.01" required placeholder="0.00" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Payment Date *</label>
-                            <input type="date" name="payment_date" value="<?php echo date('Y-m-d'); ?>" required class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                            <input type="date" name="payment_date" value="<?php echo date('Y-m-d'); ?>" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Notes (Optional)</label>
-                        <input type="text" name="notes" placeholder="Reference number, confirmation code, etc." class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <input type="text" name="notes" placeholder="Reference number, confirmation code, etc." class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit" class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all font-medium shadow-lg">
+                        <button type="submit" class="inline-flex items-center px-8 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                             <i class="fas fa-plus mr-2"></i>Record Payment
                         </button>
                     </div>
@@ -269,8 +253,8 @@ $recentPayments = $stmt->fetchAll();
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
             <!-- Outstanding Invoices -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="bg-gradient-to-r from-orange-50 to-red-50 px-6 py-4 border-b border-gray-100">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                         <i class="fas fa-exclamation-triangle mr-3 text-orange-600"></i>
                         Outstanding Invoices
@@ -289,7 +273,7 @@ $recentPayments = $stmt->fetchAll();
                     <?php else: ?>
                     <div class="space-y-4 max-h-96 overflow-y-auto">
                         <?php foreach ($unpaidInvoices as $invoice): ?>
-                        <div class="p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors <?php echo strtotime($invoice['due_date']) < time() ? 'border-red-200 bg-red-50' : ''; ?>">
+                        <div class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors <?php echo strtotime($invoice['due_date']) < time() ? 'border-red-200 bg-red-50' : ''; ?>">
                             <div class="flex items-center justify-between">
                                 <div class="flex-1">
                                     <div class="flex items-center space-x-3 mb-2">
@@ -311,7 +295,7 @@ $recentPayments = $stmt->fetchAll();
                                         <a href="?invoice_id=<?php echo $invoice['id']; ?>" class="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-lg hover:bg-green-200 transition-colors">
                                             Add Payment
                                         </a>
-                                        <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors">
+                                        <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-200 transition-colors">
                                             View
                                         </a>
                                     </div>
@@ -325,10 +309,10 @@ $recentPayments = $stmt->fetchAll();
             </div>
 
             <!-- Recent Payments -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-100">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                        <i class="fas fa-history mr-3 text-blue-600"></i>
+                        <i class="fas fa-history mr-3 text-gray-600"></i>
                         All Payments
                     </h3>
                     <p class="text-sm text-gray-600 mt-1">View and manage payment history</p>
@@ -345,10 +329,10 @@ $recentPayments = $stmt->fetchAll();
                     <?php else: ?>
                     <div class="space-y-4">
                         <?php foreach ($recentPayments as $payment): ?>
-                        <div class="border border-gray-200 rounded-xl p-4" id="payment-<?php echo $payment['id']; ?>">
+                        <div class="border border-gray-200 rounded-lg p-4" id="payment-<?php echo $payment['id']; ?>">
                             <div class="flex items-start justify-between">
                                 <div class="flex items-center space-x-4 flex-1">
-                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                         <?php
                                         $icon = 'fas fa-credit-card';
                                         if ($payment['method'] === 'Zelle') $icon = 'fas fa-university';
@@ -357,7 +341,7 @@ $recentPayments = $stmt->fetchAll();
                                         if ($payment['method'] === 'Cash') $icon = 'fas fa-money-bill';
                                         if ($payment['method'] === 'Check') $icon = 'fas fa-check';
                                         ?>
-                                        <i class="<?php echo $icon; ?> text-blue-600"></i>
+                                        <i class="<?php echo $icon; ?> text-gray-600"></i>
                                     </div>
                                     <div class="flex-1">
                                         <div class="flex items-center space-x-3 mb-2">

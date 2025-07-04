@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS invoice_items (
 CREATE TABLE IF NOT EXISTS payments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     invoice_id INT NOT NULL,
-    method ENUM('Zelle', 'Venmo', 'Cash App', 'Cash', 'Check') NOT NULL,
+    method ENUM('Cash', 'Check', 'Credit Card', 'Bank Transfer', 'Cash App', 'Venmo', 'Zelle', 'PayPal', 'Other') NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     payment_date DATE NOT NULL,
     notes TEXT,
@@ -87,10 +87,8 @@ CREATE TABLE IF NOT EXISTS business_settings (
     default_hourly_rate DECIMAL(8,2) DEFAULT 45.00,
     mileage_rate DECIMAL(5,3) DEFAULT 0.650,
     payment_instructions TEXT,
+    admin_password VARCHAR(255),
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Insert default business settings
-INSERT INTO business_settings (business_name, business_phone, business_email, business_ein, cashapp_username, venmo_username, default_hourly_rate, mileage_rate, payment_instructions) 
-VALUES ('Your Business Name', '910-XXX-XXXX', 'youremail@example.com', '', '', '', 45.00, 0.650, 'Pay via Zelle to 910-XXX-XXXX or Venmo @yourusername')
-ON DUPLICATE KEY UPDATE id=id;
+-- Business settings will be populated by the installation wizard

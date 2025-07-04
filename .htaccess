@@ -1,0 +1,78 @@
+# Kinvo - Invoice Management System
+# Security and configuration for shared hosting
+
+# Deny access to sensitive files
+<FilesMatch "\.(sql|md|txt|log)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Deny access to includes directory
+<Directory "includes">
+    Order deny,allow
+    Deny from all
+</Directory>
+
+# Protect config files
+<Files "config.php">
+    Order deny,allow
+    Deny from all
+</Files>
+
+<Files ".installed">
+    Order deny,allow
+    Deny from all
+</Files>
+
+# Redirect to HTTPS if available
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP_HOST} !^localhost
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Pretty URLs (optional)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Security headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options SAMEORIGIN
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# PHP settings
+<IfModule mod_php.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 10M
+    php_value memory_limit 256M
+    php_value max_execution_time 60
+    php_flag display_errors Off
+    php_flag log_errors On
+</IfModule>
+
+# Cache static files
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
+
+# Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>

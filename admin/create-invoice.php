@@ -147,28 +147,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo htmlspecialchars($appName);
     ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
     <?php include '../includes/header.php'; ?>
 
-    <main class="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
             <h2 class="text-3xl font-bold text-gray-900">Create New Invoice</h2>
@@ -176,9 +160,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <?php if ($success): ?>
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 mb-8">
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
-                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-check-circle text-green-600 text-xl"></i>
                 </div>
                 <div class="flex-1">
@@ -198,9 +182,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <?php if ($error): ?>
-        <div class="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-2xl p-6 mb-8">
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
-                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
                 </div>
                 <div>
@@ -213,10 +197,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="POST" class="space-y-8">
             <!-- Customer Section -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-100">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                        <i class="fas fa-user-circle mr-3 text-blue-600"></i>
+                        <i class="fas fa-user-circle mr-3 text-gray-600"></i>
                         Customer Information
                     </h3>
                 </div>
@@ -225,11 +209,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label class="block text-sm font-medium text-gray-700 mb-3">Customer Type</label>
                         <div class="flex space-x-6">
                             <label class="inline-flex items-center cursor-pointer">
-                                <input type="radio" name="customer_type" value="existing" checked onchange="toggleCustomerFields()" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <input type="radio" name="customer_type" value="existing" checked onchange="toggleCustomerFields()" class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500">
                                 <span class="ml-2 text-sm font-medium text-gray-700">Existing Customer</span>
                             </label>
                             <label class="inline-flex items-center cursor-pointer">
-                                <input type="radio" name="customer_type" value="new" onchange="toggleCustomerFields()" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <input type="radio" name="customer_type" value="new" onchange="toggleCustomerFields()" class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500">
                                 <span class="ml-2 text-sm font-medium text-gray-700">New Customer</span>
                             </label>
                         </div>
@@ -239,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Select Customer</label>
-                                <select name="customer_id" id="customer-select" onchange="loadCustomerData()" class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                <select name="customer_id" id="customer-select" onchange="loadCustomerData()" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                     <option value="">Choose a customer...</option>
                                     <?php foreach ($customers as $customer): ?>
                                     <option value="<?php echo $customer['id']; ?>" 
@@ -255,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div id="property-selection" style="<?php echo $selectedCustomerId ? 'display: block;' : 'display: none;'; ?>">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Property/Location (Optional)</label>
-                                <select name="property_id" id="property-select" class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                <select name="property_id" id="property-select" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                     <option value="">No specific property</option>
                                     <?php foreach ($customerProperties as $property): ?>
                                     <option value="<?php echo $property['id']; ?>" <?php echo $selectedPropertyId == $property['id'] ? 'selected' : ''; ?>>
@@ -274,23 +258,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div id="new-customer" class="grid grid-cols-1 md:grid-cols-3 gap-6" style="display: none;">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
-                            <input type="text" name="customer_name" class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder="Customer name">
+                            <input type="text" name="customer_name" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="Customer name">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" name="customer_email" class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder="customer@email.com">
+                            <input type="email" name="customer_email" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="customer@email.com">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                            <input type="tel" name="customer_phone" class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder="(555) 123-4567">
+                            <input type="tel" name="customer_phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="(555) 123-4567">
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Invoice Details -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-100">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                         <i class="fas fa-calendar-alt mr-3 text-purple-600"></i>
                         Invoice Details
@@ -300,26 +284,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Invoice Date *</label>
-                            <input type="date" name="invoice_date" value="<?php echo date('Y-m-d'); ?>" required class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                            <input type="date" name="invoice_date" value="<?php echo date('Y-m-d'); ?>" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Due Date *</label>
-                            <input type="date" name="due_date" value="<?php echo date('Y-m-d', strtotime('+7 days')); ?>" required class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                            <input type="date" name="due_date" value="<?php echo date('Y-m-d', strtotime('+7 days')); ?>" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Line Items -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-100">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                             <i class="fas fa-list mr-3 text-green-600"></i>
                             Line Items
                         </h3>
                         <div class="flex space-x-2">
-                            <button type="button" onclick="addLaborItem()" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                            <button type="button" onclick="addLaborItem()" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm font-semibold">
                                 <i class="fas fa-clock mr-2"></i>Add Labor
                             </button>
                             <button type="button" onclick="addMileageItem()" class="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium">
@@ -355,23 +339,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Notes -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-orange-50 to-yellow-50 px-6 py-4 border-b border-gray-100">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                             <i class="fas fa-sticky-note mr-3 text-orange-600"></i>
                             Notes & Payment Instructions
                         </h3>
                     </div>
                     <div class="p-6">
-                        <textarea name="notes" rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                        <textarea name="notes" rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all resize-none"
                                   placeholder="Payment instructions, terms, or additional notes..."><?php echo htmlspecialchars($businessSettings['payment_instructions']); ?></textarea>
                     </div>
                 </div>
 
                 <!-- Totals -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 px-6 py-4 border-b border-gray-100">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-calculator mr-3 text-blue-600"></i>
+                            <i class="fas fa-calculator mr-3 text-gray-600"></i>
                             Invoice Totals
                         </h3>
                     </div>
@@ -383,7 +367,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div class="flex justify-between items-center">
                                 <label class="font-medium text-gray-700">Tax Rate (%):</label>
-                                <input type="number" name="tax_rate" step="0.01" value="0" onchange="calculateTotals()" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-right">
+                                <input type="number" name="tax_rate" step="0.01" value="0" onchange="calculateTotals()" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-right">
                             </div>
                             <div class="flex justify-between text-lg">
                                 <span class="font-medium text-gray-700">Tax Amount:</span>
@@ -392,7 +376,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="border-t pt-4">
                                 <div class="flex justify-between text-2xl">
                                     <span class="font-bold text-gray-900">Total:</span>
-                                    <span id="total" class="font-bold text-blue-600">$0.00</span>
+                                    <span id="total" class="font-bold text-gray-900">$0.00</span>
                                 </div>
                             </div>
                         </div>
@@ -405,7 +389,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="dashboard.php" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium">
                     <i class="fas fa-times mr-2"></i>Cancel
                 </a>
-                <button type="submit" class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">
+                <button type="submit" class="inline-flex items-center justify-center px-8 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                     <i class="fas fa-plus mr-2"></i>Create Invoice
                 </button>
             </div>
@@ -479,20 +463,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const container = document.getElementById('line-items');
             
             const itemHtml = `
-                <div class="line-item grid grid-cols-12 gap-4 mb-4 p-4 bg-blue-50 rounded-xl border-l-4 border-blue-500">
+                <div class="line-item grid grid-cols-12 gap-4 mb-4 p-4 bg-gray-50 rounded-lg border-l-4 border-gray-500">
                     <div class="col-span-1 flex items-center">
-                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <div class="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
                             <i class="fas fa-clock text-white text-sm"></i>
                         </div>
                     </div>
                     <div class="col-span-5">
-                        <input type="text" name="item_description[]" placeholder="Labor description (e.g., Handyman work, Lawn maintenance)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <input type="text" name="item_description[]" placeholder="Labor description (e.g., Handyman work, Lawn maintenance)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                     </div>
                     <div class="col-span-2">
-                        <input type="number" name="item_quantity[]" step="0.25" placeholder="Hours" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <input type="number" name="item_quantity[]" step="0.25" placeholder="Hours" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                     </div>
                     <div class="col-span-2">
-                        <input type="number" name="item_price[]" step="0.01" value="${rate}" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <input type="number" name="item_price[]" step="0.01" value="${rate}" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                     </div>
                     <div class="col-span-2 flex items-center justify-between">
                         <span class="line-total text-lg font-semibold text-gray-900">$0.00</span>
@@ -518,13 +502,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
                     <div class="col-span-5">
-                        <input type="text" name="item_description[]" placeholder="Travel description (e.g., Travel to job site)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <input type="text" name="item_description[]" placeholder="Travel description (e.g., Travel to job site)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                     </div>
                     <div class="col-span-2">
-                        <input type="number" name="item_quantity[]" step="0.1" placeholder="Miles" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <input type="number" name="item_quantity[]" step="0.1" placeholder="Miles" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                     </div>
                     <div class="col-span-2">
-                        <input type="number" name="item_price[]" step="0.001" value="${mileageRate}" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <input type="number" name="item_price[]" step="0.001" value="${mileageRate}" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                     </div>
                     <div class="col-span-2 flex items-center justify-between">
                         <span class="line-total text-lg font-semibold text-gray-900">$0.00</span>
@@ -550,13 +534,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
                     <div class="col-span-5">
-                        <input type="text" name="item_description[]" placeholder="Material/part description (e.g., Light fixture, Paint, Lumber)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <input type="text" name="item_description[]" placeholder="Material/part description (e.g., Light fixture, Paint, Lumber)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                     </div>
                     <div class="col-span-2">
-                        <input type="number" name="item_quantity[]" step="0.01" placeholder="Quantity" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <input type="number" name="item_quantity[]" step="0.01" placeholder="Quantity" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                     </div>
                     <div class="col-span-2">
-                        <input type="number" name="item_price[]" step="0.01" placeholder="Price each" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        <input type="number" name="item_price[]" step="0.01" placeholder="Price each" onchange="calculateTotals()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                     </div>
                     <div class="col-span-2 flex items-center justify-between">
                         <span class="line-total text-lg font-semibold text-gray-900">$0.00</span>

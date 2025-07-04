@@ -54,6 +54,25 @@ function generateUniqueId() {
     return md5(uniqid(rand(), true));
 }
 
+function verifyAdminPassword($password, $pdo) {
+    try {
+        // First, try to get password from database
+        $stmt = $pdo->query("SELECT admin_password FROM business_settings LIMIT 1");
+        $result = $stmt->fetch();
+        
+        if ($result && !empty($result['admin_password'])) {
+            // Database password exists, verify against it
+            return password_verify($password, $result['admin_password']);
+        } else {
+            // Fall back to config file password
+            return $password === ADMIN_PASSWORD;
+        }
+    } catch (Exception $e) {
+        // If database error, fall back to config file
+        return $password === ADMIN_PASSWORD;
+    }
+}
+
 function formatCurrency($amount) {
     return '$' . number_format($amount, 2);
 }
