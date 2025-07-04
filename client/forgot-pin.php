@@ -1,8 +1,12 @@
 <?php
 session_start();
-require_once '../includes/config.php';
+define('SECURE_CONFIG_LOADER', true);
+require_once '../includes/config_loader.php';
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
+
+// Set security headers
+setSecurityHeaders(false, true);
 
 $success = '';
 $error = '';
@@ -16,6 +20,11 @@ if (isClientLoggedIn()) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken();
+    
+    // Check rate limiting for PIN reset requests
+    checkRateLimit($pdo, 'pin_reset', 3, 15, 60); // Stricter limits for PIN reset
+    
     try {
         if ($step === 'request') {
             $email = trim($_POST['email'] ?? '');
@@ -62,8 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception('PINs do not match.');
             }
             
-            if (!preg_match('/^\d{4}$/', $newPin)) {
-                throw new Exception('PIN must be exactly 4 digits.');
+            // Use comprehensive PIN strength validation
+            $pinErrors = validatePINStrength($newPin);
+            if (!empty($pinErrors)) {
+                throw new Exception('PIN requirements not met: ' . implode(', ', $pinErrors));
             }
             
             // Verify token
@@ -92,11 +103,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Log the reset
             logClientActivity($pdo, $client['customer_id'], 'pin_reset_completed', 'PIN successfully reset');
             
+            // Clear rate limits for successful PIN reset
+            recordSuccessfulAttempt($pdo, 'pin_reset');
+            
             $success = 'Your PIN has been successfully reset. You can now <a href="/client/login.php?email=' . urlencode($client['email']) . '" class="text-blue-600 hover:text-blue-500 underline">sign in</a> with your new PIN.';
         }
         
     } catch (Exception $e) {
-        $error = $e->getMessage();
+        // Record failed attempt for rate limiting
+        recordFailedAttempt($pdo, 'pin_reset');
+        
+        // Log technical details securely
+        logSecureError("PIN reset operation failed", $e->getMessage(), 'ERROR');
+        
+        // Show generic error to user
+        $error = 'An error occurred during PIN reset. Please try again or contact support.';
     }
 }
 
@@ -166,6 +187,7 @@ $businessSettings = getBusinessSettings($pdo);
 
                 <?php if ($step === 'request' && !$success): ?>
                     <form method="POST" class="space-y-6">
+                        <?php echo getCSRFTokenField(); ?>
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
                             <input type="email" id="email" name="email" required
@@ -180,6 +202,7 @@ $businessSettings = getBusinessSettings($pdo);
                     </form>
                 <?php elseif ($step === 'reset' && !$success): ?>
                     <form method="POST" class="space-y-6">
+                        <?php echo getCSRFTokenField(); ?>
                         <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
                         
                         <div>

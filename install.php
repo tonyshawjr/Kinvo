@@ -5,8 +5,19 @@
  */
 
 session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+
+// Secure error handling for installation
+define('APP_DEBUG', false); // Set to true only during development
+if (APP_DEBUG) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+} else {
+    error_reporting(0);
+    ini_set('display_errors', 0);
+}
+
+// Include security functions for CSRF protection
+require_once 'includes/functions.php';
 
 // Check if already installed
 if (file_exists('includes/config.php') && file_exists('includes/.installed')) {
@@ -46,6 +57,9 @@ function getPHPVersionInfo() {
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate CSRF token for all POST requests
+    requireCSRFToken();
+    
     switch ($step) {
         case 1:
             // Requirements check - just move to next step
@@ -68,10 +82,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 
                 // Check if database exists
-                $stmt = $pdo->query("SHOW DATABASES LIKE '$name'");
+                $stmt = $pdo->prepare("SHOW DATABASES LIKE ?");
+                $stmt->execute([$name]);
                 if ($stmt->rowCount() == 0) {
-                    // Try to create database
-                    $pdo->exec("CREATE DATABASE IF NOT EXISTS `$name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                    // Validate database name (only allow alphanumeric and underscore)
+                    if (!preg_match('/^[a-zA-Z0-9_]+$/', $name)) {
+                        throw new Exception('Invalid database name. Only alphanumeric characters and underscores are allowed.');
+                    }
+                    // Try to create database - using identifier quoting since we can't parameterize DDL
+                    $quotedName = '`' . str_replace('`', '``', $name) . '`';
+                    $pdo->exec("CREATE DATABASE IF NOT EXISTS $quotedName CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
                 }
                 
                 // Connect to the database
@@ -91,7 +111,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
                 
             } catch (Exception $e) {
-                $error = "Database connection failed: " . $e->getMessage();
+                // Log the actual error securely
+                $timestamp = date('Y-m-d H:i:s');
+                $logEntry = "[{$timestamp}] [ERROR] Installation database connection failed: " . $e->getMessage() . PHP_EOL;
+                
+                // Create logs directory if it doesn't exist
+                $logDir = __DIR__ . '/logs';
+                if (!is_dir($logDir)) {
+                    @mkdir($logDir, 0750, true);
+                }
+                
+                // Log to file
+                $logFile = $logDir . '/install_errors_' . date('Y-m-d') . '.log';
+                @error_log($logEntry, 3, $logFile);
+                
+                // Show generic message to user
+                if (APP_DEBUG) {
+                    $error = "Database connection failed: " . $e->getMessage();
+                } else {
+                    $error = "Database connection failed. Please check your connection settings and try again.";
+                }
             }
             break;
             
@@ -124,6 +163,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!empty($missingTables)) {
                     // Read and execute schema
                     $schema = file_get_contents('database_schema.sql');
+                    if ($schema === false) {
+                        throw new Exception("Unable to read database schema file.");
+                    }
                     
                     // Split by semicolon and execute each statement
                     $statements = array_filter(array_map('trim', explode(';', $schema)));
@@ -139,7 +181,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
                 
             } catch (Exception $e) {
-                $error = "Database installation failed: " . $e->getMessage();
+                // Log the actual error securely
+                $timestamp = date('Y-m-d H:i:s');
+                $logEntry = "[{$timestamp}] [ERROR] Database installation failed: " . $e->getMessage() . PHP_EOL;
+                
+                // Create logs directory if it doesn't exist
+                $logDir = __DIR__ . '/logs';
+                if (!is_dir($logDir)) {
+                    @mkdir($logDir, 0750, true);
+                }
+                
+                // Log to file
+                $logFile = $logDir . '/install_errors_' . date('Y-m-d') . '.log';
+                @error_log($logEntry, 3, $logFile);
+                
+                // Show generic message to user
+                if (APP_DEBUG) {
+                    $error = "Database installation failed: " . $e->getMessage();
+                } else {
+                    $error = "Database installation failed. Please check the database schema file and try again.";
+                }
             }
             break;
             
@@ -195,7 +256,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
                 
             } catch (Exception $e) {
-                $error = "Business configuration failed: " . $e->getMessage();
+                // Log the actual error securely
+                $timestamp = date('Y-m-d H:i:s');
+                $logEntry = "[{$timestamp}] [ERROR] Business configuration failed: " . $e->getMessage() . PHP_EOL;
+                
+                // Create logs directory if it doesn't exist
+                $logDir = __DIR__ . '/logs';
+                if (!is_dir($logDir)) {
+                    @mkdir($logDir, 0750, true);
+                }
+                
+                // Log to file
+                $logFile = $logDir . '/install_errors_' . date('Y-m-d') . '.log';
+                @error_log($logEntry, 3, $logFile);
+                
+                // Show generic message to user
+                if (APP_DEBUG) {
+                    $error = "Business configuration failed: " . $e->getMessage();
+                } else {
+                    $error = "Business configuration failed. Please check your input and try again.";
+                }
             }
             break;
             
@@ -252,11 +332,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // Write config file
                 if (!file_put_contents('includes/config.php', $config_content)) {
-                    throw new Exception("Could not write configuration file. Please check permissions.");
+                    throw new Exception("Could not write configuration file. Please check directory permissions.");
+                }
+                
+                // Copy config to secure location outside web root
+                $secureConfigDir = __DIR__ . '/../SimpleInvoice_Config';
+                $secureConfigPath = $secureConfigDir . '/config.php';
+                
+                // Create secure config directory if it doesn't exist
+                if (!is_dir($secureConfigDir)) {
+                    if (!mkdir($secureConfigDir, 0750, true)) {
+                        // Log warning but don't fail installation
+                        error_log("Warning: Could not create secure config directory: $secureConfigDir");
+                    }
+                }
+                
+                // Copy config to secure location
+                if (is_dir($secureConfigDir)) {
+                    if (!copy('includes/config.php', $secureConfigPath)) {
+                        // Log warning but don't fail installation
+                        error_log("Warning: Could not copy config to secure location: $secureConfigPath");
+                    } else {
+                        // Set secure permissions on the config file
+                        @chmod($secureConfigPath, 0640);
+                    }
                 }
                 
                 // Create installed marker
-                file_put_contents('includes/.installed', date('Y-m-d H:i:s'));
+                if (!file_put_contents('includes/.installed', date('Y-m-d H:i:s'))) {
+                    throw new Exception("Could not create installation marker file. Please check directory permissions.");
+                }
                 
                 // Clear session
                 session_destroy();
@@ -265,7 +370,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
                 
             } catch (Exception $e) {
-                $error = $e->getMessage();
+                // Log the actual error securely
+                $timestamp = date('Y-m-d H:i:s');
+                $logEntry = "[{$timestamp}] [ERROR] Admin account setup failed: " . $e->getMessage() . PHP_EOL;
+                
+                // Create logs directory if it doesn't exist
+                $logDir = __DIR__ . '/logs';
+                if (!is_dir($logDir)) {
+                    @mkdir($logDir, 0750, true);
+                }
+                
+                // Log to file
+                $logFile = $logDir . '/install_errors_' . date('Y-m-d') . '.log';
+                @error_log($logEntry, 3, $logFile);
+                
+                // Show generic message to user
+                if (APP_DEBUG) {
+                    $error = $e->getMessage();
+                } else {
+                    // For password validation errors, we can be more specific since they're user input validation
+                    if (strpos($e->getMessage(), 'Password must be') !== false || 
+                        strpos($e->getMessage(), 'Passwords do not match') !== false) {
+                        $error = $e->getMessage();
+                    } else {
+                        $error = "Admin account setup failed. Please check your input and try again.";
+                    }
+                }
             }
             break;
     }
@@ -455,6 +585,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     <div class="flex justify-end">
                         <form method="POST">
+                            <?php echo getCSRFTokenField(); ?>
                             <button type="submit" <?php echo !$canContinue ? 'disabled' : ''; ?>
                                     class="<?php echo $canContinue ? 'bg-gray-900 hover:bg-gray-800' : 'bg-gray-400 cursor-not-allowed'; ?> text-white px-6 py-2 rounded-lg font-medium transition-colors">
                                 Continue
@@ -470,6 +601,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p class="text-gray-600 mb-6">Enter your MySQL database connection details. You can find these in your hosting control panel.</p>
                     
                     <form method="POST" class="space-y-4">
+                        <?php echo getCSRFTokenField(); ?>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -559,6 +691,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             
                             $_SESSION['existing_tables'] = $existingTables;
                         } catch (Exception $e) {
+                            // Log the actual error securely
+                            $timestamp = date('Y-m-d H:i:s');
+                            $logEntry = "[{$timestamp}] [ERROR] Failed to check existing tables: " . $e->getMessage() . PHP_EOL;
+                            
+                            // Create logs directory if it doesn't exist
+                            $logDir = __DIR__ . '/logs';
+                            if (!is_dir($logDir)) {
+                                @mkdir($logDir, 0750, true);
+                            }
+                            
+                            // Log to file
+                            $logFile = $logDir . '/install_errors_' . date('Y-m-d') . '.log';
+                            @error_log($logEntry, 3, $logFile);
+                            
+                            // Set empty array to continue with fresh installation
                             $_SESSION['existing_tables'] = [];
                         }
                     }
@@ -608,6 +755,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     
                     <form method="POST">
+                        <?php echo getCSRFTokenField(); ?>
                         <div class="flex justify-between">
                             <a href="?step=2" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
                                 Back
@@ -626,6 +774,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p class="text-gray-600 mb-6">Set up your business information. You can change these settings later.</p>
                     
                     <form method="POST" class="space-y-6">
+                        <?php echo getCSRFTokenField(); ?>
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 mb-4">Site Configuration</h3>
                             <div class="mb-6">
@@ -737,6 +886,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p class="text-gray-600 mb-6">Create a secure password for the admin account.</p>
                     
                     <form method="POST" class="space-y-4">
+                        <?php echo getCSRFTokenField(); ?>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Admin Password

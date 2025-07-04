@@ -2,6 +2,9 @@
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 
+// Set security headers
+setSecurityHeaders(true, true);
+
 requireAdmin();
 
 $invoiceId = $_GET['id'] ?? null;
@@ -12,6 +15,9 @@ if (!$invoiceId) {
     header('Location: invoices.php');
     exit;
 }
+
+// Verify invoice exists and access is authorized
+requireInvoiceOwnership($pdo, $invoiceId);
 
 // Get invoice information
 $stmt = $pdo->prepare("
@@ -54,6 +60,7 @@ try {
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken();
     try {
         $pdo->beginTransaction();
         
@@ -213,6 +220,7 @@ $balance = $invoice['total'] - $totalPaid;
         <?php endif; ?>
 
         <form method="POST" class="space-y-8">
+            <?php echo getCSRFTokenField(); ?>
             <!-- Invoice Details -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">

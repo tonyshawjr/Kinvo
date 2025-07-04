@@ -1,8 +1,12 @@
 <?php
 session_start();
-require_once '../includes/config.php';
+define('SECURE_CONFIG_LOADER', true);
+require_once '../includes/config_loader.php';
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
+
+// Set security headers
+setSecurityHeaders(false, true);
 
 requireClientLogin();
 
@@ -13,6 +17,8 @@ $error = '';
 
 // Handle profile updates
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken();
+    
     try {
         if (isset($_POST['update_profile'])) {
             $name = trim($_POST['name'] ?? '');
@@ -141,6 +147,7 @@ logClientActivity($pdo, $customer_id, 'profile_view', 'Viewed profile page');
                         </div>
                         
                         <form method="POST" class="p-6 space-y-6">
+                            <?php echo getCSRFTokenField(); ?>
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                                     Full Name <span class="text-red-500">*</span>
@@ -194,6 +201,7 @@ logClientActivity($pdo, $customer_id, 'profile_view', 'Viewed profile page');
                         </div>
                         
                         <form method="POST" class="p-6">
+                            <?php echo getCSRFTokenField(); ?>
                             <div class="space-y-4">
                                 <div class="flex items-center">
                                     <input type="checkbox" 

@@ -15,9 +15,17 @@ define('SITE_NAME', 'Kinvo');
 define('SITE_URL', 'http://localhost');
 define('ADMIN_PASSWORD', 'deprecated'); // Now stored in database
 
+// Debug and Error Configuration
+define('APP_DEBUG', false); // Set to false in production
+
 // Error Reporting (set to 0 in production)
-error_reporting(0);
-ini_set('display_errors', 0);
+if (APP_DEBUG) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+} else {
+    error_reporting(0);
+    ini_set('display_errors', 0);
+}
 
 // Timezone
 date_default_timezone_set('America/New_York');

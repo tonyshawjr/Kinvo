@@ -2,6 +2,9 @@
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 
+// Set security headers
+setSecurityHeaders(true, true);
+
 requireAdmin();
 
 $invoiceId = $_GET['invoice_id'] ?? null;
@@ -33,8 +36,14 @@ if (!$invoice) {
 
 // Handle payment actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken(); // Validate CSRF token
+    
     try {
         if ($_POST['action'] === 'edit' && isset($_POST['payment_id'])) {
+            // Validate payment data
+            $validatedData = validatePaymentData($_POST);
+            $paymentId = validateInteger($_POST['payment_id'], 'Payment ID', true, 1);
+            
             // Edit payment
             $stmt = $pdo->prepare("
                 UPDATE payments 
@@ -42,22 +51,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 WHERE id = ? AND invoice_id = ?
             ");
             $stmt->execute([
-                $_POST['amount'],
-                $_POST['method'],
-                $_POST['payment_date'],
-                $_POST['notes'],
-                $_POST['payment_id'],
+                $validatedData['amount'],
+                $validatedData['method'],
+                $validatedData['payment_date'],
+                $validatedData['notes'],
+                $paymentId,
                 $invoiceId
             ]);
             $success = "Payment updated successfully!";
             
         } elseif ($_POST['action'] === 'delete' && isset($_POST['payment_id'])) {
+            // Validate payment ID
+            $paymentId = validateInteger($_POST['payment_id'], 'Payment ID', true, 1);
+            
             // Delete payment
             $stmt = $pdo->prepare("DELETE FROM payments WHERE id = ? AND invoice_id = ?");
-            $stmt->execute([$_POST['payment_id'], $invoiceId]);
+            $stmt->execute([$paymentId, $invoiceId]);
             $success = "Payment deleted successfully!";
             
         } elseif ($_POST['action'] === 'add') {
+            // Validate payment data
+            $validatedData = validatePaymentData($_POST);
+            
             // Add new payment
             $stmt = $pdo->prepare("
                 INSERT INTO payments (invoice_id, amount, method, payment_date, notes) 
@@ -65,15 +80,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ");
             $stmt->execute([
                 $invoiceId,
-                $_POST['amount'],
-                $_POST['method'],
-                $_POST['payment_date'],
-                $_POST['notes']
+                $validatedData['amount'],
+                $validatedData['method'],
+                $validatedData['payment_date'],
+                $validatedData['notes']
             ]);
             $success = "Payment added successfully!";
         }
+    } catch (InvalidArgumentException $e) {
+        $error = $e->getMessage();
     } catch (Exception $e) {
-        $error = "Error: " . $e->getMessage();
+        handleDatabaseError('payment management', $e, 'payment operations');
     }
 }
 

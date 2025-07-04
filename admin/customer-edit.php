@@ -2,6 +2,9 @@
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 
+// Set security headers
+setSecurityHeaders(true, true);
+
 requireAdmin();
 
 $customerId = $_GET['id'] ?? null;
@@ -12,6 +15,9 @@ if (!$customerId) {
     header('Location: customers.php');
     exit;
 }
+
+// Verify customer exists and access is authorized
+requireResourceOwnership($pdo, 'customer', $customerId);
 
 // Get customer information
 $stmt = $pdo->prepare("SELECT * FROM customers WHERE id = ?");
@@ -25,6 +31,7 @@ if (!$customer) {
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken();
     try {
         // Check if custom_hourly_rate column exists, add it if missing
         $stmt = $pdo->query("SHOW COLUMNS FROM customers LIKE 'custom_hourly_rate'");
@@ -50,12 +57,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ");
         }
         
-        $customHourlyRate = !empty($_POST['custom_hourly_rate']) ? $_POST['custom_hourly_rate'] : null;
+        // Validate customer data
+        $validatedData = validateCustomerData($_POST);
+        
+        // Validate custom hourly rate if provided
+        $customHourlyRate = null;
+        if (!empty($_POST['custom_hourly_rate'])) {
+            $customHourlyRate = validateCurrency($_POST['custom_hourly_rate'], 'Custom Hourly Rate', false, true);
+        }
         
         $stmt->execute([
-            $_POST['name'],
-            $_POST['email'],
-            $_POST['phone'],
+            $validatedData['name'],
+            $validatedData['email'],
+            $validatedData['phone'],
             $customHourlyRate,
             $customerId
         ]);
@@ -67,8 +81,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$customerId]);
         $customer = $stmt->fetch();
         
+    } catch (InvalidArgumentException $e) {
+        $error = $e->getMessage();
     } catch (Exception $e) {
-        $error = "Error updating customer: " . $e->getMessage();
+        handleDatabaseError('customer update', $e, 'customer management');
     }
 }
 
@@ -187,6 +203,7 @@ $businessSettings = getBusinessSettings($pdo);
                         </h3>
                     </div>
                     <form method="POST" class="p-6 space-y-6">
+                        <?php echo getCSRFTokenField(); ?>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-user mr-1"></i>Customer Name *

@@ -1,8 +1,12 @@
 <?php
 session_start();
-require_once '../includes/config.php';
+define('SECURE_CONFIG_LOADER', true);
+require_once '../includes/config_loader.php';
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
+
+// Set security headers for client login
+setSecurityHeaders(false, true);
 
 $error = '';
 $success = '';
@@ -18,6 +22,8 @@ if (isClientLoggedIn()) {
 if (isset($_COOKIE['client_remember']) && !empty($_COOKIE['client_remember'])) {
     $client = validateRememberToken($pdo, $_COOKIE['client_remember']);
     if ($client) {
+        // Regenerate session ID for remember token login
+        session_regenerate_id(true);
         $_SESSION['client_id'] = $client['id'];
         $_SESSION['client_email'] = $client['email'];
         $_SESSION['client_name'] = $client['name'];
@@ -31,30 +37,43 @@ if (isset($_COOKIE['client_remember']) && !empty($_COOKIE['client_remember'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken();
+    
+    // Check rate limiting before processing login
+    checkRateLimit($pdo, 'client_login', 5, 15, 30);
+    
     $email = trim($_POST['email'] ?? '');
     $pin = trim($_POST['pin'] ?? '');
     $remember = isset($_POST['remember']);
     
     if (empty($email) || empty($pin)) {
+        recordFailedAttempt($pdo, 'client_login');
         $error = 'Please enter both email and PIN.';
     } else {
         $client = getClientByEmail($pdo, $email);
         
         if (!$client) {
+            recordFailedAttempt($pdo, 'client_login');
             $error = 'Invalid email or PIN.';
         } elseif (!$client['is_active']) {
+            recordFailedAttempt($pdo, 'client_login');
             $error = 'Account is disabled. Please contact support.';
         } elseif ($client['locked_until'] && strtotime($client['locked_until']) > time()) {
+            recordFailedAttempt($pdo, 'client_login');
             $error = 'Account is temporarily locked. Please try again later.';
         } else {
             if (verifyClientPIN($pin, $client['pin'])) {
-                // Successful login
+                // Successful login - regenerate session ID to prevent session fixation
+                session_regenerate_id(true);
                 $_SESSION['client_id'] = $client['id'];
                 $_SESSION['client_email'] = $client['email'];
                 $_SESSION['client_name'] = $client['name'];
                 
                 updateClientLastLogin($pdo, $client['id']);
                 logClientActivity($pdo, $client['id'], 'login', 'Successful login');
+                
+                // Record successful attempt to clear rate limits
+                recordSuccessfulAttempt($pdo, 'client_login');
                 
                 // Set remember token if requested
                 if ($remember) {
@@ -66,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             } else {
                 // Failed login
+                recordFailedAttempt($pdo, 'client_login');
                 incrementLoginAttempts($pdo, $email);
                 logClientActivity($pdo, $client['id'], 'login_failed', 'Invalid PIN');
                 
@@ -137,6 +157,7 @@ $businessSettings = getBusinessSettings($pdo);
             <?php endif; ?>
 
             <form method="POST" class="space-y-6">
+                <?php echo getCSRFTokenField(); ?>
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
                     <input type="email" id="email" name="email" required

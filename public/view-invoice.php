@@ -2,10 +2,29 @@
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 
+// Set security headers for public invoice view
+setSecurityHeaders(false, true);
+
 $error = '';
 $invoice = null;
 
-if (isset($_GET['id'])) {
+// Rate limiting for public invoice access to prevent enumeration
+checkRateLimit($pdo, 'public_invoice', 20, 15, 60); // More generous limits for public access
+
+// Basic input validation
+$invoiceId = $_GET['id'] ?? '';
+
+if (empty($invoiceId)) {
+    recordFailedAttempt($pdo, 'public_invoice');
+    $error = 'Invoice ID is required.';
+} elseif (!preg_match('/^[a-f0-9]{32}$/', $invoiceId)) {
+    // Validate that the unique_id is a proper MD5 hash format
+    recordFailedAttempt($pdo, 'public_invoice');
+    $error = 'Invalid invoice ID format.';
+} elseif (strlen($invoiceId) !== 32) {
+    recordFailedAttempt($pdo, 'public_invoice');
+    $error = 'Invalid invoice ID length.';
+} else {
     $stmt = $pdo->prepare("
         SELECT i.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone,
                p.property_name, p.address as property_address, p.property_type
@@ -14,10 +33,15 @@ if (isset($_GET['id'])) {
         LEFT JOIN customer_properties p ON i.property_id = p.id
         WHERE i.unique_id = ?
     ");
-    $stmt->execute([$_GET['id']]);
+    $stmt->execute([$invoiceId]);
     $invoice = $stmt->fetch();
     
-    if ($invoice) {
+    if (!$invoice) {
+        recordFailedAttempt($pdo, 'public_invoice');
+        $error = 'Invoice not found.';
+    } else {
+        // Clear rate limits for successful invoice access
+        recordSuccessfulAttempt($pdo, 'public_invoice');
         // Get line items
         $stmt = $pdo->prepare("SELECT * FROM invoice_items WHERE invoice_id = ?");
         $stmt->execute([$invoice['id']]);
@@ -34,11 +58,7 @@ if (isset($_GET['id'])) {
         
         // Get business settings
         $businessSettings = getBusinessSettings($pdo);
-    } else {
-        $error = 'Invoice not found';
     }
-} else {
-    $error = 'Invalid invoice link';
 }
 ?>
 <!DOCTYPE html>

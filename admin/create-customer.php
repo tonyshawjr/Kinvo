@@ -2,21 +2,23 @@
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 
+// Set security headers
+setSecurityHeaders(true, true);
+
 requireAdmin();
 
 $success = false;
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken(); // Validate CSRF token
     try {
-        $customerName = trim($_POST['customer_name']);
-        $customerEmail = trim($_POST['customer_email']);
-        $customerPhone = trim($_POST['customer_phone']);
+        // Validate customer data using comprehensive validation
+        $validatedData = validateCustomerData($_POST);
         
-        // Validate required fields
-        if (empty($customerName)) {
-            throw new Exception('Customer name is required.');
-        }
+        $customerName = $validatedData['name'];
+        $customerEmail = $validatedData['email'];
+        $customerPhone = $validatedData['phone'];
         
         // Check if customer already exists
         $stmt = $pdo->prepare("SELECT id FROM customers WHERE name = ?");
@@ -49,8 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $success = true;
         
-    } catch (Exception $e) {
+    } catch (InvalidArgumentException $e) {
         $error = $e->getMessage();
+    } catch (Exception $e) {
+        handleDatabaseError('customer creation', $e, 'customer management');
     }
 }
 
@@ -159,6 +163,7 @@ $businessSettings = getBusinessSettings($pdo);
             </div>
             
             <form method="POST" class="p-6 space-y-6">
+                <?php echo getCSRFTokenField(); ?>
                 <div>
                     <label for="customer_name" class="block text-sm font-medium text-gray-700 mb-2">
                         Customer Name <span class="text-red-500">*</span>

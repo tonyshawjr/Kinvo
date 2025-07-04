@@ -4,6 +4,9 @@ require_once '../includes/functions.php';
 
 requireAdmin();
 
+// Set security headers for admin dashboard
+setSecurityHeaders(true, true);
+
 // Get current date info
 $today = date('Y-m-d');
 $thisWeek = date('Y-m-d', strtotime('monday this week'));
@@ -11,42 +14,45 @@ $thisMonth = date('Y-m');
 $lastMonth = date('Y-m', strtotime('-1 month'));
 
 // CRITICAL: Overdue invoices
-$stmt = $pdo->query("
+$stmt = $pdo->prepare("
     SELECT i.*, c.name as customer_name, COALESCE(SUM(p.amount), 0) as total_paid,
            (i.total - COALESCE(SUM(p.amount), 0)) as balance_due,
-           DATEDIFF('$today', i.due_date) as days_overdue
+           DATEDIFF(?, i.due_date) as days_overdue
     FROM invoices i 
     JOIN customers c ON i.customer_id = c.id 
     LEFT JOIN payments p ON i.id = p.invoice_id 
-    WHERE i.status != 'Paid' AND i.due_date < '$today'
+    WHERE i.status != 'Paid' AND i.due_date < ?
     GROUP BY i.id 
     HAVING balance_due > 0
     ORDER BY days_overdue DESC
     LIMIT 5
 ");
+$stmt->execute([$today, $today]);
 $overdueInvoices = $stmt->fetchAll();
 
 // URGENT: Due this week
-$stmt = $pdo->query("
+$stmt = $pdo->prepare("
     SELECT i.*, c.name as customer_name, COALESCE(SUM(p.amount), 0) as total_paid,
            (i.total - COALESCE(SUM(p.amount), 0)) as balance_due
     FROM invoices i 
     JOIN customers c ON i.customer_id = c.id 
     LEFT JOIN payments p ON i.id = p.invoice_id 
-    WHERE i.status != 'Paid' AND i.due_date BETWEEN '$today' AND DATE_ADD('$today', INTERVAL 7 DAY)
+    WHERE i.status != 'Paid' AND i.due_date BETWEEN ? AND DATE_ADD(?, INTERVAL 7 DAY)
     GROUP BY i.id 
     HAVING balance_due > 0
     ORDER BY i.due_date ASC
     LIMIT 5
 ");
+$stmt->execute([$today, $today]);
 $dueSoonInvoices = $stmt->fetchAll();
 
 // CASH FLOW: This week's payments
-$stmt = $pdo->query("
+$stmt = $pdo->prepare("
     SELECT COALESCE(SUM(amount), 0) as total, COUNT(*) as count
     FROM payments 
-    WHERE payment_date >= '$thisWeek'
+    WHERE payment_date >= ?
 ");
+$stmt->execute([$thisWeek]);
 $thisWeekPayments = $stmt->fetch();
 
 // CASH FLOW: This month vs last month

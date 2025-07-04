@@ -1,7 +1,11 @@
 <?php
-require_once '../includes/config.php';
+define('SECURE_CONFIG_LOADER', true);
+require_once '../includes/config_loader.php';
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
+
+// Set security headers
+setSecurityHeaders(true, true); // Admin page with inline styles allowed for Tailwind
 
 $error = '';
 $remember_duration = 30 * 24 * 60 * 60; // 30 days
@@ -17,14 +21,18 @@ if (!isset($_SESSION['admin']) && isset($_COOKIE['admin_remember'])) {
         $validToken = false;
         
         if ($result && !empty($result['admin_password'])) {
-            // Check if token matches database password
-            $validToken = (hash('sha256', 'admin123' . 'remember_salt') === $token); // Will need updating after password change
+            // Use secure remember tokens stored in database instead of password-based tokens
+            $stmt = $pdo->prepare("SELECT remember_token FROM business_settings WHERE remember_token = ? AND remember_expires > NOW() LIMIT 1");
+            $stmt->execute([$token]);
+            $validToken = $stmt->rowCount() > 0;
         } else {
-            // Check if token matches config password
-            $validToken = (hash('sha256', ADMIN_PASSWORD . 'remember_salt') === $token);
+            // No admin password set - invalid token
+            $validToken = false;
         }
         
         if ($validToken) {
+            // Regenerate session ID for remember token login
+            session_regenerate_id(true);
             $_SESSION['admin'] = true;
             header('Location: dashboard.php');
             exit;
@@ -39,18 +47,36 @@ if (!isset($_SESSION['admin']) && isset($_COOKIE['admin_remember'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken(); // Validate CSRF token
+    
+    // Check rate limiting before processing login
+    checkRateLimit($pdo, 'admin_login', 5, 15, 30);
+    
     if (verifyAdminPassword($_POST['password'], $pdo)) {
+        // Regenerate session ID to prevent session fixation
+        session_regenerate_id(true);
         $_SESSION['admin'] = true;
         
         // Handle remember me
         if (isset($_POST['remember']) && $_POST['remember'] === 'on') {
-            $token = hash('sha256', $_POST['password'] . 'remember_salt');
+            $token = bin2hex(random_bytes(32));
+            $expires = date('Y-m-d H:i:s', time() + $remember_duration);
+            
+            // Store token in database
+            $stmt = $pdo->prepare("UPDATE business_settings SET remember_token = ?, remember_expires = ?");
+            $stmt->execute([$token, $expires]);
+            
             setcookie('admin_remember', $token, time() + $remember_duration, '/', '', true, true);
         }
+        
+        // Record successful attempt to clear rate limits
+        recordSuccessfulAttempt($pdo, 'admin_login');
         
         header('Location: dashboard.php');
         exit;
     } else {
+        // Record failed attempt for rate limiting
+        recordFailedAttempt($pdo, 'admin_login');
         $error = 'Invalid password';
     }
 }
@@ -90,6 +116,7 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
 
             <!-- Login Form -->
             <form method="POST" class="space-y-4">
+                <?php echo getCSRFTokenField(); ?>
                 <div>
                     <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">
                         Password
