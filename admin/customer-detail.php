@@ -5,10 +5,55 @@ require_once '../includes/functions.php';
 requireAdmin();
 
 $customerId = $_GET['id'] ?? null;
+$success = '';
+$error = '';
 
 if (!$customerId) {
     header('Location: customers.php');
     exit;
+}
+
+// Handle portal creation
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_portal'])) {
+    try {
+        // Get customer info
+        $stmt = $pdo->prepare("SELECT * FROM customers WHERE id = ?");
+        $stmt->execute([$customerId]);
+        $customer = $stmt->fetch();
+        
+        if (!$customer) {
+            throw new Exception('Customer not found.');
+        }
+        
+        if (empty($customer['email'])) {
+            throw new Exception('Customer must have an email address to create portal access.');
+        }
+        
+        // Check if portal already exists
+        $stmt = $pdo->prepare("SELECT id FROM client_auth WHERE customer_id = ?");
+        $stmt->execute([$customerId]);
+        if ($stmt->fetch()) {
+            throw new Exception('Portal access already exists for this customer.');
+        }
+        
+        // Create portal access
+        $clientPin = generateClientPIN();
+        $created = createClientAuth($pdo, $customerId, $customer['email'], $clientPin);
+        
+        if ($created) {
+            // Create default preferences
+            $stmt = $pdo->prepare("INSERT INTO client_preferences (customer_id) VALUES (?)");
+            $stmt->execute([$customerId]);
+            
+            logClientActivity($pdo, $customerId, 'account_created', 'Client portal access created by admin');
+            $success = "Portal access created successfully! PIN: $clientPin";
+        } else {
+            throw new Exception('Failed to create portal access.');
+        }
+        
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+    }
 }
 
 // Get customer information
@@ -20,6 +65,11 @@ if (!$customer) {
     header('Location: customers.php');
     exit;
 }
+
+// Check if customer has portal access
+$stmt = $pdo->prepare("SELECT * FROM client_auth WHERE customer_id = ?");
+$stmt->execute([$customerId]);
+$portalAccess = $stmt->fetch();
 
 // Get customer statistics
 $stmt = $pdo->prepare("
@@ -225,11 +275,57 @@ foreach ($monthlyPayments as $payment) {
                 <a href="customer-edit.php?id=<?php echo $customer['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold">
                     <i class="fas fa-edit mr-2"></i>Edit Customer
                 </a>
+                
+                <?php if ($portalAccess): ?>
+                    <a href="/client/login.php?email=<?php echo urlencode($customer['email']); ?>" target="_blank" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors font-semibold">
+                        <i class="fas fa-user-shield mr-2"></i>View Portal
+                    </a>
+                <?php elseif ($customer['email']): ?>
+                    <form method="POST" class="inline">
+                        <button type="submit" name="create_portal" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors font-semibold">
+                            <i class="fas fa-plus mr-2"></i>Create Portal
+                        </button>
+                    </form>
+                <?php endif; ?>
+                
                 <a href="create-invoice.php?customer_id=<?php echo $customer['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                     <i class="fas fa-plus mr-2"></i>New Invoice
                 </a>
             </div>
         </div>
+
+        <!-- Success/Error Messages -->
+        <?php if ($success): ?>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <div class="flex items-start space-x-3">
+                <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                <div>
+                    <h4 class="font-semibold text-green-900">Portal Created Successfully!</h4>
+                    <p class="text-sm text-green-700 mt-1"><?php echo htmlspecialchars($success); ?></p>
+                    <div class="mt-2 p-3 bg-white rounded border border-green-200">
+                        <p class="text-sm"><strong>Email:</strong> <?php echo htmlspecialchars($customer['email']); ?></p>
+                        <p class="text-sm"><strong>Login URL:</strong> <a href="/client/login.php?email=<?php echo urlencode($customer['email']); ?>" class="text-blue-600 hover:text-blue-500" target="_blank">/client/login.php</a></p>
+                    </div>
+                    <p class="text-xs text-green-600 mt-2">
+                        <i class="fas fa-info-circle"></i> 
+                        Send these credentials to your customer so they can access their invoices and payment history.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($error): ?>
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div class="flex items-start space-x-3">
+                <i class="fas fa-exclamation-triangle text-red-600 mt-1"></i>
+                <div>
+                    <h4 class="font-semibold text-red-900">Error</h4>
+                    <p class="text-sm text-red-700"><?php echo htmlspecialchars($error); ?></p>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <!-- Customer Info Card -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-8">
