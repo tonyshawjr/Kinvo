@@ -478,6 +478,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
+                <!-- Danger Zone -->
+                <div class="bg-white rounded-lg shadow-sm border border-red-200 overflow-hidden">
+                    <div class="bg-red-50 px-6 py-4 border-b border-red-200">
+                        <h3 class="text-lg font-semibold text-red-900 flex items-center">
+                            <i class="fas fa-exclamation-triangle mr-3 text-red-600"></i>
+                            Danger Zone
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-2">Reset Installation</h4>
+                                <p class="text-sm text-gray-600 mb-4">
+                                    Permanently delete all data and start fresh. This action cannot be undone.
+                                </p>
+                                <a href="reset-installation.php" 
+                                   class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors">
+                                    <i class="fas fa-trash-alt mr-2"></i>
+                                    Reset Installation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
