@@ -735,12 +735,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             let subtotal = 0;
             
             document.querySelectorAll('.line-item').forEach(item => {
-                const quantity = parseFloat(item.querySelector('input[name="item_quantity[]"]').value) || 0;
-                const price = parseFloat(item.querySelector('input[name="item_price[]"]').value) || 0;
-                const lineTotal = quantity * price;
+                // Check if we're in mobile or desktop mode
+                const isMobile = window.innerWidth < 640; // sm breakpoint
                 
-                item.querySelector('.line-total').textContent = '$' + lineTotal.toFixed(2);
-                subtotal += lineTotal;
+                let quantityInput, priceInput, lineTotalElement;
+                
+                if (isMobile) {
+                    // Mobile layout selectors
+                    const mobileSection = item.querySelector('.block.sm\\:hidden');
+                    if (mobileSection) {
+                        quantityInput = mobileSection.querySelector('input[name="item_quantity[]"]');
+                        priceInput = mobileSection.querySelector('input[name="item_price[]"]');
+                        lineTotalElement = mobileSection.querySelector('.line-total');
+                    }
+                } else {
+                    // Desktop layout selectors
+                    const desktopSection = item.querySelector('.hidden.sm\\:grid');
+                    if (desktopSection) {
+                        quantityInput = desktopSection.querySelector('input[name="item_quantity[]"]');
+                        priceInput = desktopSection.querySelector('input[name="item_price[]"]');
+                        lineTotalElement = desktopSection.querySelector('.line-total');
+                    }
+                }
+                
+                if (quantityInput && priceInput && lineTotalElement) {
+                    const quantity = parseFloat(quantityInput.value) || 0;
+                    const price = parseFloat(priceInput.value) || 0;
+                    const lineTotal = quantity * price;
+                    
+                    // Update both mobile and desktop totals
+                    item.querySelectorAll('.line-total').forEach(total => {
+                        total.textContent = '$' + lineTotal.toFixed(2);
+                    });
+                    
+                    subtotal += lineTotal;
+                }
             });
             
             const taxRate = parseFloat(document.querySelector('input[name="tax_rate"]').value) || 0;

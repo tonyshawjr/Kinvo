@@ -1187,6 +1187,9 @@ function buildContentSecurityPolicy($isAdminPage = false, $allowInlineStyles = f
     $scriptSources[] = "https://cdn.jsdelivr.net";
     $scriptSources[] = "https://cdnjs.cloudflare.com";
     
+    // Allow inline scripts for onclick handlers
+    $scriptSources[] = "'unsafe-inline'";
+    
     // For development/debugging - can be removed in production
     if (defined('APP_DEBUG') && APP_DEBUG) {
         $scriptSources[] = "'unsafe-eval'";
