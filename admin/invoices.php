@@ -138,6 +138,27 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             </a>
         </div>
 
+        <!-- Messages -->
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                    <span class="text-green-800"><?php echo htmlspecialchars($_SESSION['success_message']); ?></span>
+                </div>
+            </div>
+            <?php unset($_SESSION['success_message']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error_message'])): ?>
+            <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle text-red-500 mr-3"></i>
+                    <span class="text-red-800"><?php echo htmlspecialchars($_SESSION['error_message']); ?></span>
+                </div>
+            </div>
+            <?php unset($_SESSION['error_message']); ?>
+        <?php endif; ?>
+
         <!-- Filters -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-8">
             <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
@@ -360,11 +381,17 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                                     <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="View Invoice">
                                         <i class="fas fa-eye"></i>
                                     </a>
+                                    <a href="edit-invoice.php?id=<?php echo $invoice['id']; ?>" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Edit Invoice">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
                                     <?php if ($invoice['balance_due'] > 0): ?>
-                                    <a href="payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Add Payment">
+                                    <a href="payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors" title="Add Payment">
                                         <i class="fas fa-plus-circle"></i>
                                     </a>
                                     <?php endif; ?>
+                                    <button onclick="deleteInvoice(<?php echo $invoice['id']; ?>, '<?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>')" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors" title="Delete Invoice">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -377,5 +404,25 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
     </main>
 
     <?php include '../includes/footer.php'; ?>
+
+    <script>
+        function deleteInvoice(invoiceId, invoiceNumber) {
+            if (confirm(`Are you sure you want to delete invoice #${invoiceNumber}? This action cannot be undone.`)) {
+                // Create a form to submit the delete request
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'delete-invoice.php';
+                
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'invoice_id';
+                idInput.value = invoiceId;
+                
+                form.appendChild(idInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
 </body>
 </html>

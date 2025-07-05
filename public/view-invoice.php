@@ -515,7 +515,7 @@ if (empty($invoiceId)) {
             <?php endif; ?>
 
             <!-- Notes (Screen only, not printed) -->
-            <?php if ($invoice['notes']): ?>
+            <?php if ($invoice['notes'] && $invoice['notes'] !== $businessSettings['payment_instructions']): ?>
             <div class="mb-8 no-print">
                 <h3 class="text-lg font-semibold text-gray-900 mb-3">NOTES:</h3>
                 <div class="border border-gray-300 p-4 bg-gray-50">
