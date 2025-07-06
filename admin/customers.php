@@ -193,19 +193,20 @@ $deletedName = $_GET['name'] ?? '';
                 </h3>
                 <p class="text-sm text-gray-600 mt-1"><?php echo count($customers); ?> customer<?php echo count($customers) != 1 ? 's' : ''; ?> found</p>
             </div>
-            <div class="overflow-x-auto">
-                <?php if (empty($customers)): ?>
-                <div class="text-center py-12">
-                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-users text-gray-400 text-3xl"></i>
-                    </div>
-                    <h4 class="text-xl font-semibold text-gray-900 mb-2">No Customers Found</h4>
-                    <p class="text-gray-600 mb-6">No customers match your current search.</p>
-                    <a href="create-customer.php" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
-                        <i class="fas fa-user-plus mr-2"></i>Add First Customer
-                    </a>
+            <?php if (empty($customers)): ?>
+            <div class="text-center py-12">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-users text-gray-400 text-3xl"></i>
                 </div>
-                <?php else: ?>
+                <h4 class="text-xl font-semibold text-gray-900 mb-2">No Customers Found</h4>
+                <p class="text-gray-600 mb-6">No customers match your current search.</p>
+                <a href="create-customer.php" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
+                    <i class="fas fa-user-plus mr-2"></i>Add First Customer
+                </a>
+            </div>
+            <?php else: ?>
+            <!-- Desktop Table (hidden on mobile) -->
+            <div class="hidden lg:block overflow-x-auto">
                 <table class="w-full">
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-200">
@@ -294,8 +295,96 @@ $deletedName = $_GET['name'] ?? '';
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <?php endif; ?>
             </div>
+            
+            <!-- Mobile Card Layout (shown on mobile) -->
+            <div class="lg:hidden divide-y divide-gray-100">
+                <?php foreach ($customers as $customer): ?>
+                <div class="p-4 hover:bg-gray-50 transition-colors">
+                    <!-- Customer Name & Status -->
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h4 class="font-semibold text-gray-900 text-lg"><?php echo htmlspecialchars($customer['name']); ?></h4>
+                            <?php if ($customer['total_invoices'] > 0): ?>
+                            <span class="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Active Customer</span>
+                            <?php else: ?>
+                            <span class="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">No invoices yet</span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <a href="customer-detail.php?id=<?php echo $customer['id']; ?>" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="customer-edit.php?id=<?php echo $customer['id']; ?>" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Edit Customer">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <?php if ($customer['total_invoices'] == 0): ?>
+                            <button onclick="deleteCustomer(<?php echo $customer['id']; ?>, '<?php echo htmlspecialchars($customer['name'], ENT_QUOTES); ?>')" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Delete Customer">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="mb-3">
+                        <?php if ($customer['email']): ?>
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-envelope text-gray-400 mr-2 w-4"></i>
+                            <a href="mailto:<?php echo htmlspecialchars($customer['email']); ?>" class="text-sm text-gray-700 hover:text-gray-900">
+                                <?php echo htmlspecialchars($customer['email']); ?>
+                            </a>
+                        </div>
+                        <?php endif; ?>
+                        <?php if ($customer['phone']): ?>
+                        <div class="flex items-center">
+                            <i class="fas fa-phone text-gray-400 mr-2 w-4"></i>
+                            <a href="tel:<?php echo htmlspecialchars($customer['phone']); ?>" class="text-sm text-gray-700 hover:text-gray-900">
+                                <?php echo htmlspecialchars($customer['phone']); ?>
+                            </a>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Financial Summary -->
+                    <div class="grid grid-cols-2 gap-4 mb-3">
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <div class="text-xs text-gray-500 mb-1">Invoices</div>
+                            <div class="font-semibold text-gray-900"><?php echo $customer['total_invoices']; ?></div>
+                            <?php if ($customer['unpaid_invoices'] > 0): ?>
+                            <div class="text-xs text-red-600 font-medium"><?php echo $customer['unpaid_invoices']; ?> unpaid</div>
+                            <?php else: ?>
+                            <div class="text-xs text-green-600">All paid</div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <div class="text-xs text-gray-500 mb-1">Total Revenue</div>
+                            <div class="font-semibold text-gray-900"><?php echo formatCurrency($customer['total_paid']); ?></div>
+                            <div class="text-xs text-gray-500">of <?php echo formatCurrency($customer['total_invoiced']); ?></div>
+                        </div>
+                    </div>
+
+                    <!-- Outstanding & Last Invoice -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <div class="text-xs text-gray-500 mb-1">Outstanding</div>
+                            <div class="font-semibold <?php echo $customer['total_outstanding'] > 0 ? 'text-red-600' : 'text-green-600'; ?>">
+                                <?php echo formatCurrency($customer['total_outstanding']); ?>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <div class="text-xs text-gray-500 mb-1">Last Invoice</div>
+                            <?php if ($customer['last_invoice_date']): ?>
+                            <div class="font-semibold text-gray-900"><?php echo date('M d, Y', strtotime($customer['last_invoice_date'])); ?></div>
+                            <?php else: ?>
+                            <div class="font-semibold text-gray-500">Never</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
         </div>
     </main>
 
