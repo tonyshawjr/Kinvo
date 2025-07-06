@@ -1202,10 +1202,9 @@ function buildContentSecurityPolicy($isAdminPage = false, $allowInlineStyles = f
     $styleSources[] = "https://cdn.tailwindcss.com";
     $styleSources[] = "https://cdnjs.cloudflare.com";
     
-    // Allow inline styles for Tailwind CSS if needed
-    if ($allowInlineStyles) {
-        $styleSources[] = "'unsafe-inline'";
-    }
+    // Always allow inline styles since we're using Tailwind CSS which requires it
+    // Tailwind CSS generates inline styles dynamically, so this is necessary
+    $styleSources[] = "'unsafe-inline'";
     
     $csp[] = "style-src " . implode(' ', $styleSources);
     

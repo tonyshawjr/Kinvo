@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 
                 // Check if tables already exist
-                $requiredTables = ['customers', 'invoices', 'invoice_items', 'payments', 'customer_properties', 'business_settings'];
+                $requiredTables = ['customers', 'invoices', 'invoice_items', 'payments', 'customer_properties', 'business_settings', 'client_auth', 'client_activity', 'client_documents', 'client_payment_methods', 'client_preferences', 'rate_limits'];
                 $existingTables = [];
                 $missingTables = [];
                 
@@ -168,10 +168,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     
                     // Split by semicolon and execute each statement
-                    $statements = array_filter(array_map('trim', explode(';', $schema)));
+                    // But handle multi-line statements properly
+                    $statements = [];
+                    $current = '';
+                    $inString = false;
+                    $stringChar = '';
+                    
+                    for ($i = 0; $i < strlen($schema); $i++) {
+                        $char = $schema[$i];
+                        
+                        // Handle string delimiters
+                        if (($char === '"' || $char === "'") && ($i === 0 || $schema[$i-1] !== '\\')) {
+                            if (!$inString) {
+                                $inString = true;
+                                $stringChar = $char;
+                            } elseif ($char === $stringChar) {
+                                $inString = false;
+                            }
+                        }
+                        
+                        // If we find a semicolon outside of a string, it's a statement separator
+                        if ($char === ';' && !$inString) {
+                            $current = trim($current);
+                            if (!empty($current)) {
+                                $statements[] = $current;
+                            }
+                            $current = '';
+                        } else {
+                            $current .= $char;
+                        }
+                    }
+                    
+                    // Don't forget the last statement if there's no trailing semicolon
+                    $current = trim($current);
+                    if (!empty($current)) {
+                        $statements[] = $current;
+                    }
+                    
+                    // Execute each statement
                     foreach ($statements as $statement) {
-                        if (!empty($statement)) {
-                            $pdo->exec($statement);
+                        if (!empty($statement) && !preg_match('/^\s*--/m', $statement)) {
+                            try {
+                                $pdo->exec($statement);
+                            } catch (PDOException $e) {
+                                // Log individual statement errors but continue
+                                error_log("SQL Statement Error: " . $e->getMessage() . "\nStatement: " . $statement);
+                                // Re-throw if it's not a "duplicate" or "already exists" error
+                                if (strpos($e->getMessage(), 'Duplicate') === false && 
+                                    strpos($e->getMessage(), 'already exists') === false &&
+                                    strpos($e->getMessage(), 'Duplicate column') === false) {
+                                    throw $e;
+                                }
+                            }
                         }
                     }
                 }
@@ -679,7 +727,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $pdo = new PDO("mysql:host={$db['host']};dbname={$db['name']};charset=utf8mb4", $db['user'], $db['pass']);
                             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                             
-                            $requiredTables = ['customers', 'invoices', 'invoice_items', 'payments', 'customer_properties', 'business_settings'];
+                            $requiredTables = ['customers', 'invoices', 'invoice_items', 'payments', 'customer_properties', 'business_settings', 'client_auth', 'client_activity', 'client_documents', 'client_payment_methods', 'client_preferences', 'rate_limits'];
                             $existingTables = [];
                             
                             foreach ($requiredTables as $table) {
@@ -721,7 +769,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'invoice_items' => 'Individual line items for invoices',
                         'payments' => 'Payment tracking and history',
                         'customer_properties' => 'Customer locations and properties',
-                        'business_settings' => 'Business configuration and settings'
+                        'business_settings' => 'Business configuration and settings',
+                        'client_auth' => 'Client portal authentication system',
+                        'client_activity' => 'Client portal activity logging',
+                        'client_documents' => 'Client document management',
+                        'client_payment_methods' => 'Client payment preferences',
+                        'client_preferences' => 'Client notification preferences',
+                        'rate_limits' => 'Security rate limiting'
                     ];
                     ?>
                     

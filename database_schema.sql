@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS customers (
 CREATE TABLE IF NOT EXISTS invoices (
     id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT NOT NULL,
+    property_id INT NULL,
     invoice_number VARCHAR(20) UNIQUE,
     date DATE NOT NULL,
     due_date DATE NOT NULL,
@@ -30,7 +31,8 @@ CREATE TABLE IF NOT EXISTS invoices (
     notes TEXT,
     unique_id VARCHAR(32) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (customer_id) REFERENCES customers(id)
+    FOREIGN KEY (customer_id) REFERENCES customers(id),
+    FOREIGN KEY (property_id) REFERENCES customer_properties(id) ON DELETE SET NULL
 );
 
 -- Invoice items table
@@ -71,9 +73,8 @@ CREATE TABLE IF NOT EXISTS customer_properties (
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
 );
 
--- Add property_id to invoices table for tracking work location
-ALTER TABLE invoices ADD COLUMN property_id INT NULL AFTER customer_id;
-ALTER TABLE invoices ADD FOREIGN KEY (property_id) REFERENCES customer_properties(id) ON DELETE SET NULL;
+-- Note: property_id column should be added to invoices table if it doesn't exist
+-- This is handled by the initial invoices table creation
 
 -- Business settings table (optional)
 CREATE TABLE IF NOT EXISTS business_settings (
@@ -169,6 +170,17 @@ CREATE TABLE IF NOT EXISTS client_preferences (
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
 );
 
+-- Rate limits table (for security)
+CREATE TABLE IF NOT EXISTS rate_limits (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    identifier VARCHAR(255) NOT NULL,
+    endpoint VARCHAR(100) NOT NULL,
+    attempts INT DEFAULT 1,
+    first_attempt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_attempt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    blocked_until TIMESTAMP NULL
+);
+
 -- Add indexes for performance
 CREATE INDEX idx_client_auth_email ON client_auth(email);
 CREATE INDEX idx_client_auth_customer ON client_auth(customer_id);
@@ -178,3 +190,5 @@ CREATE INDEX idx_client_documents_customer ON client_documents(customer_id);
 CREATE INDEX idx_client_documents_invoice ON client_documents(invoice_id);
 CREATE INDEX idx_client_payment_methods_customer ON client_payment_methods(customer_id);
 CREATE INDEX idx_client_preferences_customer ON client_preferences(customer_id);
+CREATE INDEX idx_identifier_endpoint ON rate_limits(identifier, endpoint);
+CREATE INDEX idx_blocked_until ON rate_limits(blocked_until);
