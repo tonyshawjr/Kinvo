@@ -161,7 +161,7 @@ $businessSettings = getBusinessSettings($pdo);
                     <?php if ($step === 'request'): ?>
                         Enter your email address and we'll send you instructions to reset your PIN
                     <?php else: ?>
-                        Enter your new 4-digit PIN below
+                        Enter your new 6-digit PIN below
                     <?php endif; ?>
                 </p>
             </div>
@@ -206,14 +206,14 @@ $businessSettings = getBusinessSettings($pdo);
                         <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
                         
                         <div>
-                            <label for="pin" class="block text-sm font-medium text-gray-700">New 4-Digit PIN</label>
-                            <input type="password" id="pin" name="pin" required maxlength="4" pattern="[0-9]{4}"
+                            <label for="pin" class="block text-sm font-medium text-gray-700">New 6-Digit PIN</label>
+                            <input type="password" id="pin" name="pin" required maxlength="6" pattern="[0-9]{6}"
                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 text-center text-lg tracking-widest">
                         </div>
 
                         <div>
                             <label for="confirm_pin" class="block text-sm font-medium text-gray-700">Confirm New PIN</label>
-                            <input type="password" id="confirm_pin" name="confirm_pin" required maxlength="4" pattern="[0-9]{4}"
+                            <input type="password" id="confirm_pin" name="confirm_pin" required maxlength="6" pattern="[0-9]{6}"
                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 text-center text-lg tracking-widest">
                         </div>
 
