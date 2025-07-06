@@ -18,7 +18,9 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-gray-900"><?php echo htmlspecialchars($appName); ?></h1>
+                    <a href="dashboard.php" class="text-2xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
+                        <?php echo htmlspecialchars($appName); ?>
+                    </a>
                     <span class="ml-3 px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">Client Portal</span>
                 </div>
 
