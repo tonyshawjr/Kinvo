@@ -1122,6 +1122,11 @@ function setSecurityHeaders($isAdminPage = false, $allowInlineStyles = false) {
         return;
     }
     
+    // Skip security headers for local development
+    if (isLocalDevelopment()) {
+        return;
+    }
+    
     // Content Security Policy
     $csp = buildContentSecurityPolicy($isAdminPage, $allowInlineStyles);
     header("Content-Security-Policy: $csp");
@@ -1247,6 +1252,19 @@ function isHTTPS() {
         (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ||
         (!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on')
     );
+}
+
+function isLocalDevelopment() {
+    $localHosts = ['localhost', '127.0.0.1', '::1'];
+    $host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '';
+    
+    // Remove port from host if present
+    $host = explode(':', $host)[0];
+    
+    return in_array($host, $localHosts) || 
+           str_ends_with($host, '.local') || 
+           str_ends_with($host, '.test') ||
+           str_ends_with($host, '.dev');
 }
 
 function setSecureSessionHeaders() {
