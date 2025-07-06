@@ -1158,9 +1158,10 @@ function setSecurityHeaders($isAdminPage = false, $allowInlineStyles = false) {
     header("Permissions-Policy: " . implode(', ', array_keys($permissionsPolicy)));
     
     // Cross-Origin Policies for enhanced security
-    header("Cross-Origin-Embedder-Policy: require-corp");
+    // Note: COEP require-corp blocks CDN resources, so we use unsafe-none for compatibility
+    header("Cross-Origin-Embedder-Policy: unsafe-none");
     header("Cross-Origin-Opener-Policy: same-origin");
-    header("Cross-Origin-Resource-Policy: same-origin");
+    header("Cross-Origin-Resource-Policy: cross-origin");
     
     // Cache Control for sensitive pages
     if ($isAdminPage) {

@@ -9,21 +9,25 @@ if (!defined('SECURE_CONFIG_LOADER')) {
     die('Direct access not allowed');
 }
 
-// Define the secure config path (outside web root)
-$secureConfigPath = __DIR__ . '/../../SimpleInvoice_Config/config.php';
+// Try multiple config locations in order of preference
+$configPaths = [
+    __DIR__ . '/../../SimpleInvoice_Config/config.php',  // Secure location (outside web root)
+    __DIR__ . '/config.php',                             // Local fallback
+    __DIR__ . '/../config.php'                           // Alternative fallback
+];
 
-// Verify the secure config file exists
-if (!file_exists($secureConfigPath)) {
-    // Fallback to local config if secure config doesn't exist (for backward compatibility)
-    $fallbackConfigPath = __DIR__ . '/config.php';
-    if (file_exists($fallbackConfigPath)) {
-        require_once $fallbackConfigPath;
-        return;
+$configLoaded = false;
+
+foreach ($configPaths as $configPath) {
+    if (file_exists($configPath)) {
+        require_once $configPath;
+        $configLoaded = true;
+        break;
     }
-    
-    // If neither exists, show error
-    die('Configuration file not found. Please run the installer or contact support.');
 }
 
-// Load the secure configuration
-require_once $secureConfigPath;
+if (!$configLoaded) {
+    // Create a detailed error message for debugging
+    $attemptedPaths = implode('<br>- ', $configPaths);
+    die("Configuration file not found. Attempted paths:<br>- $attemptedPaths<br><br>Please run the installer or contact support.");
+}
