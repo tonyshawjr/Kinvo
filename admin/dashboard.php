@@ -154,6 +154,8 @@ for ($i = 11; $i >= 0; $i--) {
         : '';
     echo htmlspecialchars($appName);
     ?></title>
+    <?php echo getAppleTouchIconTags('../'); ?>
+    <meta name="apple-mobile-web-app-title" content="Kinvo">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -455,6 +455,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Install Kinvo - Professional Invoice Management</title>
+    <?php echo getAppleTouchIconTags(''); ?>
+    <meta name="apple-mobile-web-app-title" content="Kinvo">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">

@@ -87,6 +87,8 @@ if ($error) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Estimate Not Found</title>
+        <?php echo getAppleTouchIconTags('../'); ?>
+        <meta name="apple-mobile-web-app-title" content="Kinvo">
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     </head>
@@ -112,6 +114,8 @@ if ($error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estimate <?php echo htmlspecialchars($estimate['estimate_number']); ?> - <?php echo htmlspecialchars($businessSettings['business_name']); ?></title>
+    <?php echo getAppleTouchIconTags('../'); ?>
+    <meta name="apple-mobile-web-app-title" content="Kinvo">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
