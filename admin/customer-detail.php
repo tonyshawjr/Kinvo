@@ -63,6 +63,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_portal'])) {
     }
 }
 
+// Handle PIN reset
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_pin'])) {
+    requireCSRFToken();
+    try {
+        // Check if portal exists
+        $stmt = $pdo->prepare("SELECT * FROM client_auth WHERE customer_id = ?");
+        $stmt->execute([$customerId]);
+        $portalAuth = $stmt->fetch();
+        
+        if (!$portalAuth) {
+            throw new Exception('No portal access exists for this customer.');
+        }
+        
+        // Generate new PIN
+        $newPin = generateClientPIN();
+        $hashedPin = hashClientPIN($newPin);
+        
+        // Update PIN in database
+        $stmt = $pdo->prepare("UPDATE client_auth SET pin = ?, updated_at = CURRENT_TIMESTAMP WHERE customer_id = ?");
+        $stmt->execute([$hashedPin, $customerId]);
+        
+        // Log the activity
+        logClientActivity($pdo, $customerId, 'pin_reset', 'PIN reset by admin');
+        
+        $success = "PIN reset successfully! New PIN: $newPin";
+        
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+    }
+}
+
+// Handle portal deactivation/activation
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_portal'])) {
+    requireCSRFToken();
+    try {
+        // Check if portal exists
+        $stmt = $pdo->prepare("SELECT * FROM client_auth WHERE customer_id = ?");
+        $stmt->execute([$customerId]);
+        $portalAuth = $stmt->fetch();
+        
+        if (!$portalAuth) {
+            throw new Exception('No portal access exists for this customer.');
+        }
+        
+        // Toggle status
+        $newStatus = $portalAuth['is_active'] ? 0 : 1;
+        $action = $newStatus ? 'activated' : 'deactivated';
+        
+        // Update status in database
+        $stmt = $pdo->prepare("UPDATE client_auth SET is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE customer_id = ?");
+        $stmt->execute([$newStatus, $customerId]);
+        
+        // Log the activity
+        logClientActivity($pdo, $customerId, "portal_$action", "Portal $action by admin");
+        
+        $success = "Portal access has been $action.";
+        
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+    }
+}
+
 // Get customer information
 $stmt = $pdo->prepare("SELECT * FROM customers WHERE id = ?");
 $stmt->execute([$customerId]);
@@ -313,8 +375,9 @@ foreach ($monthlyPayments as $payment) {
             <div class="flex items-start space-x-3">
                 <i class="fas fa-check-circle text-green-600 mt-1"></i>
                 <div>
-                    <h4 class="font-semibold text-green-900">Portal Created Successfully!</h4>
+                    <h4 class="font-semibold text-green-900">Success!</h4>
                     <p class="text-sm text-green-700 mt-1"><?php echo htmlspecialchars($success); ?></p>
+                    <?php if (strpos($success, 'PIN:') !== false): ?>
                     <div class="mt-2 p-3 bg-white rounded border border-green-200">
                         <p class="text-sm"><strong>Email:</strong> <?php echo htmlspecialchars($customer['email']); ?></p>
                         <p class="text-sm"><strong>Login URL:</strong> <a href="/client/login.php?email=<?php echo urlencode($customer['email']); ?>" class="text-blue-600 hover:text-blue-500" target="_blank">/client/login.php</a></p>
@@ -323,6 +386,7 @@ foreach ($monthlyPayments as $payment) {
                         <i class="fas fa-info-circle"></i> 
                         Send these credentials to your customer so they can access their invoices and payment history.
                     </p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -392,6 +456,7 @@ foreach ($monthlyPayments as $payment) {
                 </div>
             </div>
         </div>
+
 
         <!-- Statistics Overview -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -639,6 +704,44 @@ foreach ($monthlyPayments as $payment) {
                                 ?>
                             </span>
                         </div>
+                        
+                        <?php if ($customer['email']): ?>
+                        <div class="pt-3 mt-3 border-t border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Client Portal:</span>
+                                <?php if ($portalAccess): ?>
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full <?php echo $portalAccess['is_active'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
+                                        <?php echo $portalAccess['is_active'] ? 'Active' : 'Inactive'; ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="text-gray-400">Not created</span>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <?php if ($portalAccess): ?>
+                            <div class="mt-3 space-y-2">
+                                <form method="POST" onsubmit="return confirm('Are you sure you want to reset the PIN? The customer will need the new PIN to access their portal.');" class="inline">
+                                    <?php echo getCSRFTokenField(); ?>
+                                    <input type="hidden" name="reset_pin" value="1">
+                                    <button type="submit" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                        <i class="fas fa-sync-alt mr-1"></i>Reset PIN
+                                    </button>
+                                </form>
+                                
+                                <span class="text-gray-400 mx-2">•</span>
+                                
+                                <form method="POST" onsubmit="return confirm('Are you sure you want to <?php echo $portalAccess['is_active'] ? 'deactivate' : 'activate'; ?> the portal?');" class="inline">
+                                    <?php echo getCSRFTokenField(); ?>
+                                    <input type="hidden" name="toggle_portal" value="1">
+                                    <button type="submit" class="text-sm <?php echo $portalAccess['is_active'] ? 'text-red-600 hover:text-red-700' : 'text-green-600 hover:text-green-700'; ?> font-medium">
+                                        <i class="fas fa-<?php echo $portalAccess['is_active'] ? 'times-circle' : 'check-circle'; ?> mr-1"></i>
+                                        <?php echo $portalAccess['is_active'] ? 'Deactivate' : 'Activate'; ?>
+                                    </button>
+                                </form>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

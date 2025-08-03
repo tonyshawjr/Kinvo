@@ -275,7 +275,29 @@ logClientActivity($pdo, $customer_id, 'profile_view', 'Viewed profile page');
                         <div class="space-y-3">
                             <?php foreach (array_slice($recent_activity, 0, 5) as $activity): ?>
                                 <div class="text-sm">
-                                    <p class="text-gray-900 font-medium"><?php echo htmlspecialchars($activity['action']); ?></p>
+                                    <p class="text-gray-900 font-medium">
+                                        <?php 
+                                        // Format action names for display
+                                        $actionLabels = [
+                                            'login' => 'Logged in',
+                                            'logout' => 'Logged out',
+                                            'invoices_view' => 'Viewed invoices',
+                                            'invoice_view' => 'Viewed invoice',
+                                            'statement_view' => 'Viewed statement',
+                                            'payments_view' => 'Viewed payments',
+                                            'profile_view' => 'Viewed profile',
+                                            'profile_updated' => 'Updated profile',
+                                            'preferences_updated' => 'Updated preferences',
+                                            'password_changed' => 'Changed password',
+                                            'pin_reset' => 'PIN was reset',
+                                            'account_created' => 'Account created',
+                                            'portal_activated' => 'Portal activated',
+                                            'portal_deactivated' => 'Portal deactivated'
+                                        ];
+                                        
+                                        echo htmlspecialchars($actionLabels[$activity['action']] ?? ucfirst(str_replace('_', ' ', $activity['action'])));
+                                        ?>
+                                    </p>
                                     <p class="text-gray-500"><?php echo date('M j, g:i A', strtotime($activity['created_at'])); ?></p>
                                 </div>
                             <?php endforeach; ?>
