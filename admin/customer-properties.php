@@ -115,6 +115,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute([$propertyId, $customerId]);
                     $success = "Property deleted successfully!";
                 }
+            } elseif ($_POST['action'] === 'edit') {
+                $propertyId = $_POST['property_id'];
+                // Verify property belongs to this customer
+                $stmt = $pdo->prepare("SELECT id FROM customer_properties WHERE id = ? AND customer_id = ?");
+                $stmt->execute([$propertyId, $customerId]);
+                if (!$stmt->fetch()) {
+                    http_response_code(404);
+                    die('Property not found or access denied.');
+                }
+                
+                $stmt = $pdo->prepare("
+                    UPDATE customer_properties 
+                    SET property_name = ?, address = ?, property_type = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
+                    WHERE id = ? AND customer_id = ?
+                ");
+                $stmt->execute([
+                    $_POST['property_name'],
+                    $_POST['address'],
+                    $_POST['property_type'],
+                    $_POST['notes'],
+                    $propertyId,
+                    $customerId
+                ]);
+                $success = "Property updated successfully!";
             }
         }
     } catch (Exception $e) {
@@ -344,7 +368,13 @@ try {
                                             <i class="fas fa-plus"></i>
                                         </a>
                                         
+                                        <button onclick="openEditModal(<?php echo htmlspecialchars(json_encode($property)); ?>)" 
+                                                class="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors" title="Edit Property">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        
                                         <form method="POST" class="inline" onsubmit="return confirm('Toggle active status for this property?')">
+                                            <?php echo getCSRFTokenField(); ?>
                                             <input type="hidden" name="action" value="toggle">
                                             <input type="hidden" name="property_id" value="<?php echo $property['id']; ?>">
                                             <button type="submit" class="p-2 <?php echo $property['is_active'] ? 'text-orange-600 hover:bg-orange-50' : 'text-green-600 hover:bg-green-50'; ?> rounded-lg transition-colors" 
@@ -355,6 +385,7 @@ try {
                                         
                                         <?php if ($property['invoice_count'] == 0): ?>
                                         <form method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this property? This action cannot be undone.')">
+                                            <?php echo getCSRFTokenField(); ?>
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="property_id" value="<?php echo $property['id']; ?>">
                                             <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Property">
@@ -379,5 +410,99 @@ try {
     </main>
 
     <?php include '../includes/footer.php'; ?>
+    
+    <!-- Edit Property Modal -->
+    <div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" style="z-index: 50;">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-edit mr-2 text-gray-600"></i>
+                        Edit Property
+                    </h3>
+                    <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form method="POST" id="editForm" class="space-y-4">
+                    <?php echo getCSRFTokenField(); ?>
+                    <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="property_id" id="edit_property_id">
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-home mr-1"></i>Property Name *
+                        </label>
+                        <input type="text" name="property_name" id="edit_property_name" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt mr-1"></i>Address
+                        </label>
+                        <textarea name="address" id="edit_address" rows="3"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-tag mr-1"></i>Property Type
+                        </label>
+                        <select name="property_type" id="edit_property_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                            <option value="AirBnB">AirBnB</option>
+                            <option value="Personal Home">Personal Home</option>
+                            <option value="Rental Property">Rental Property</option>
+                            <option value="Business">Business</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-sticky-note mr-1"></i>Notes
+                        </label>
+                        <textarea name="notes" id="edit_notes" rows="3"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none"></textarea>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" onclick="closeEditModal()" 
+                                class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-medium">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium">
+                            <i class="fas fa-save mr-2"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openEditModal(property) {
+            document.getElementById('edit_property_id').value = property.id;
+            document.getElementById('edit_property_name').value = property.property_name;
+            document.getElementById('edit_address').value = property.address || '';
+            document.getElementById('edit_property_type').value = property.property_type;
+            document.getElementById('edit_notes').value = property.notes || '';
+            
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditModal();
+            }
+        });
+    </script>
 </body>
 </html>
