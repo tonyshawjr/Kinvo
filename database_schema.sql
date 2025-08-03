@@ -192,3 +192,78 @@ CREATE INDEX idx_client_payment_methods_customer ON client_payment_methods(custo
 CREATE INDEX idx_client_preferences_customer ON client_preferences(customer_id);
 CREATE INDEX idx_identifier_endpoint ON rate_limits(identifier, endpoint);
 CREATE INDEX idx_blocked_until ON rate_limits(blocked_until);
+
+-- =====================================================
+-- ESTIMATES FEATURE TABLES
+-- =====================================================
+
+-- Create the main estimates table
+CREATE TABLE IF NOT EXISTS estimates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    property_id INT NULL,
+    estimate_number VARCHAR(20) UNIQUE,
+    date DATE NOT NULL,
+    expires_date DATE NOT NULL,
+    status ENUM('Draft', 'Sent', 'Approved', 'Rejected', 'Expired') DEFAULT 'Draft',
+    subtotal DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    tax_rate DECIMAL(5, 2) DEFAULT 0,
+    tax_amount DECIMAL(10, 2) DEFAULT 0,
+    total DECIMAL(10, 2) NOT NULL,
+    notes TEXT,
+    terms TEXT,
+    unique_id VARCHAR(32) UNIQUE,
+    converted_invoice_id INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id),
+    FOREIGN KEY (property_id) REFERENCES customer_properties(id) ON DELETE SET NULL,
+    FOREIGN KEY (converted_invoice_id) REFERENCES invoices(id) ON DELETE SET NULL,
+    INDEX idx_estimate_number (estimate_number),
+    INDEX idx_customer (customer_id),
+    INDEX idx_status (status),
+    INDEX idx_expires (expires_date)
+);
+
+-- Create estimate line items table
+CREATE TABLE IF NOT EXISTS estimate_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    estimate_id INT NOT NULL,
+    description TEXT NOT NULL,
+    quantity DECIMAL(10, 2) NOT NULL,
+    unit_price DECIMAL(10, 2) NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (estimate_id) REFERENCES estimates(id) ON DELETE CASCADE,
+    INDEX idx_estimate (estimate_id)
+);
+
+-- Create estimate activity log table
+CREATE TABLE IF NOT EXISTS estimate_activity (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    estimate_id INT NOT NULL,
+    action VARCHAR(50) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (estimate_id) REFERENCES estimates(id) ON DELETE CASCADE,
+    INDEX idx_estimate (estimate_id),
+    INDEX idx_created (created_at)
+);
+
+-- Create estimate settings table
+CREATE TABLE IF NOT EXISTS estimate_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    setting_key VARCHAR(100) UNIQUE NOT NULL,
+    setting_value TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Insert default estimate settings
+INSERT INTO estimate_settings (setting_key, setting_value) VALUES
+    ('default_expiration', '30'),
+    ('email_by_default', '0'),
+    ('number_prefix', 'EST'),
+    ('allow_online_approval', '1'),
+    ('auto_convert_on_approval', '0')
+ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);

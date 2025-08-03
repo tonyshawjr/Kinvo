@@ -501,7 +501,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </h3>
                     </div>
                     <div class="p-6">
-                        <div class="space-y-4">
+                        <div class="space-y-6">
+                            <div class="pb-6 border-b border-gray-200">
+                                <h4 class="font-medium text-gray-900 mb-2">Estimates Feature Management</h4>
+                                <p class="text-sm text-gray-600 mb-4">
+                                    The estimates feature allows you to create quotes that can be converted to invoices. If you no longer need this feature, you can remove it completely.
+                                </p>
+                                <button type="button" onclick="confirmRemoveEstimates()" 
+                                   class="inline-flex items-center px-4 py-2 bg-yellow-600 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 transition-colors">
+                                    <i class="fas fa-file-invoice mr-2"></i>
+                                    Remove Estimates Feature
+                                </button>
+                            </div>
                             <div>
                                 <h4 class="font-medium text-gray-900 mb-2">Reset Installation</h4>
                                 <p class="text-sm text-gray-600 mb-4">
@@ -522,5 +533,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </main>
 
     <?php include '../includes/footer.php'; ?>
+    
+    <script>
+    function confirmRemoveEstimates() {
+        // Get estimate count first
+        fetch('ajax/get-estimates-count.php')
+            .then(response => response.json())
+            .then(data => {
+                const message = data.count > 0 
+                    ? `Are you sure you want to remove the estimates feature? This will permanently delete ${data.count} estimate(s) and cannot be undone.` 
+                    : 'Are you sure you want to remove the estimates feature? This action cannot be undone.';
+                
+                if (confirm(message)) {
+                    const confirmText = prompt('Type "DELETE ESTIMATES" to confirm:');
+                    if (confirmText === 'DELETE ESTIMATES') {
+                        // Remove estimates
+                        fetch('ajax/remove-estimates.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                confirm: true
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                alert('Estimates feature has been removed successfully.');
+                                window.location.reload();
+                            } else {
+                                alert('Error removing estimates: ' + (result.error || 'Unknown error'));
+                            }
+                        })
+                        .catch(error => {
+                            alert('Error: ' + error);
+                        });
+                    }
+                }
+            })
+            .catch(error => {
+                if (confirm('Are you sure you want to remove the estimates feature? This action cannot be undone.')) {
+                    const confirmText = prompt('Type "DELETE ESTIMATES" to confirm:');
+                    if (confirmText === 'DELETE ESTIMATES') {
+                        // Proceed with removal even if count check fails
+                        fetch('ajax/remove-estimates.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                confirm: true
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                alert('Estimates feature has been removed successfully.');
+                                window.location.reload();
+                            } else {
+                                alert('Error removing estimates: ' + (result.error || 'Unknown error'));
+                            }
+                        })
+                        .catch(error => {
+                            alert('Error: ' + error);
+                        });
+                    }
+                }
+            });
+    }
+    </script>
 </body>
 </html>
