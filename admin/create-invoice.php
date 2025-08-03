@@ -316,15 +316,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div id="new-customer" class="grid grid-cols-1 md:grid-cols-3 gap-6" style="display: none;">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
-                            <input type="text" name="customer_name" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="Customer name">
+                            <input type="text" name="name" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="Customer name">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" name="customer_email" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="customer@email.com">
+                            <input type="email" name="email" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="customer@email.com">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                            <input type="tel" name="customer_phone" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="(555) 123-4567">
+                            <input type="tel" name="phone" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="(555) 123-4567">
                         </div>
                     </div>
                 </div>
