@@ -27,7 +27,7 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
                 <!-- Right side - User and mobile menu -->
                 <div class="flex items-center space-x-6">
                     <div class="hidden lg:flex items-center space-x-4">
-                        <span class="text-sm text-gray-600">Welcome, <?php echo htmlspecialchars($_SESSION['client_name'] ?? 'Client'); ?></span>
+                        <span class="text-sm text-gray-600">Welcome, <?php echo htmlspecialchars($_SESSION['client_customer_name'] ?? 'Client'); ?></span>
                         <a href="/client/logout.php" class="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">
                             Logout
                         </a>
@@ -53,6 +53,9 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
                 </a>
                 <a href="/client/invoices.php" class="text-base font-semibold <?php echo $current_page === 'invoices' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
                     Invoices
+                </a>
+                <a href="/client/estimates.php" class="text-base font-semibold <?php echo $current_page === 'estimates' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                    Estimates
                 </a>
                 <a href="/client/payments.php" class="text-base font-semibold <?php echo $current_page === 'payments' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
                     Payments
@@ -91,6 +94,9 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
             </a>
             <a href="/client/invoices.php" class="block text-lg font-semibold <?php echo $current_page === 'invoices' ? 'text-gray-900' : 'text-gray-600'; ?>">
                 Invoices
+            </a>
+            <a href="/client/estimates.php" class="block text-lg font-semibold <?php echo $current_page === 'estimates' ? 'text-gray-900' : 'text-gray-600'; ?>">
+                Estimates
             </a>
             <a href="/client/payments.php" class="block text-lg font-semibold <?php echo $current_page === 'payments' ? 'text-gray-900' : 'text-gray-600'; ?>">
                 Payments

@@ -68,3 +68,47 @@ This is a vanilla PHP application without build tools. Common development tasks:
 - PHP 7.4+ required, 8.0+ recommended
 - Always check `includes/.installed` file exists before running
 - Configuration can be stored outside web root for security
+
+## Estimates Feature
+
+The estimates feature provides a complete quote/proposal system with customer approval workflow:
+
+### Key Components
+1. **Estimate Management** (`/admin/estimates.php`, `/admin/create-estimate.php`, `/admin/edit-estimate.php`)
+   - Create professional estimates with line items
+   - Track status: Draft → Sent → Approved/Rejected → Expired
+   - Automatic estimate numbering (EST-YYYYMM##)
+   - Expiration date tracking
+
+2. **Customer Approval** (`/public/view-estimate.php`, `/public/estimate-action.php`)
+   - Public view links for customer approval
+   - One-click approve/reject functionality
+   - Activity tracking for all actions
+
+3. **Conversion to Invoice** (`/admin/convert-estimate.php`)
+   - Convert approved estimates to invoices
+   - Preserves all line items and details
+   - Links estimate to invoice for tracking
+
+4. **Client Portal Integration** (`/client/estimates.php`)
+   - Customers can view their estimates
+   - Approve/reject from their portal
+   - Tracks approval history
+
+5. **Settings & Cleanup** (`/admin/settings.php`)
+   - Configure expiration defaults
+   - Auto-cleanup old estimates
+   - Customizable estimate numbering
+
+### Database Tables
+- `estimates` - Main estimate records
+- `estimate_items` - Line items for each estimate
+- `estimate_activity` - Activity tracking
+- `estimate_settings` - Feature configuration
+
+### Helper Functions (`/includes/estimate-functions.php`)
+- `generateEstimateNumber()` - Creates sequential estimate numbers
+- `getEstimate()` - Retrieves estimate with customer details
+- `getEstimateItems()` - Gets line items for an estimate
+- `logEstimateActivity()` - Tracks all estimate actions
+- `getEstimateSettings()` - Retrieves configuration settings

@@ -64,25 +64,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo->beginTransaction();
         
+        // Check if property_id column exists
+        $stmt = $pdo->query("SHOW COLUMNS FROM invoices LIKE 'property_id'");
+        $hasPropertyColumn = $stmt->rowCount() > 0;
+        
         // Update invoice
-        $stmt = $pdo->prepare("
-            UPDATE invoices 
-            SET customer_id = ?, property_id = ?, date = ?, due_date = ?, 
-                subtotal = ?, tax_rate = ?, tax_amount = ?, total = ?, notes = ?
-            WHERE id = ?
-        ");
-        $stmt->execute([
-            $_POST['customer_id'],
-            $_POST['property_id'] ?? null,
-            $_POST['date'],
-            $_POST['due_date'],
-            $_POST['subtotal'],
-            $_POST['tax_rate'],
-            $_POST['tax_amount'],
-            $_POST['total'],
-            $_POST['notes'],
-            $invoiceId
-        ]);
+        if ($hasPropertyColumn) {
+            $stmt = $pdo->prepare("
+                UPDATE invoices 
+                SET customer_id = ?, property_id = ?, date = ?, due_date = ?, 
+                    subtotal = ?, tax_rate = ?, tax_amount = ?, total = ?, notes = ?
+                WHERE id = ?
+            ");
+            $propertyId = (!empty($_POST['property_id'])) ? $_POST['property_id'] : null;
+            $stmt->execute([
+                $_POST['customer_id'],
+                $propertyId,
+                $_POST['date'],
+                $_POST['due_date'],
+                $_POST['subtotal'],
+                $_POST['tax_rate'],
+                $_POST['tax_amount'],
+                $_POST['total'],
+                $_POST['notes'],
+                $invoiceId
+            ]);
+        } else {
+            $stmt = $pdo->prepare("
+                UPDATE invoices 
+                SET customer_id = ?, date = ?, due_date = ?, 
+                    subtotal = ?, tax_rate = ?, tax_amount = ?, total = ?, notes = ?
+                WHERE id = ?
+            ");
+            $stmt->execute([
+                $_POST['customer_id'],
+                $_POST['date'],
+                $_POST['due_date'],
+                $_POST['subtotal'],
+                $_POST['tax_rate'],
+                $_POST['tax_amount'],
+                $_POST['total'],
+                $_POST['notes'],
+                $invoiceId
+            ]);
+        }
         
         // Delete existing line items
         $stmt = $pdo->prepare("DELETE FROM invoice_items WHERE invoice_id = ?");

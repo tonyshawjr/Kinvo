@@ -50,11 +50,11 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
                 <a href="dashboard.php" class="text-base font-semibold <?php echo $current_page === 'dashboard' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
                     Dashboard
                 </a>
-                <a href="create-invoice.php" class="text-base font-semibold <?php echo $current_page === 'create-invoice' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
-                    New Invoice
-                </a>
-                <a href="invoices.php" class="text-base font-semibold <?php echo $current_page === 'invoices' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                <a href="invoices.php" class="text-base font-semibold <?php echo in_array($current_page, ['invoices', 'create-invoice', 'edit-invoice']) ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
                     Invoices
+                </a>
+                <a href="estimates.php" class="text-base font-semibold <?php echo in_array($current_page, ['estimates', 'create-estimate', 'estimate-detail', 'edit-estimate']) ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                    Estimates
                 </a>
                 <a href="customers.php" class="text-base font-semibold <?php echo in_array($current_page, ['customers', 'customer-detail', 'customer-edit']) ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
                     Customers
@@ -91,12 +91,22 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
             <a href="dashboard.php" class="block text-lg font-semibold <?php echo $current_page === 'dashboard' ? 'text-gray-900' : 'text-gray-600'; ?>">
                 Dashboard
             </a>
-            <a href="create-invoice.php" class="block text-lg font-semibold <?php echo $current_page === 'create-invoice' ? 'text-gray-900' : 'text-gray-600'; ?>">
-                New Invoice
-            </a>
-            <a href="invoices.php" class="block text-lg font-semibold <?php echo $current_page === 'invoices' ? 'text-gray-900' : 'text-gray-600'; ?>">
-                Invoices
-            </a>
+            <div class="space-y-2">
+                <a href="invoices.php" class="block text-lg font-semibold <?php echo in_array($current_page, ['invoices', 'create-invoice', 'edit-invoice']) ? 'text-gray-900' : 'text-gray-600'; ?>">
+                    Invoices
+                </a>
+                <a href="create-invoice.php" class="block ml-4 text-base <?php echo $current_page === 'create-invoice' ? 'text-gray-900' : 'text-gray-500'; ?>">
+                    + New Invoice
+                </a>
+            </div>
+            <div class="space-y-2">
+                <a href="estimates.php" class="block text-lg font-semibold <?php echo in_array($current_page, ['estimates', 'create-estimate', 'estimate-detail', 'edit-estimate']) ? 'text-gray-900' : 'text-gray-600'; ?>">
+                    Estimates
+                </a>
+                <a href="create-estimate.php" class="block ml-4 text-base <?php echo $current_page === 'create-estimate' ? 'text-gray-900' : 'text-gray-500'; ?>">
+                    + New Estimate
+                </a>
+            </div>
             <a href="customers.php" class="block text-lg font-semibold <?php echo in_array($current_page, ['customers', 'customer-detail', 'customer-edit']) ? 'text-gray-900' : 'text-gray-600'; ?>">
                 Customers
             </a>

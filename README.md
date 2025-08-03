@@ -10,9 +10,10 @@
 
 ### Core Functionality
 - **Professional Invoice Creation** - Generate beautiful, customizable invoices
+- **Estimates & Quotes** - Create professional estimates with customer approval workflow
 - **Customer Management** - Comprehensive customer database with payment history
 - **Payment Tracking** - Real-time payment status and outstanding balance monitoring
-- **Client Portal** - Secure customer access to view invoices and payment history
+- **Client Portal** - Secure customer access to view invoices, estimates, and payment history
 - **Financial Reporting** - Revenue trends, payment analytics, and business insights
 
 ### Admin Dashboard
@@ -73,7 +74,8 @@ Ensure your server meets these requirements:
 
 ### Client Portal
 - Customers access their portal at `/client/login.php`
-- They can view invoices, payment history, and account details
+- They can view invoices, estimates, payment history, and account details
+- Approve or reject estimates directly from their portal
 - Secure PIN-based authentication system
 
 ### Business Configuration
