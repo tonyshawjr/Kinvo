@@ -93,6 +93,18 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - <?php echo htmlspecialchars($appName); ?></title>
+    
+    <!-- iOS Web App Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon-180x180.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="../assets/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="../assets/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="../assets/apple-touch-icon-76x76.png">
+    
+    <!-- Web App Settings -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Kinvo">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>

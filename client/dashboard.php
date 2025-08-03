@@ -90,6 +90,8 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - <?php echo htmlspecialchars($businessSettings['business_name']); ?></title>
+    <?php echo getAppleTouchIconTags('../'); ?>
+    <meta name="apple-mobile-web-app-title" content="Kinvo">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
