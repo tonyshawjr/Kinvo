@@ -1,187 +1,159 @@
-# Kinvo - Simple PHP Invoice System
+# Kinvo - Professional Invoice Management System
 
-A self-hosted, mobile-friendly invoice system built with vanilla PHP, Tailwind CSS, and MySQL. Perfect for small businesses and freelancers.
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/yourusername/kinvo)
+[![License](https://img.shields.io/badge/license-Commercial-green.svg)](LICENSE.md)
+[![PHP](https://img.shields.io/badge/php-%3E%3D7.4-blue.svg)](https://php.net)
 
-## Features
+**Kinvo** is a professional, feature-rich invoice management system designed for businesses of all sizes. Built with modern PHP and featuring a clean, responsive interface, Kinvo streamlines your invoicing workflow from creation to payment tracking.
 
-✅ **Complete Invoice Management**
-- Create invoices with dynamic line items
-- Auto-generate invoice numbers (INV-0001, INV-0002, etc.)
-- Professional invoice templates with print support
-- Public invoice links for customers
+## 🚀 Features
 
-✅ **Payment Tracking**
-- Log payments from multiple methods (Zelle, Venmo, Cash App, Cash, Check)
-- Automatic status updates (Unpaid → Partial → Paid)
-- Payment history tracking
+### Core Functionality
+- **Professional Invoice Creation** - Generate beautiful, customizable invoices
+- **Customer Management** - Comprehensive customer database with payment history
+- **Payment Tracking** - Real-time payment status and outstanding balance monitoring
+- **Client Portal** - Secure customer access to view invoices and payment history
+- **Financial Reporting** - Revenue trends, payment analytics, and business insights
 
-✅ **Admin Dashboard**
-- Overview of unpaid invoices and monthly payments
-- Recent activity and quick actions
-- Payment method breakdown
+### Admin Dashboard
+- **Intuitive Dashboard** - Real-time overview of your business metrics
+- **Overdue Invoice Alerts** - Never miss a follow-up with automated notifications
+- **Revenue Analytics** - Visual charts and financial trend analysis
+- **Quick Actions** - One-click access to common tasks
 
-✅ **Customer Management**
-- Add new customers or select from existing
-- Store contact information (name, email, phone)
+### Security & Performance
+- **Enterprise-Grade Security** - CSRF protection, SQL injection prevention, XSS protection
+- **Content Security Policy** - Advanced browser security headers
+- **Session Security** - Secure authentication with remember-me functionality
+- **Rate Limiting** - Protection against brute force attacks
+- **HTTPS Ready** - SSL/TLS support with automatic redirection
 
-✅ **Business Settings**
-- Customize business information
-- Set default payment instructions
-- Easy configuration management
+### Mobile-First Design
+- **Responsive Interface** - Works perfectly on all devices
+- **Touch-Friendly** - Optimized for mobile and tablet use
+- **Progressive Enhancement** - Graceful degradation for older browsers
 
-## Installation
+## 📋 Requirements
 
-### 1. Upload Files
-Upload all files to your web hosting account (works great with shared hosting like Hostinger).
+- **PHP 7.4+** (8.0+ recommended)
+- **MySQL 5.7+** or **MariaDB 10.2+**
+- **Apache 2.4+** with mod_rewrite enabled
+- **SSL Certificate** (recommended for production)
 
-### 2. Database Setup
-1. Create a MySQL database
-2. Import the `database_schema.sql` file:
-   ```bash
-   mysql -u your_username -p your_database < database_schema.sql
-   ```
+## 🛠 Installation
 
-### 3. Configuration
-Edit `includes/config.php` and update:
-- Database connection details
-- Admin password (change from 'changeme123')
-- Site URL
+### Quick Install
+1. Upload all files to your web server
+2. Create a MySQL database
+3. Navigate to `yoursite.com/install.php`
+4. Follow the installation wizard
+5. Delete the install.php file after completion
 
-```php
-// Database configuration
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'your_database_name');
-define('DB_USER', 'your_database_user');
-define('DB_PASS', 'your_database_password');
+### Manual Installation
+1. **Upload Files**: Extract and upload all files to your web root
+2. **Database Setup**: Create a new MySQL database
+3. **Run Installer**: Visit `/install.php` in your browser
+4. **Configure Settings**: Complete the setup wizard
+5. **Security**: Remove `install.php` after installation
 
-// Admin password (change this!)
-define('ADMIN_PASSWORD', 'your_secure_password');
+### Server Configuration
+Ensure your server meets these requirements:
+- PHP extensions: `mysqli`, `pdo`, `session`, `json`, `mbstring`
+- Apache modules: `mod_rewrite`, `mod_headers`
+- File permissions: `755` for directories, `644` for files
+- Writable directories: `/logs/` (optional, for logging)
 
-// Site settings
-define('SITE_URL', 'https://yourdomain.com');
-```
-
-### 4. File Permissions
-Ensure your web server can read all files:
-```bash
-chmod -R 644 *
-chmod -R 755 admin/ public/ includes/
-```
-
-## Usage
+## 🎯 Getting Started
 
 ### Admin Access
-1. Visit `https://yourdomain.com/admin/login.php`
-2. Enter your admin password
-3. Start creating invoices!
+1. Access the admin panel at `/admin/login.php`
+2. Use the credentials created during installation
+3. Complete your business settings in the Settings page
+4. Create your first customer and invoice
 
-### Creating Invoices
-1. Go to **Dashboard** → **Create Invoice**
-2. Add customer information (new or existing)
-3. Add line items with descriptions, quantities, and prices
-4. Set payment instructions and due date
-5. Click **Create Invoice**
+### Client Portal
+- Customers access their portal at `/client/login.php`
+- They can view invoices, payment history, and account details
+- Secure PIN-based authentication system
 
-### Sharing Invoices
-- Each invoice gets a unique public URL
-- Share the link with customers for viewing/printing
-- No login required for customers
+### Business Configuration
+1. **Settings** - Configure business information, contact details, and preferences
+2. **Branding** - Upload your logo and customize the appearance
+3. **Payment Methods** - Set up accepted payment methods and instructions
+4. **Email Templates** - Customize automated email notifications
 
-### Logging Payments
-1. Go to **Payments** page
-2. Select the invoice
-3. Choose payment method and amount
-4. Payment automatically updates invoice status
+## 📖 Documentation
 
-## File Structure
+### User Guides
+- [Installation Guide](INSTALL.md) - Step-by-step installation instructions
+- [User Manual](USER_GUIDE.md) - Complete feature documentation
 
-```
-Kinvo/
-├── admin/
-│   ├── dashboard.php      # Admin dashboard
-│   ├── create-invoice.php # Create new invoices
-│   ├── invoices.php       # List all invoices
-│   ├── payments.php       # Payment management
-│   ├── settings.php       # Business settings
-│   ├── login.php          # Admin login
-│   └── logout.php         # Admin logout
-├── public/
-│   └── view-invoice.php   # Public invoice view
-├── includes/
-│   ├── config.php         # Configuration
-│   ├── db.php            # Database connection
-│   └── functions.php      # Utility functions
-├── database_schema.sql    # Database setup
-└── index.php             # Redirects to admin
-```
+### Troubleshooting
+- [Common Issues](TROUBLESHOOTING.md) - Solutions to frequent problems
+- [Security Guide](SECURITY.md) - Best practices for secure deployment
 
-## Database Tables
+## 💡 Key Benefits
 
-- **customers** - Customer information
-- **invoices** - Invoice details and totals
-- **invoice_items** - Line items for each invoice
-- **payments** - Payment records
-- **business_settings** - Business configuration
+### For Business Owners
+- **Professional Image** - Beautiful, branded invoices that reflect your business
+- **Time Savings** - Automated workflows and streamlined processes
+- **Better Cash Flow** - Real-time tracking and follow-up management
+- **Customer Satisfaction** - Self-service portal reduces support requests
 
-## Tech Stack
+### For Developers
+- **Clean Codebase** - Well-documented, maintainable PHP code
+- **Security First** - Industry-standard security practices built-in
+- **Extensible** - Modular architecture for easy customization
+- **Modern Stack** - Latest PHP practices with responsive design
 
-- **PHP** (vanilla, no frameworks)
-- **MySQL** database
-- **Tailwind CSS** (via CDN)
-- **Minimal JavaScript** (for dynamic forms)
+## 🔒 Security Features
 
-## Design System
+- **CSRF Protection** - Prevents cross-site request forgery attacks
+- **SQL Injection Prevention** - Prepared statements and input validation
+- **XSS Protection** - Content Security Policy and output encoding
+- **Session Security** - Secure cookie handling and session management
+- **Rate Limiting** - Protection against brute force attacks
+- **HTTPS Enforcement** - Automatic SSL redirection in production
 
-The application follows a clean, minimal design system inspired by the login page:
+## 📊 System Requirements
 
-### Color Scheme
-- **Primary Background**: `bg-gray-50` (light gray background)
-- **Card Backgrounds**: `bg-white` with `border-gray-200` borders
-- **Primary Buttons**: `bg-gray-900` with `hover:bg-gray-800`
-- **Secondary Buttons**: `bg-gray-700` with `hover:bg-gray-600`
-- **Text Colors**: `text-gray-900` (primary), `text-gray-600` (secondary)
-- **Icons**: `text-gray-600` for consistency
+### Minimum Requirements
+- PHP 7.4+
+- MySQL 5.7+
+- 512MB RAM
+- 100MB disk space
 
-### Component Styling
-- **Border Radius**: `rounded-lg` for all cards and buttons
-- **Shadows**: `shadow-sm` for subtle depth
-- **Borders**: `border-gray-200` for all containers
-- **Typography**: `font-semibold` for buttons and labels
-- **Spacing**: Consistent padding and margins using Tailwind's spacing scale
+### Recommended Specifications
+- PHP 8.0+
+- MySQL 8.0+ or MariaDB 10.5+
+- 1GB RAM
+- 500MB disk space
+- SSD storage
+- SSL certificate
 
-### Interactive Elements
-- **Hover States**: Gray tone variations (`hover:bg-gray-100`, `hover:text-gray-700`)
-- **Focus States**: Standard gray focus rings
-- **Transitions**: `transition-colors` for smooth interactions
+## 🆘 Support
 
-This design system ensures consistency across all pages while maintaining a professional, clean appearance.
+### Commercial Support
+- Email support: support@kinvo.app
+- Documentation: Full online documentation
+- Updates: Regular security and feature updates
+- Priority support for commercial licenses
 
-## Security Notes
+## 📄 License
 
-1. **Change the admin password** in `config.php`
-2. **Set proper file permissions** on your server
-3. **Use HTTPS** for your domain
-4. **Regular backups** of your database
+Kinvo is commercial software. See [LICENSE.md](LICENSE.md) for licensing terms and conditions.
 
-## Browser Support
+## 🏢 About
 
-- Works on all modern browsers
-- Mobile-responsive design
-- Print-friendly invoice layout
+Kinvo is developed by professionals with years of experience in business software development. We understand the needs of growing businesses and have built Kinvo to scale with your success.
 
-## Support
-
-This system is designed to be simple and self-contained. For customization:
-
-1. Edit the CSS classes (Tailwind)
-2. Modify database schema if needed
-3. Update business logic in PHP files
-
-## License
-
-Open source - modify as needed for your business!
+**Built for businesses. Designed for growth. Secured for the future.**
 
 ---
 
-**Perfect for**: Handyman services, lawn care, freelancers, small service businesses
-**Hosting**: Works on any shared hosting with PHP and MySQL
+### Quick Links
+- [Installation Guide](INSTALL.md)
+- [User Manual](USER_GUIDE.md)
+- [License Terms](LICENSE.md)
+
+*© 2025 Kinvo. All rights reserved.*
