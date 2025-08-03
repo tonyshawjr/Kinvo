@@ -301,7 +301,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <option value="">No specific property</option>
                                     <?php foreach ($customerProperties as $property): ?>
                                     <option value="<?php echo $property['id']; ?>" <?php echo $selectedPropertyId == $property['id'] ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($property['property_name']); ?>
+                                        <?php 
+                                        if (!empty($property['address'])) {
+                                            // Show address, replacing line breaks with commas for dropdown display
+                                            $address = str_replace(["\r\n", "\n", "\r"], ', ', $property['address']);
+                                            // Truncate if longer than 30 characters
+                                            if (strlen($address) > 30) {
+                                                echo htmlspecialchars(substr($address, 0, 27) . '...');
+                                            } else {
+                                                echo htmlspecialchars($address);
+                                            }
+                                        } else {
+                                            // Fallback to property name if no address
+                                            echo htmlspecialchars($property['property_name']);
+                                        }
+                                        ?>
                                         <?php if ($property['property_type'] !== 'Other'): ?>
                                             (<?php echo htmlspecialchars($property['property_type']); ?>)
                                         <?php endif; ?>
@@ -496,7 +510,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     properties.forEach(property => {
                         const option = document.createElement('option');
                         option.value = property.id;
-                        option.textContent = property.property_name;
+                        
+                        // Use address if available, otherwise fallback to property name
+                        if (property.address && property.address.trim() !== '') {
+                            // Replace line breaks with commas for display
+                            let address = property.address.replace(/[\r\n]+/g, ', ');
+                            // Truncate if longer than 30 characters
+                            if (address.length > 30) {
+                                option.textContent = address.substring(0, 27) + '...';
+                            } else {
+                                option.textContent = address;
+                            }
+                        } else {
+                            option.textContent = property.property_name;
+                        }
+                        
                         if (property.property_type && property.property_type !== 'Other') {
                             option.textContent += ` (${property.property_type})`;
                         }

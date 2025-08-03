@@ -410,13 +410,10 @@ if (empty($invoiceId)) {
                         <div class="text-gray-600"><?php echo htmlspecialchars($invoice['customer_phone']); ?></div>
                         <?php endif; ?>
                         
-                        <?php if ($invoice['property_name']): ?>
+                        <?php if ($invoice['property_address']): ?>
                         <div class="mt-3 pt-3 border-t border-gray-200 print-property">
                             <div class="font-medium text-gray-900">Service Location:</div>
-                            <div class="text-gray-600"><?php echo htmlspecialchars($invoice['property_name']); ?></div>
-                            <?php if ($invoice['property_address']): ?>
                             <div class="text-gray-600 text-sm"><?php echo nl2br(htmlspecialchars($invoice['property_address'])); ?></div>
-                            <?php endif; ?>
                         </div>
                         <?php endif; ?>
                     </div>
