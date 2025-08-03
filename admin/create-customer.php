@@ -98,7 +98,7 @@ $businessSettings = getBusinessSettings($pdo);
                 </div>
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Customer Created Successfully!</h3>
-                    <p class="text-gray-600 mb-4">Customer "<?php echo htmlspecialchars($_POST['customer_name']); ?>" has been added to your system.</p>
+                    <p class="text-gray-600 mb-4">Customer "<?php echo htmlspecialchars($_POST['name']); ?>" has been added to your system.</p>
                     
                     <?php if ($clientPin): ?>
                     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
@@ -110,9 +110,9 @@ $businessSettings = getBusinessSettings($pdo);
                                     A client portal has been created for this customer.
                                 </p>
                                 <div class="mt-2 p-3 bg-white rounded border border-blue-200">
-                                    <p class="text-sm"><strong>Email:</strong> <?php echo htmlspecialchars($_POST['customer_email']); ?></p>
+                                    <p class="text-sm"><strong>Email:</strong> <?php echo htmlspecialchars($_POST['email']); ?></p>
                                     <p class="text-sm"><strong>PIN:</strong> <span class="font-mono bg-gray-100 px-2 py-1 rounded"><?php echo $clientPin; ?></span></p>
-                                    <p class="text-sm"><strong>Login URL:</strong> <a href="/client/login.php?email=<?php echo urlencode($_POST['customer_email']); ?>" class="text-blue-600 hover:text-blue-500" target="_blank">/client/login.php</a></p>
+                                    <p class="text-sm"><strong>Login URL:</strong> <a href="/client/login.php?email=<?php echo urlencode($_POST['email']); ?>" class="text-blue-600 hover:text-blue-500" target="_blank">/client/login.php</a></p>
                                 </div>
                                 <p class="text-xs text-blue-600 mt-2">
                                     <i class="fas fa-info-circle"></i> 
@@ -170,8 +170,8 @@ $businessSettings = getBusinessSettings($pdo);
                     </label>
                     <input type="text" 
                            id="customer_name" 
-                           name="customer_name" 
-                           value="<?php echo htmlspecialchars($_POST['customer_name'] ?? ''); ?>"
+                           name="name" 
+                           value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>"
                            required 
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all"
                            placeholder="Enter customer name">
@@ -183,8 +183,8 @@ $businessSettings = getBusinessSettings($pdo);
                     </label>
                     <input type="email" 
                            id="customer_email" 
-                           name="customer_email" 
-                           value="<?php echo htmlspecialchars($_POST['customer_email'] ?? ''); ?>"
+                           name="email" 
+                           value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all"
                            placeholder="Enter email address">
                 </div>
@@ -195,8 +195,8 @@ $businessSettings = getBusinessSettings($pdo);
                     </label>
                     <input type="tel" 
                            id="customer_phone" 
-                           name="customer_phone" 
-                           value="<?php echo htmlspecialchars($_POST['customer_phone'] ?? ''); ?>"
+                           name="phone" 
+                           value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all"
                            placeholder="Enter phone number">
                 </div>
