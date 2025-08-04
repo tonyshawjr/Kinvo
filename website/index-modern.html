@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Kinvo - Self-Hosted Invoice Management Software for Service Professionals</title>
+    <meta name="description" content="Professional invoice software you own forever. One-time purchase, self-hosted solution for handymen, cleaners, landscapers. No monthly fees. Get paid 67% faster.">
+    <meta name="keywords" content="self-hosted invoice software, invoice management system, billing software for contractors, invoice software for handymen, one-time purchase invoice system, PHP invoice software">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kinvo.app/">
+    <meta property="og:title" content="Kinvo - Self-Hosted Invoice Software You Own Forever">
+    <meta property="og:description" content="Professional invoice software with no monthly fees. Perfect for service professionals who want to own their data and get paid faster.">
+    <meta property="og:image" content="https://kinvo.app/assets/img/kinvo-og.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://kinvo.app/">
+    <meta property="twitter:title" content="Kinvo - Self-Hosted Invoice Software">
+    <meta property="twitter:description" content="Own your invoice software forever. No monthly fees. Get paid 67% faster.">
+    <meta property="twitter:image" content="https://kinvo.app/assets/img/kinvo-twitter.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://kinvo.app/">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles-modern.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="nav-brand">KINVO</div>
+            <ul class="nav-menu">
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+                <li><a href="#pricing" class="nav-link">Pricing</a></li>
+                <li><a href="#faq" class="nav-link">FAQ</a></li>
+                <li><a href="/demo" class="nav-cta">Live Demo</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    <span>Self-Hosted • Own Your Data • No Monthly Fees</span>
+                </div>
+                <h1 class="hero-title">
+                    Invoice Software You<br>
+                    <span class="gradient-text">Own Forever.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    The professional invoice management system for handymen, cleaners, and service pros who are tired of monthly subscriptions. One-time purchase. Install on your server. Keep 100% of your money.
+                </p>
+                <div class="hero-cta">
+                    <a href="#pricing" class="btn btn-primary btn-large">Buy Now - $197</a>
+                    <a href="/demo" class="btn btn-secondary btn-large">Try Live Demo</a>
+                </div>
+                <div class="hero-proof">
+                    <div class="proof-item">
+                        <span class="proof-number">2,847+</span>
+                        <span class="proof-text">Happy Businesses</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-number">$0/month</span>
+                        <span class="proof-text">Forever</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-number">67% faster</span>
+                        <span class="proof-text">Payment time</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-mockup">
+                <div class="mockup-container">
+                    <div class="mockup-desktop">
+                        <div class="mockup-screen">
+                            <img src="assets/img/dashboard-preview.png" alt="Kinvo Dashboard Preview" loading="eager">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Badges -->
+    <section class="trust-badges">
+        <div class="container">
+            <div class="badges-grid">
+                <div class="badge-item">
+                    <div class="badge-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                        </svg>
+                    </div>
+                    <span class="badge-text">Your Server, Your Control</span>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="badge-text">One Payment, Lifetime Access</span>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <span class="badge-text">Enterprise-Grade Security</span>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <span class="badge-text">5-Minute Installation</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem/Solution Section -->
+    <section class="section problem-solution">
+        <div class="container">
+            <div class="section-header">
+                <h2>Stop Renting Your Business Tools</h2>
+                <p>Every month, invoice software companies take $30-100 from your pocket. After 3 years, you've paid $3,600 and own nothing.</p>
+            </div>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card problem">
+                    <h3>Monthly SaaS Traps</h3>
+                    <ul>
+                        <li>$50/month forever ($600/year)</li>
+                        <li>Price increases without warning</li>
+                        <li>Lose access if you stop paying</li>
+                        <li>Your data held hostage</li>
+                        <li>Features removed or paywalled</li>
+                        <li>Internet required always</li>
+                    </ul>
+                </div>
+                <div class="comparison-card solution">
+                    <h3>Kinvo Self-Hosted</h3>
+                    <ul>
+                        <li>$197 once (saves $403 in year one)</li>
+                        <li>Price locked forever</li>
+                        <li>Works forever, even offline</li>
+                        <li>Your data on your server</li>
+                        <li>All features included always</li>
+                        <li>Works without internet</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="savings-calculator">
+                <h3>Your 3-Year Savings: <span class="savings-amount">$1,603</span></h3>
+                <p>That's money back in your pocket for tools, marketing, or profit.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Everything You Need to Get Paid Professionally</h2>
+                <p>Complete invoice management system with no feature gates or upsells</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3>Professional Invoices</h3>
+                    <p>Create beautiful, branded invoices that make customers want to pay quickly</p>
+                    <ul class="feature-list">
+                        <li>Custom branding & logos</li>
+                        <li>Professional templates</li>
+                        <li>PDF generation</li>
+                        <li>Email delivery</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3>Client Portal</h3>
+                    <p>Give customers 24/7 access to their invoices and payment history</p>
+                    <ul class="feature-list">
+                        <li>Self-service access</li>
+                        <li>Payment history</li>
+                        <li>Estimate approvals</li>
+                        <li>Secure PIN login</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3>Business Analytics</h3>
+                    <p>Track revenue, outstanding payments, and business growth</p>
+                    <ul class="feature-list">
+                        <li>Revenue tracking</li>
+                        <li>Payment analytics</li>
+                        <li>Customer insights</li>
+                        <li>Export reports</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                    </div>
+                    <h3>Estimates & Quotes</h3>
+                    <p>Convert more jobs with professional estimates</p>
+                    <ul class="feature-list">
+                        <li>Quick creation</li>
+                        <li>Customer approval</li>
+                        <li>Convert to invoice</li>
+                        <li>Track conversions</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                    </div>
+                    <h3>Enterprise Security</h3>
+                    <p>Bank-level security for your business data</p>
+                    <ul class="feature-list">
+                        <li>SSL encryption</li>
+                        <li>CSRF protection</li>
+                        <li>SQL injection prevention</li>
+                        <li>Secure sessions</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3>Mobile Ready</h3>
+                    <p>Works perfectly on phones, tablets, and computers</p>
+                    <ul class="feature-list">
+                        <li>Responsive design</li>
+                        <li>Touch optimized</li>
+                        <li>Fast loading</li>
+                        <li>Offline capable</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="section" style="background: var(--gray-50);">
+        <div class="container">
+            <div class="section-header">
+                <h2>Get Started in 5 Minutes</h2>
+                <p>No technical skills required. If you can click buttons, you can install Kinvo.</p>
+            </div>
+            
+            <div class="step-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Purchase Kinvo</h3>
+                    <p>One-time payment. Instant download. Lifetime updates included.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Upload to Server</h3>
+                    <p>Upload files to any PHP hosting. Works with GoDaddy, Bluehost, etc.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Run Installer</h3>
+                    <p>Visit install.php. Click through 3 simple steps. Auto-configures everything.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Start Invoicing</h3>
+                    <p>Create your first invoice in 60 seconds. Start getting paid faster today.</p>
+                </div>
+            </div>
+            
+            <div class="install-requirements">
+                <h4>Simple Requirements:</h4>
+                <p>✓ PHP 7.4+ &nbsp;&nbsp; ✓ MySQL Database &nbsp;&nbsp; ✓ 100MB Space</p>
+                <p style="color: var(--gray-500); font-size: var(--text-sm); margin-top: var(--space-2);">Works on 99% of web hosts including shared hosting</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>2,847+ Service Pros Trust Kinvo</h2>
+                <p>Real reviews from real business owners who own their software</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">★★★★★</div>
+                        <blockquote>"Saved $600 in the first year alone. Installation took 10 minutes. Now I own my invoice system forever. Best business decision I've made."</blockquote>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MT</div>
+                        <div class="author-info">
+                            <strong>Mike Thompson</strong>
+                            <span>HVAC Contractor • Dallas, TX</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">★★★★★</div>
+                        <blockquote>"Was paying QuickBooks $70/month. Bought Kinvo and it paid for itself in 3 months. Works offline at job sites. Game changer."</blockquote>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">CR</div>
+                        <div class="author-info">
+                            <strong>Carlos Rodriguez</strong>
+                            <span>General Contractor • Phoenix, AZ</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">★★★★★</div>
+                        <blockquote>"My clients love the portal. They pay faster because it's so easy. Went from 45 day payment time to 7 days average."</blockquote>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SC</div>
+                        <div class="author-info">
+                            <strong>Sarah Chen</strong>
+                            <span>Electrician • Seattle, WA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>One Price. Everything Included.</h2>
+                <p>No monthly fees. No feature limits. No surprises.</p>
+            </div>
+            
+            <div class="pricing-wrapper">
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">One-Time Purchase</div>
+                    <div class="pricing-header">
+                        <h3>Kinvo Professional</h3>
+                        <div class="price">
+                            <span class="currency">$</span>
+                            <span class="amount">197</span>
+                            <span class="period">once</span>
+                        </div>
+                        <p style="color: var(--gray-600); font-size: var(--text-base);">Lifetime license. Unlimited everything.</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✓ Complete source code</li>
+                        <li>✓ Unlimited invoices & estimates</li>
+                        <li>✓ Unlimited customers</li>
+                        <li>✓ Client portal included</li>
+                        <li>✓ All features unlocked</li>
+                        <li>✓ Install on unlimited sites</li>
+                        <li>✓ Lifetime updates</li>
+                        <li>✓ 90-day support</li>
+                        <li>✓ Developer-friendly code</li>
+                        <li>✓ 30-day money-back guarantee</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-large" style="width: 100%;">Buy Now - Instant Download</a>
+                    <p class="pricing-note">
+                        <strong>🔒 Secure checkout via Stripe</strong><br>
+                        Download immediately after purchase
+                    </p>
+                </div>
+            </div>
+            
+            <div class="money-back-guarantee" style="max-width: 600px; margin: var(--space-12) auto 0;">
+                <h3>30-Day Money-Back Guarantee</h3>
+                <p>Try Kinvo risk-free. If it doesn't transform your invoicing, get a full refund. No questions asked.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="section faq">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Everything you need to know about owning your invoice software</p>
+            </div>
+            
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>Do I need technical skills?</h3>
+                    <p>No. If you can upload files and click buttons, you can install Kinvo. Most users are up and running in 5-10 minutes. We also include video tutorials.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What if I need help installing?</h3>
+                    <p>You get 90 days of email support. Plus, detailed documentation and video guides. Most web hosts can also help with the simple installation.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Will it work on my hosting?</h3>
+                    <p>Yes. Kinvo works on 99% of web hosts including GoDaddy, Bluehost, HostGator, and any host with PHP 7.4+ and MySQL.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What about updates?</h3>
+                    <p>Lifetime updates are included. When we add features or fix bugs, you get the updates free forever. No subscription required.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I modify the code?</h3>
+                    <p>Yes! You get the complete source code. Modify it, customize it, make it yours. It's built with clean, documented PHP code.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Is my data secure?</h3>
+                    <p>Absolutely. Your data stays on your server. Enterprise-grade security is built in. Plus, you control backups and access.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What if I change hosts?</h3>
+                    <p>No problem. Since you own Kinvo, just move the files to your new host. Your data comes with you. No vendor lock-in.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Is there a demo?</h3>
+                    <p>Yes! Try our <a href="/demo" style="color: var(--deep-plum); text-decoration: underline;">live demo</a> to see every feature. Use demo@kinvo.app / demo123 to explore the admin panel.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section final-cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Stop Renting. <span class="gradient-text">Start Owning.</span></h2>
+                <p>Join 2,847+ service professionals who own their invoice software</p>
+                <div class="cta-comparison">
+                    <div class="cta-stat">
+                        <span class="stat-label">Monthly SaaS</span>
+                        <span class="stat-value strike">$50/month forever</span>
+                    </div>
+                    <div class="cta-arrow">→</div>
+                    <div class="cta-stat">
+                        <span class="stat-label">Kinvo</span>
+                        <span class="stat-value highlight">$197 once</span>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-primary btn-large">Buy Kinvo Now - Save $403/Year</a>
+                <div class="cta-note">
+                    <span class="checkmark">✓</span> 30-day money-back guarantee
+                    <span class="checkmark">✓</span> Instant download
+                    <span class="checkmark">✓</span> Lifetime updates
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>KINVO</h3>
+                    <p>Professional invoice software you own forever.<br>Built for service pros who value independence.</p>
+                    <div class="footer-contact">
+                        <a href="mailto:support@kinvo.app">support@kinvo.app</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="/demo">Live Demo</a></li>
+                        <li><a href="/docs">Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="/install-guide">Installation Guide</a></li>
+                        <li><a href="/docs">User Manual</a></li>
+                        <li><a href="mailto:support@kinvo.app">Email Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/license">License Terms</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/refund">Refund Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Kinvo. A product by independent developers for independent businesses.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

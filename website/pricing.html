@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Kinvo Invoice Management</title>
+    <meta name="description" content="Simple, honest pricing for service professionals. No setup fees, no long-term contracts. Start with a 14-day free trial.">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Favicon and Web App Icons -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+    <link rel="manifest" href="assets/manifest.json">
+    <meta name="theme-color" content="#352B52">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles-new.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="nav-brand">
+                    <a href="index.html">
+                        <img src="assets/img/kinnytheGhost.svg" alt="Kinvo" class="nav-logo">
+                    </a>
+                </div>
+                
+                <div class="nav-menu" id="navMenu">
+                    <a href="features.html" class="nav-link">Features</a>
+                    <a href="pricing.html" class="nav-link nav-active">Pricing</a>
+                    <a href="testimonials.html" class="nav-link">Reviews</a>
+                    <a href="about.html" class="nav-link">About</a>
+                    <a href="../admin/login.php" class="nav-link nav-login">Login</a>
+                    <a href="index.html#get-started" class="btn btn-primary">Start Free Trial</a>
+                </div>
+                
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1 class="page-title">
+                    Simple Pricing. <span class="text-gradient">Real Results.</span>
+                </h1>
+                <p class="page-subtitle">
+                    No contracts. No setup fees. Cancel anytime.<br>
+                    <strong>Start your 14-day free trial - no credit card required.</strong>
+                </p>
+                <div class="pricing-toggle">
+                    <span class="toggle-label">Monthly</span>
+                    <button class="toggle-switch" id="pricingToggle" aria-label="Switch to annual pricing">
+                        <span class="toggle-slider"></span>
+                    </button>
+                    <span class="toggle-label">Annual <span class="toggle-save">Save 20%</span></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Pricing Section -->
+    <section class="pricing-main">
+        <div class="container">
+            <div class="pricing-grid">
+                <!-- Starter Plan -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Starter</h3>
+                        <p class="pricing-description">Perfect for solo operators getting started</p>
+                    </div>
+                    <div class="pricing-price">
+                        <span class="price-amount" data-monthly="19" data-annual="15">$19</span>
+                        <span class="price-period" data-monthly="/month" data-annual="/month">/month</span>
+                    </div>
+                    <div class="pricing-annual-note" style="display: none;">
+                        <span class="annual-total">Billed annually at $180</span>
+                        <span class="annual-savings">Save $48/year</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Up to 50 invoices per month</li>
+                        <li>Professional invoice templates</li>
+                        <li>Email & text delivery</li>
+                        <li>Basic payment processing</li>
+                        <li>Customer portal access</li>
+                        <li>Mobile app</li>
+                        <li>Email support</li>
+                    </ul>
+                    <a href="index.html#get-started" class="btn btn-outline">Start Free Trial</a>
+                    <p class="pricing-trial">14-day free trial • No credit card required</p>
+                </div>
+                
+                <!-- Professional Plan -->
+                <div class="pricing-card pricing-featured">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Professional</h3>
+                        <p class="pricing-description">For growing service businesses</p>
+                    </div>
+                    <div class="pricing-price">
+                        <span class="price-amount" data-monthly="39" data-annual="31">$39</span>
+                        <span class="price-period" data-monthly="/month" data-annual="/month">/month</span>
+                    </div>
+                    <div class="pricing-annual-note" style="display: none;">
+                        <span class="annual-total">Billed annually at $372</span>
+                        <span class="annual-savings">Save $96/year</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Unlimited invoices & estimates</li>
+                        <li>Professional branding & logo</li>
+                        <li>Advanced payment processing</li>
+                        <li>Recurring invoices</li>
+                        <li>Customer portal & estimates</li>
+                        <li>Business reports & analytics</li>
+                        <li>Team access (up to 3 users)</li>
+                        <li>Priority email support</li>
+                        <li>Phone support</li>
+                    </ul>
+                    <a href="index.html#get-started" class="btn btn-primary">Start Free Trial</a>
+                    <p class="pricing-trial">14-day free trial • No credit card required</p>
+                </div>
+                
+                <!-- Enterprise Plan -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Enterprise</h3>
+                        <p class="pricing-description">For larger service companies</p>
+                    </div>
+                    <div class="pricing-price">
+                        <span class="price-amount" data-monthly="79" data-annual="63">$79</span>
+                        <span class="price-period" data-monthly="/month" data-annual="/month">/month</span>
+                    </div>
+                    <div class="pricing-annual-note" style="display: none;">
+                        <span class="annual-total">Billed annually at $756</span>
+                        <span class="annual-savings">Save $192/year</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Everything in Professional</li>
+                        <li>Unlimited team members</li>
+                        <li>Advanced integrations</li>
+                        <li>Custom workflows</li>
+                        <li>White-label options</li>
+                        <li>API access</li>
+                        <li>Advanced reporting</li>
+                        <li>Dedicated account manager</li>
+                        <li>24/7 priority support</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline">Contact Sales</a>
+                    <p class="pricing-trial">Custom setup & onboarding included</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROI Calculator -->
+    <section class="roi-calculator">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">See Your Return on Investment</h2>
+                <p class="section-subtitle">Calculate how much Kinvo could save you in time and increase your revenue</p>
+            </div>
+            
+            <div class="calculator-content">
+                <div class="calculator-inputs">
+                    <div class="input-group">
+                        <label for="monthlyInvoices">How many invoices do you send per month?</label>
+                        <input type="range" id="monthlyInvoices" min="10" max="200" value="50" class="range-input">
+                        <span class="range-value" id="invoiceValue">50</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="averageInvoice">What's your average invoice amount?</label>
+                        <input type="range" id="averageInvoice" min="100" max="2000" value="500" step="50" class="range-input">
+                        <span class="range-value" id="invoiceAmountValue">$500</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="paymentDelay">How many days do customers usually take to pay?</label>
+                        <input type="range" id="paymentDelay" min="7" max="60" value="30" class="range-input">
+                        <span class="range-value" id="delayValue">30 days</span>
+                    </div>
+                </div>
+                
+                <div class="calculator-results">
+                    <div class="results-header">
+                        <h3>Your Potential Savings with Kinvo</h3>
+                    </div>
+                    
+                    <div class="results-grid">
+                        <div class="result-item">
+                            <div class="result-number" id="timeSaved">12</div>
+                            <div class="result-label">Hours saved per month</div>
+                            <div class="result-note">No more chasing payments</div>
+                        </div>
+                        
+                        <div class="result-item">
+                            <div class="result-number" id="fasterPayment">15</div>
+                            <div class="result-label">Days faster payment</div>
+                            <div class="result-note">Improved cash flow</div>
+                        </div>
+                        
+                        <div class="result-item">
+                            <div class="result-number" id="monthlyValue">$2,350</div>
+                            <div class="result-label">Value per month</div>
+                            <div class="result-note">Time + faster payments</div>
+                        </div>
+                        
+                        <div class="result-item highlight">
+                            <div class="result-number" id="annualROI">5,900%</div>
+                            <div class="result-label">Annual ROI</div>
+                            <div class="result-note">vs. Professional plan cost</div>
+                        </div>
+                    </div>
+                    
+                    <div class="results-cta">
+                        <a href="index.html#get-started" class="btn btn-primary btn-lg">Start Saving Today</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Comparison -->
+    <section class="feature-comparison-detailed">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Compare Plans</h2>
+                <p class="section-subtitle">Choose the plan that fits your business size and needs</p>
+            </div>
+            
+            <div class="comparison-table-detailed">
+                <div class="table-header">
+                    <div class="header-cell feature-header">Features</div>
+                    <div class="header-cell plan-header">
+                        <h4>Starter</h4>
+                        <p class="plan-price">$19/mo</p>
+                    </div>
+                    <div class="header-cell plan-header featured">
+                        <div class="plan-badge">Popular</div>
+                        <h4>Professional</h4>
+                        <p class="plan-price">$39/mo</p>
+                    </div>
+                    <div class="header-cell plan-header">
+                        <h4>Enterprise</h4>
+                        <p class="plan-price">$79/mo</p>
+                    </div>
+                </div>
+                
+                <div class="table-section">
+                    <div class="section-title-row">
+                        <div class="section-title-cell">Invoicing</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                    
+                    <div class="feature-row">
+                        <div class="feature-cell">Monthly invoice limit</div>
+                        <div class="value-cell">50 invoices</div>
+                        <div class="value-cell">Unlimited</div>
+                        <div class="value-cell">Unlimited</div>
+                    </div>
+                    
+                    <div class="feature-row">
+                        <div class="feature-cell">Professional templates</div>
+                        <div class="value-cell">✓</div>
+                        <div class="value-cell">✓</div>
+                        <div class="value-cell">✓</div>
+                    </div>
+                    
+                    <div class="feature-row">
+                        <div class="feature-cell">Custom branding & logo</div>
+                        <div class="value-cell">—</div>
+                        <div class="value-cell">✓</div>
+                        <div class="value-cell">✓</div>
+                    </div>
+                    
+                    <div class="feature-row">
+                        <div class="feature-cell">Recurring invoices</div>
+                        <div class="value-cell">—</div>
+                        <div class="value-cell">✓</div>
+                        <div class="value-cell">✓</div>
+                    </div>
+                </div>
+                
+                <div class="table-section">
+                    <div class="section-title-row">
+                        <div class="section-title-cell">Estimates & Quotes</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                    
+                    <div class="feature-row">
+                        <div class="feature-cell">Professional estimates</div>
+                        <div class="value-cell">—</div>
+                        <div class="value-cell">✓</div>
+                        <div class="value-cell">✓</div>
+                    </div>
+                    
+                    <div class="feature-row">
+                        <div class="feature-cell">One-click approval</div>
+                        <div class="value-cell">—</div>
+                        <div class="value-cell">✓</div>
+                        <div class="value-cell">✓</div>
+                    </div>
+                    
+                    <div class="feature-row">
+                        <div class="feature-cell">Convert to invoice</div>
+                        <div class="value-cell">—</div>
+                        <div class="value-cell">✓</div>
+                        <div class="value-cell">✓</div>
+                    </div>
+                </div>
+                
+                <div class="table-section">
+                    <div class="section-title-row">
+                        <div class="section-title-cell">Payments & Processing</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                    
+                    <div class="feature-row">
+                        <div class="feature-cell">Credit card processing</div>
+                        <div class="value-cell">Basic</div>
+                        <div class="value-cell">Advanced</div>
+                        <div class="value-cell">Advanced</div>
+                    </div>
+                    
+                    <div class="feature-row">
+                        <div class="feature-cell">Bank transfers</div>
+                        <div class="value-cell">✓</div>
+                        <div class="value-cell">✓</div>
+                        <div class="value-cell">✓</div>
+                    </div>
+                    
+                    <div class="feature-row">
+                        <div class="feature-cell">Payment reminders</div>
+                        <div class="value-cell">Basic</div>
+                        <div class="value-cell">Advanced</div>
+                        <div class="value-cell">Custom</div>
+                    </div>
+                </div>
+                
+                <div class="table-section">
+                    <div class="section-title-row">
+                        <div class="section-title-cell">Team & Collaboration</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>\n                    </div>\n                    \n                    <div class=\"feature-row\">\n                        <div class=\"feature-cell\">Team members</div>\n                        <div class=\"value-cell\">1 user</div>\n                        <div class=\"value-cell\">3 users</div>\n                        <div class=\"value-cell\">Unlimited</div>\n                    </div>\n                    \n                    <div class=\"feature-row\">\n                        <div class=\"feature-cell\">Role permissions</div>\n                        <div class=\"value-cell\">—</div>\n                        <div class=\"value-cell\">Basic</div>\n                        <div class=\"value-cell\">Advanced</div>\n                    </div>\n                </div>\n                \n                <div class=\"table-section\">\n                    <div class=\"section-title-row\">\n                        <div class=\"section-title-cell\">Support</div>\n                        <div></div>\n                        <div></div>\n                        <div></div>\n                    </div>\n                    \n                    <div class=\"feature-row\">\n                        <div class=\"feature-cell\">Email support</div>\n                        <div class=\"value-cell\">✓</div>\n                        <div class=\"value-cell\">Priority</div>\n                        <div class=\"value-cell\">24/7</div>\n                    </div>\n                    \n                    <div class=\"feature-row\">\n                        <div class=\"feature-cell\">Phone support</div>\n                        <div class=\"value-cell\">—</div>\n                        <div class=\"value-cell\">✓</div>\n                        <div class=\"value-cell\">✓</div>\n                    </div>\n                    \n                    <div class=\"feature-row\">\n                        <div class=\"feature-cell\">Dedicated account manager</div>\n                        <div class=\"value-cell\">—</div>\n                        <div class=\"value-cell\">—</div>\n                        <div class=\"value-cell\">✓</div>\n                    </div>\n                </div>\n                \n                <div class=\"table-footer\">\n                    <div class=\"footer-cell\"></div>\n                    <div class=\"footer-cell\">\n                        <a href=\"index.html#get-started\" class=\"btn btn-outline\">Start Free Trial</a>\n                    </div>\n                    <div class=\"footer-cell\">\n                        <a href=\"index.html#get-started\" class=\"btn btn-primary\">Start Free Trial</a>\n                    </div>\n                    <div class=\"footer-cell\">\n                        <a href=\"#contact\" class=\"btn btn-outline\">Contact Sales</a>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </section>\n\n    <!-- FAQ Section -->\n    <section class=\"faq-section\">\n        <div class=\"container\">\n            <div class=\"section-header\">\n                <h2 class=\"section-title\">Frequently Asked Questions</h2>\n                <p class=\"section-subtitle\">Get answers to common questions about Kinvo pricing and features</p>\n            </div>\n            \n            <div class=\"faq-grid\">\n                <div class=\"faq-item\" data-faq>\n                    <button class=\"faq-question\" aria-expanded=\"false\">\n                        <span>Is there really a free trial with no credit card required?</span>\n                        <svg class=\"faq-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n                            <polyline points=\"6,9 12,15 18,9\"></polyline>\n                        </svg>\n                    </button>\n                    <div class=\"faq-answer\">\n                        <p>Yes! We offer a full 14-day free trial with no credit card required. You can explore all features and send real invoices to your customers. We only ask for payment information when you're ready to continue after your trial ends.</p>\n                    </div>\n                </div>\n                \n                <div class=\"faq-item\" data-faq>\n                    <button class=\"faq-question\" aria-expanded=\"false\">\n                        <span>Can I change plans or cancel anytime?</span>\n                        <svg class=\"faq-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n                            <polyline points=\"6,9 12,15 18,9\"></polyline>\n                        </svg>\n                    </button>\n                    <div class=\"faq-answer\">\n                        <p>Absolutely. You can upgrade, downgrade, or cancel your subscription at any time. There are no long-term contracts or cancellation fees. If you cancel, you'll continue to have access until the end of your current billing period.</p>\n                    </div>\n                </div>\n                \n                <div class=\"faq-item\" data-faq>\n                    <button class=\"faq-question\" aria-expanded=\"false\">\n                        <span>Are there any setup fees or hidden charges?</span>\n                        <svg class=\"faq-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n                            <polyline points=\"6,9 12,15 18,9\"></polyline>\n                        </svg>\n                    </button>\n                    <div class=\"faq-answer\">\n                        <p>No setup fees, no hidden charges. The price you see is exactly what you pay. Payment processing fees are clearly disclosed and competitive with industry standards (2.9% + 30¢ for credit cards).</p>\n                    </div>\n                </div>\n                \n                <div class=\"faq-item\" data-faq>\n                    <button class=\"faq-question\" aria-expanded=\"false\">\n                        <span>What payment methods do you accept?</span>\n                        <svg class=\"faq-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n                            <polyline points=\"6,9 12,15 18,9\"></polyline>\n                        </svg>\n                    </button>\n                    <div class=\"faq-answer\">\n                        <p>We accept all major credit cards (Visa, MasterCard, American Express, Discover) and ACH bank transfers. Your subscription will automatically renew using your chosen payment method.</p>\n                    </div>\n                </div>\n                \n                <div class=\"faq-item\" data-faq>\n                    <button class=\"faq-question\" aria-expanded=\"false\">\n                        <span>Do you offer discounts for annual payments?</span>\n                        <svg class=\"faq-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n                            <polyline points=\"6,9 12,15 18,9\"></polyline>\n                        </svg>\n                    </button>\n                    <div class=\"faq-answer\">\n                        <p>Yes! Pay annually and save 20% on all plans. For example, the Professional plan costs $372/year instead of $468, saving you $96. You can switch to annual billing at any time.</p>\n                    </div>\n                </div>\n                \n                <div class=\"faq-item\" data-faq>\n                    <button class=\"faq-question\" aria-expanded=\"false\">\n                        <span>What happens if I exceed my invoice limit on the Starter plan?</span>\n                        <svg class=\"faq-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n                            <polyline points=\"6,9 12,15 18,9\"></polyline>\n                        </svg>\n                    </button>\n                    <div class=\"faq-answer\">\n                        <p>If you approach your 50-invoice limit, we'll send you a friendly reminder to upgrade to Professional. You won't be charged extra fees - we'll just suggest upgrading to unlimited invoices for better value.</p>\n                    </div>\n                </div>\n                \n                <div class=\"faq-item\" data-faq>\n                    <button class=\"faq-question\" aria-expanded=\"false\">\n                        <span>Is my data secure and backed up?</span>\n                        <svg class=\"faq-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n                            <polyline points=\"6,9 12,15 18,9\"></polyline>\n                        </svg>\n                    </button>\n                    <div class=\"faq-answer\">\n                        <p>Yes, your data is encrypted, secure, and automatically backed up daily. We use bank-level security and comply with all data protection regulations. Your customer information and financial data are always safe.</p>\n                    </div>\n                </div>\n                \n                <div class=\"faq-item\" data-faq>\n                    <button class=\"faq-question\" aria-expanded=\"false\">\n                        <span>Can I import my existing customer data?</span>\n                        <svg class=\"faq-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">\n                            <polyline points=\"6,9 12,15 18,9\"></polyline>\n                        </svg>\n                    </button>\n                    <div class=\"faq-answer\">\n                        <p>Yes! We can help you import your existing customer data from spreadsheets or other invoicing software. Our support team will guide you through the process during your free trial.</p>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </section>\n\n    <!-- Final CTA -->\n    <section class=\"cta\">\n        <div class=\"container\">\n            <div class=\"cta-content\">\n                <h2>Ready to Stop Chasing Payments?</h2>\n                <p>Join 500+ service professionals who get paid 87% faster with Kinvo</p>\n                \n                <form class=\"cta-form\" id=\"signupForm\">\n                    <div class=\"form-group\">\n                        <input type=\"email\" id=\"email\" name=\"email\" placeholder=\"Enter your email\" required>\n                        <button type=\"submit\" class=\"btn btn-primary\">\n                            Start Free Trial\n                            <svg class=\"btn-icon\" viewBox=\"0 0 20 20\" fill=\"currentColor\">\n                                <path fill-rule=\"evenodd\" d=\"M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />\n                            </svg>\n                        </button>\n                    </div>\n                    <p class=\"form-note\">No credit card required. 14-day free trial.</p>\n                </form>\n                \n                <div class=\"cta-benefits\">\n                    <div class=\"benefit\">\n                        <svg class=\"benefit-icon\" viewBox=\"0 0 20 20\" fill=\"currentColor\">\n                            <path fill-rule=\"evenodd\" d=\"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\" clip-rule=\"evenodd\" />\n                        </svg>\n                        <span>Setup in 5 minutes</span>\n                    </div>\n                    <div class=\"benefit\">\n                        <svg class=\"benefit-icon\" viewBox=\"0 0 20 20\" fill=\"currentColor\">\n                            <path fill-rule=\"evenodd\" d=\"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\" clip-rule=\"evenodd\" />\n                        </svg>\n                        <span>Cancel anytime</span>\n                    </div>\n                    <div class=\"benefit\">\n                        <svg class=\"benefit-icon\" viewBox=\"0 0 20 20\" fill=\"currentColor\">\n                            <path fill-rule=\"evenodd\" d=\"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\" clip-rule=\"evenodd\" />\n                        </svg>\n                        <span>30-day guarantee</span>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </section>\n\n    <!-- Footer -->\n    <footer class=\"footer\">\n        <div class=\"container\">\n            <div class=\"footer-content\">\n                <div class=\"footer-brand\">\n                    <img src=\"assets/images/kinvo-logo-white.svg\" alt=\"Kinvo\" class=\"footer-logo\">\n                    <p class=\"footer-tagline\">Professional invoicing for service businesses</p>\n                    <div class=\"footer-social\">\n                        <a href=\"#\" class=\"social-link\" aria-label=\"Twitter\">\n                            <svg viewBox=\"0 0 24 24\" fill=\"currentColor\">\n                                <path d=\"M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z\"/>\n                            </svg>\n                        </a>\n                        <a href=\"#\" class=\"social-link\" aria-label=\"LinkedIn\">\n                            <svg viewBox=\"0 0 24 24\" fill=\"currentColor\">\n                                <path d=\"M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z\"/>\n                            </svg>\n                        </a>\n                    </div>\n                </div>\n                \n                <div class=\"footer-links\">\n                    <div class=\"footer-column\">\n                        <h4>Product</h4>\n                        <ul>\n                            <li><a href=\"features.html\">Features</a></li>\n                            <li><a href=\"pricing.html\">Pricing</a></li>\n                            <li><a href=\"#demo\">Demo</a></li>\n                            <li><a href=\"../admin/login.php\">Login</a></li>\n                        </ul>\n                    </div>\n                    \n                    <div class=\"footer-column\">\n                        <h4>Support</h4>\n                        <ul>\n                            <li><a href=\"#help\">Help Center</a></li>\n                            <li><a href=\"#contact\">Contact Us</a></li>\n                            <li><a href=\"#status\">System Status</a></li>\n                            <li><a href=\"#api\">API Docs</a></li>\n                        </ul>\n                    </div>\n                    \n                    <div class=\"footer-column\">\n                        <h4>Company</h4>\n                        <ul>\n                            <li><a href=\"about.html\">About Us</a></li>\n                            <li><a href=\"#careers\">Careers</a></li>\n                            <li><a href=\"#press\">Press</a></li>\n                            <li><a href=\"#blog\">Blog</a></li>\n                        </ul>\n                    </div>\n                    \n                    <div class=\"footer-column\">\n                        <h4>Legal</h4>\n                        <ul>\n                            <li><a href=\"#privacy\">Privacy Policy</a></li>\n                            <li><a href=\"#terms\">Terms of Service</a></li>\n                            <li><a href=\"#security\">Security</a></li>\n                            <li><a href=\"#gdpr\">GDPR</a></li>\n                        </ul>\n                    </div>\n                </div>\n            </div>\n            \n            <div class=\"footer-bottom\">\n                <p>&copy; 2025 Kinvo. All rights reserved.</p>\n                <p>Made for real service businesses that deserve to get paid on time.</p>\n            </div>\n        </div>\n    </footer>\n\n    <!-- Scripts -->\n    <script src=\"assets/js/main.js\"></script>\n    <script src=\"assets/js/pricing.js\"></script>\n</body>\n</html>"}

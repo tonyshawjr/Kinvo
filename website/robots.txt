@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://kinvo.app/website/sitemap.xml
+
+# Optimize crawling
+Crawl-delay: 1
+
+# Allow all pages for SEO
+Allow: /website/
+Allow: /website/index.html
+Allow: /website/features.html
+Allow: /website/pricing.html
+Allow: /website/testimonials.html
+Allow: /website/about.html
+Allow: /website/contact.html
+Allow: /website/assets/
+
+# Block admin areas from search engines
+Disallow: /admin/
+Disallow: /client/
+Disallow: /includes/
+Disallow: /logs/
+Disallow: *.php$
