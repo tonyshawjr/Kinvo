@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinvo - Stop Chasing Payments. Start Getting Paid.</title>
+    <meta name="description" content="The invoice system built for handymen, cleaners, landscapers, and service pros who are tired of waiting 30-72 days to get paid.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles-new.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-brand">KINVO</div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#pricing" class="nav-link">Pricing</a></li>
+                <li><a href="#faq" class="nav-link">FAQ</a></li>
+                <li><a href="/admin/login.php" class="nav-cta">Login</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>Join 2,847+ Service Professionals</span>
+                </div>
+                <h1 class="hero-title hero-headline">
+                    Stop Chasing Payments.<br>
+                    <span class="gradient-text">Start Getting Paid.</span>
+                </h1>
+                <p class="hero-subtitle">The invoice system built for handymen, cleaners, landscapers, and service pros who are tired of waiting 30-72 days to get paid.</p>
+                <div class="hero-cta">
+                    <a href="#pricing" class="btn btn-success">Start Getting Paid Faster</a>
+                    <a href="#how-it-works" class="btn btn-secondary">See How It Works</a>
+                </div>
+                <div class="hero-proof">
+                    <div class="proof-item">
+                        <span class="proof-number">3-7 days</span>
+                        <span class="proof-text">Average payment time</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-number">67% faster</span>
+                        <span class="proof-text">Than handwritten invoices</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-number">14 days</span>
+                        <span class="proof-text">Free trial</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-mockup">
+                <div class="mockup-container">
+                    <div class="mockup-phone">
+                        <div class="mockup-screen">
+                            <div class="mockup-header">
+                                <div class="mockup-dots">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <span class="mockup-title">Kinvo Invoice</span>
+                            </div>
+                            <div class="mockup-content">
+                                <div class="mockup-invoice">
+                                    <div class="invoice-header">
+                                        <h4>Invoice #202501-01</h4>
+                                        <span class="status paid">PAID</span>
+                                    </div>
+                                    <div class="invoice-client">
+                                        <strong>Johnson Residence</strong>
+                                        <p>Bathroom Repair - Jan 15, 2025</p>
+                                    </div>
+                                    <div class="invoice-items">
+                                        <div class="item">
+                                            <span>Labor (4 hours)</span>
+                                            <span>$200.00</span>
+                                        </div>
+                                        <div class="item">
+                                            <span>Materials</span>
+                                            <span>$150.00</span>
+                                        </div>
+                                        <div class="item total">
+                                            <span><strong>Total</strong></span>
+                                            <span><strong>$350.00</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="section how-it-works">
+        <div class="container container-xl">
+            <div class="section-header">
+                <h2><span class="gradient-text">Built for Real Work.</span> Made for Real People.</h2>
+                <p>Frank the handyman used to wait weeks for payment on a $500 bathroom repair. Now he gets paid in 3 days with professional invoices that customers actually pay on time.</p>
+            </div>
+            
+            <div class="grid grid-3">
+                <div class="card step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">📝</div>
+                    <h3>Create Professional Invoices</h3>
+                    <p>Stop apologizing for handwritten estimates. Create beautiful, branded invoices in under 60 seconds.</p>
+                </div>
+                <div class="card step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">📧</div>
+                    <h3>Send & Track Automatically</h3>
+                    <p>Customers get payment links instantly. Automatic reminders mean no more awkward conversations.</p>
+                </div>
+                <div class="card step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">💰</div>
+                    <h3>Get Paid Faster</h3>
+                    <p>Online payments, clear invoices, and professional follow-ups get you paid in 3-7 days instead of 30-72.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="section benefits" style="background: var(--light-bg);">
+        <div class="container container-xl">
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-before">
+                        <h4>Before Kinvo</h4>
+                        <ul>
+                            <li>Handwritten invoices</li>
+                            <li>30-72 day payment delays</li>
+                            <li>Awkward payment conversations</li>
+                            <li>Lost invoices and "forgot to pay"</li>
+                        </ul>
+                    </div>
+                    <div class="benefit-after">
+                        <h4>After Kinvo</h4>
+                        <ul>
+                            <li>Professional branded invoices</li>
+                            <li>3-7 day payment cycles</li>
+                            <li>Automatic payment reminders</li>
+                            <li>Online payments with one click</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="benefit-quote">
+                <blockquote>"I went from waiting 2 months to getting paid in less than a week. Game changer."</blockquote>
+                <cite>Miguel R., Lawn Care Professional</cite>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section features">
+        <div class="container container-xl">
+            <div class="section-header">
+                <h2>Everything You Need to <span class="gradient-text">Get Paid Professionally</span></h2>
+                <p>Stop losing jobs to competitors who look more professional. Kinvo makes you look as good as your work.</p>
+            </div>
+            
+            <div class="grid grid-3 features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3>Professional Invoices</h3>
+                    <p>Look like the pro you are with branded invoices that make customers want to pay quickly.</p>
+                    <ul class="feature-list">
+                        <li>Add your logo and business colors</li>
+                        <li>Clear line items customers understand</li>
+                        <li>Professional PDF invoices via email</li>
+                        <li>Mobile-friendly for easy viewing</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3>Get Paid Online</h3>
+                    <p>Make it stupid simple for customers to pay. The easier you make it, the faster you get paid.</p>
+                    <ul class="feature-list">
+                        <li>Online payments (credit card, bank transfer)</li>
+                        <li>Payment links in every invoice</li>
+                        <li>Automatic payment confirmations</li>
+                        <li>No more "I forgot to mail the check"</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Smart Payment Reminders</h3>
+                    <p>Never chase another payment. Kinvo reminds customers automatically so you don't have to.</p>
+                    <ul class="feature-list">
+                        <li>Polite, professional reminder emails</li>
+                        <li>Escalating reminder schedule</li>
+                        <li>Tracks who owes what</li>
+                        <li>You focus on work, not collections</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Invoicing</h3>
+                    <p>Create and send invoices from your truck, between jobs, or at the kitchen table.</p>
+                    <ul class="feature-list">
+                        <li>Mobile-optimized interface</li>
+                        <li>Voice-to-text for line items</li>
+                        <li>Photo estimates on the spot</li>
+                        <li>No office required</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Customer Portal</h3>
+                    <p>Give customers control with self-service invoice viewing and payment history.</p>
+                    <ul class="feature-list">
+                        <li>Self-service invoice viewing</li>
+                        <li>Payment history at their fingertips</li>
+                        <li>Estimate approvals online</li>
+                        <li>Reduces support calls by 80%</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>Estimates That Convert</h3>
+                    <p>Professional estimates that customers can approve with one click. No more "let me think about it."</p>
+                    <ul class="feature-list">
+                        <li>Beautiful estimate presentation</li>
+                        <li>One-click customer approval</li>
+                        <li>Automatic conversion to invoice</li>
+                        <li>Track estimate status</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section testimonials" style="background: var(--light-bg);">
+        <div class="container container-xl">
+            <div class="section-header">
+                <h2>Success Stories from Real Service Professionals</h2>
+                <p>Join thousands of service pros who stopped waiting for payments</p>
+            </div>
+            <div class="grid grid-3 testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">⭐⭐⭐⭐⭐</div>
+                        <blockquote>"I was losing jobs to guys with fancy invoices. Kinvo made me look as professional as the big companies, but I'm still the same reliable Frank my customers know."</blockquote>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👨‍🔧</div>
+                        <div class="author-info">
+                            <strong>Frank Harris</strong>
+                            <span>Handyman • Fayetteville, NC</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">⭐⭐⭐⭐⭐</div>
+                        <blockquote>"Managing 15 recurring clients was a nightmare with spreadsheets. Now everything's organized and my clients can see their payment history anytime. No more awkward money conversations."</blockquote>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👩‍💼</div>
+                        <div class="author-info">
+                            <strong>Latasha Brooks</strong>
+                            <span>Residential Cleaner • Jacksonville, FL</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">⭐⭐⭐⭐⭐</div>
+                        <blockquote>"I invoice right from my truck between jobs. My payment time went from 45 days to 5 days average. That's real money back in my pocket."</blockquote>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">🌱</div>
+                        <div class="author-info">
+                            <strong>Miguel Reyes</strong>
+                            <span>Lawn Care Operator • Corpus Christi, TX</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section pricing">
+        <div class="container container-xl">
+            <div class="section-header">
+                <h2><span class="gradient-text">Simple Pricing.</span> Real Results.</h2>
+                <p>No contracts. No setup fees. Cancel anytime.<br><strong>Start your 14-day free trial - no credit card required.</strong></p>
+            </div>
+            
+            <div class="pricing-wrapper">
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Essential</h3>
+                        <div class="price">
+                            <span class="currency">$</span>
+                            <span class="amount">29</span>
+                            <span class="period">/month</span>
+                        </div>
+                        <p class="pricing-subtitle">Everything you need to get paid professionally</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✅ Unlimited invoices and estimates</li>
+                        <li>✅ Professional branding and logos</li>
+                        <li>✅ Online payments (credit card, ACH)</li>
+                        <li>✅ Automatic payment reminders</li>
+                        <li>✅ Customer portal access</li>
+                        <li>✅ Mobile invoicing</li>
+                        <li>✅ Payment tracking and reporting</li>
+                        <li>✅ Email support</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-success btn-large">Try Kinvo Free for 14 Days</a>
+                    <p class="pricing-note">Perfect for solo service professionals and small teams</p>
+                </div>
+            </div>
+            
+            <div class="value-calculator">
+                <div class="calculator-header">
+                    <h3>See Your ROI</h3>
+                    <p>If Kinvo helps you get paid just <strong>5 days faster</strong> on your invoices:</p>
+                </div>
+                <div class="calculator-stats">
+                    <div class="stat">
+                        <span class="stat-number">$500</span>
+                        <span class="stat-label">Average invoice</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">20</span>
+                        <span class="stat-label">Invoices per month</span>
+                    </div>
+                    <div class="stat highlight">
+                        <span class="stat-number">$10,000</span>
+                        <span class="stat-label">Cash flow improvement per month</span>
+                    </div>
+                </div>
+                <p class="calculator-conclusion"><strong>Kinvo pays for itself in the first invoice.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="section faq" style="background: var(--light-bg);">
+        <div class="container container-xl">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Get answers to common questions from real service professionals</p>
+            </div>
+            
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>What if I'm not tech-savvy?</h3>
+                    <p>Kinvo is built for people who fix things, not computer things. If you can send a text message, you can use Kinvo. Plus, we have real humans to help you get started.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Will my customers notice the difference?</h3>
+                    <p>Yes - they'll pay you faster. Professional invoices get paid 67% faster than handwritten ones.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What if I only do a few jobs per month?</h3>
+                    <p>Even 2-3 invoices per month getting paid 2 weeks faster puts hundreds back in your pocket. Kinvo pays for itself immediately.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I really set this up myself?</h3>
+                    <p>Absolutely. Takes about 10 minutes. We'll walk you through it, and our setup wizard makes it foolproof.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What about my existing customers?</h3>
+                    <p>They'll love the upgrade. Professional invoices build trust and make you look established.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Do I need a contract?</h3>
+                    <p>Nope. No contracts, no cancellation fees. Cancel anytime with one click.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section final-cta">
+        <div class="container container-xl">
+            <div class="cta-content">
+                <h2>Ready to <span class="gradient-text">Stop Chasing Payments?</span></h2>
+                <p>Join 2,847+ service professionals getting paid faster with Kinvo</p>
+                <div class="cta-features">
+                    <div class="cta-feature">
+                        <span class="checkmark">✓</span>
+                        <span>14-day free trial</span>
+                    </div>
+                    <div class="cta-feature">
+                        <span class="checkmark">✓</span>
+                        <span>No credit card required</span>
+                    </div>
+                    <div class="cta-feature">
+                        <span class="checkmark">✓</span>
+                        <span>Setup help included</span>
+                    </div>
+                    <div class="cta-feature">
+                        <span class="checkmark">✓</span>
+                        <span>Cancel anytime</span>
+                    </div>
+                </div>
+                <a href="/admin/login.php" class="btn btn-success btn-large">Start Getting Paid Faster</a>
+                <p class="cta-note">Used by handymen, cleaners, landscapers, and service pros across the country</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container container-xl">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>KINVO</h3>
+                    <p>Built by service pros, for service pros. Get paid faster with professional invoices that actually work.</p>
+                    <div class="footer-contact">
+                        <a href="mailto:hello@kinvo.app">hello@kinvo.app</a>
+                        <a href="tel:+1-555-KINVO-01">+1 (555) KINVO-01</a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="#how-it-works">How It Works</a></li>
+                            <li><a href="#features">Features</a></li>
+                            <li><a href="#pricing">Pricing</a></li>
+                            <li><a href="/admin/login.php">Login</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#faq">FAQ</a></li>
+                            <li><a href="mailto:help@kinvo.app">Help Center</a></li>
+                            <li><a href="#testimonials">Success Stories</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="about.html">About</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Kinvo. All rights reserved. Made with care for the hardest working people in America.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

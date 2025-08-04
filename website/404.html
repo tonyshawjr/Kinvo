@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - Kinvo</title>
+    <meta name="description" content="Oops! Looks like Kinny got lost. Let's get you back on track.">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles-new.css">
+    
+    <style>
+        .error-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--color-gray-50) 0%, var(--color-white) 100%);
+            padding: var(--space-8) var(--space-4);
+        }
+        
+        .error-content {
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        .kinny-404 {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto var(--space-8);
+            position: relative;
+        }
+        
+        .kinny-ghost {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .kinny-eyes {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: var(--space-4);
+        }
+        
+        .eye {
+            width: 20px;
+            height: 20px;
+            background: var(--color-white);
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .eye::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--color-secondary);
+            border-radius: 50%;
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            animation: lookAround 4s ease-in-out infinite;
+        }
+        
+        .kinny-mouth {
+            position: absolute;
+            bottom: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 20px;
+            border: 3px solid var(--color-white);
+            border-top: none;
+            border-radius: 0 0 40px 40px;
+            animation: confused 2s ease-in-out infinite alternate;
+        }
+        
+        .error-number {
+            font-size: var(--text-5xl);
+            font-weight: var(--font-weight-extrabold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-4);
+            line-height: 1;
+        }
+        
+        .error-title {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-secondary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .error-message {
+            font-size: var(--text-lg);
+            color: var(--color-gray-600);
+            margin-bottom: var(--space-8);
+            line-height: var(--leading-relaxed);
+        }
+        
+        .error-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            align-items: center;
+        }
+        
+        @media (min-width: 640px) {
+            .error-actions {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+        
+        .helpful-links {
+            margin-top: var(--space-12);
+            padding-top: var(--space-8);
+            border-top: 1px solid var(--color-gray-200);
+        }
+        
+        .helpful-links h3 {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-secondary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            text-align: left;
+        }
+        
+        .link-item {
+            background: var(--color-white);
+            padding: var(--space-4);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--color-gray-200);
+            transition: all var(--transition-fast);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .link-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-primary);
+        }
+        
+        .link-item h4 {
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-secondary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .link-item p {
+            font-size: var(--text-sm);
+            color: var(--color-gray-600);
+            margin: 0;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes lookAround {
+            0%, 20% { transform: translate(6px, 6px); }
+            25%, 45% { transform: translate(2px, 6px); }
+            50%, 70% { transform: translate(10px, 6px); }
+            75%, 95% { transform: translate(6px, 2px); }
+            100% { transform: translate(6px, 6px); }
+        }
+        
+        @keyframes confused {
+            0% { transform: translateX(-50%) scaleX(1); }
+            100% { transform: translateX(-50%) scaleX(0.8); }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-page">
+        <div class="error-content">
+            <div class="kinny-404">
+                <div class="kinny-ghost">
+                    <div class="kinny-eyes">
+                        <div class="eye"></div>
+                        <div class="eye"></div>
+                    </div>
+                    <div class="kinny-mouth"></div>
+                </div>
+            </div>
+            
+            <div class="error-number">404</div>
+            <h1 class="error-title">Oops! Kinny Got Lost</h1>
+            <p class="error-message">
+                Looks like this page wandered off somewhere. Don't worry, even the best service professionals 
+                sometimes take a wrong turn. Let's get you back on track.
+            </p>
+            
+            <div class="error-actions">
+                <a href="index.html" class="btn btn-primary btn-lg">
+                    Go Home
+                    <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L9 5.414V17a1 1 0 102 0V5.414l5.293 5.293a1 1 0 001.414-1.414l-7-7z"/>
+                    </svg>
+                </a>
+                <a href="javascript:history.back()" class="btn btn-secondary btn-lg">
+                    Go Back
+                </a>
+            </div>
+            
+            <div class="helpful-links">
+                <h3>Popular Pages</h3>
+                <div class="links-grid">
+                    <a href="features.html" class="link-item">
+                        <h4>Features</h4>
+                        <p>See what Kinvo can do for your business</p>
+                    </a>
+                    
+                    <a href="pricing.html" class="link-item">
+                        <h4>Pricing</h4>
+                        <p>Simple, honest pricing that pays for itself</p>
+                    </a>
+                    
+                    <a href="testimonials.html" class="link-item">
+                        <h4>Success Stories</h4>
+                        <p>See how other service pros get paid faster</p>
+                    </a>
+                    
+                    <a href="contact.html" class="link-item">
+                        <h4>Get Help</h4>
+                        <p>Talk to real people who understand your business</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple navigation for 404 -->
+    <nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 1rem;">
+        <div style="max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem;">
+            <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+                <img src="assets/images/kinvo-logo.svg" alt="Kinvo" style="height: 32px;">
+            </a>
+            <div style="display: flex; gap: 2rem; align-items: center;">
+                <a href="index.html" style="color: #352B52; text-decoration: none; font-weight: 500;">Home</a>
+                <a href="contact.html" style="color: #352B52; text-decoration: none; font-weight: 500;">Contact</a>
+                <a href="index.html#get-started" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Start Free Trial</a>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>
