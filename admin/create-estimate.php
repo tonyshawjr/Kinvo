@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Validate each line item
                 $validatedDescription = validateAndSanitizeString($description, 500, "Item {$index} description", true);
                 $validatedQuantity = validateCurrency($_POST['item_quantity'][$index] ?? '', "Item {$index} quantity", true);
-                $validatedUnitPrice = validateCurrency($_POST['item_price'][$index] ?? '', "Item {$index} price", true);
+                $validatedUnitPrice = validateCurrency($_POST['item_price'][$index] ?? '', "Item {$index} price", true, true);
                 
                 $lineTotal = $validatedQuantity * $validatedUnitPrice;
                 $subtotal += $lineTotal;
