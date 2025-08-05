@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Add new line items
         if (!empty($_POST['line_items'])) {
             foreach ($_POST['line_items'] as $item) {
-                if (!empty($item['description']) && !empty($item['quantity']) && !empty($item['unit_price'])) {
+                if (!empty($item['description']) && !empty($item['quantity']) && isset($item['unit_price']) && is_numeric($item['unit_price'])) {
                     $stmt = $pdo->prepare("
                         INSERT INTO invoice_items (invoice_id, description, quantity, unit_price, total) 
                         VALUES (?, ?, ?, ?, ?)

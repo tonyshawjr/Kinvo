@@ -844,11 +844,11 @@ function validatePhone($phone, $fieldName = 'Phone', $required = false) {
 function validateCurrency($amount, $fieldName = 'Amount', $required = true, $allowZero = false) {
     $amount = trim($amount);
     
-    if ($required && empty($amount)) {
+    if ($required && ($amount === '' || $amount === null)) {
         throw new InvalidArgumentException("{$fieldName} is required.");
     }
     
-    if (!empty($amount)) {
+    if ($amount !== '' && $amount !== null) {
         if (!is_numeric($amount)) {
             throw new InvalidArgumentException("{$fieldName} must be a valid number.");
         }
