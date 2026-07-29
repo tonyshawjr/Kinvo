@@ -162,8 +162,8 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
                 </div>
                 <ul class="divide-y divide-gray-200">
                     <?php foreach ($group['invoices'] as $inv): ?>
-                    <li class="pay-row">
-                        <label class="flex items-center gap-4 px-5 py-4 cursor-pointer min-h-[56px]">
+                    <li class="pay-row flex items-center">
+                        <label class="flex flex-1 items-center gap-4 px-5 py-4 cursor-pointer min-h-[56px]">
                             <input type="checkbox" name="invoice_ids[]" value="<?php echo (int) $inv['id']; ?>"
                                    data-customer="<?php echo (int) $group['customer_id']; ?>"
                                    data-balance="<?php echo htmlspecialchars(number_format((float) $inv['balance_due'], 2, '.', '')); ?>"
@@ -177,10 +177,10 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
                                     <?php endif; ?>
                                 </span>
                             </span>
-                            <a href="edit-invoice.php?id=<?php echo (int) $inv['id']; ?>" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center px-3 text-blue-800 hover:bg-blue-50 rounded-lg" aria-label="Open invoice <?php echo htmlspecialchars($inv['invoice_number']); ?>">
-                                <i class="fas fa-pen" aria-hidden="true"></i>
-                            </a>
                         </label>
+                        <a href="edit-invoice.php?id=<?php echo (int) $inv['id']; ?>" class="min-h-[44px] min-w-[44px] mr-3 inline-flex items-center justify-center text-blue-800 hover:bg-blue-50 rounded-lg" aria-label="Open invoice <?php echo htmlspecialchars($inv['invoice_number']); ?>">
+                            <i class="fas fa-pen" aria-hidden="true"></i>
+                        </a>
                     </li>
                     <?php endforeach; ?>
                 </ul>

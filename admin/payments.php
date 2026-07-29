@@ -342,7 +342,7 @@ $recentPayments = $stmt->fetchAll();
                                             </span>
                                         </div>
                                         <p class="font-medium text-gray-900 mb-1">
-                                            <a href="../public/view-invoice.php?id=<?php echo $payment['invoice_unique_id']; ?>" class="hover:text-blue-800 transition-colors">
+                                            <a href="../public/view-invoice.php?id=<?php echo $payment['invoice_unique_id']; ?>" class="inline-flex items-center min-h-[44px] hover:text-blue-800 transition-colors">
                                                 <?php echo htmlspecialchars($payment['invoice_number']); ?>
                                             </a>
                                             • <?php echo htmlspecialchars($payment['customer_name']); ?>
@@ -426,8 +426,8 @@ $recentPayments = $stmt->fetchAll();
                         <?php if ($totalPages > 1): ?>
                         <div class="flex items-center justify-center space-x-2 mt-6 pt-6 border-t border-gray-200">
                             <?php if ($page > 1): ?>
-                            <a href="?page=<?php echo $page - 1; ?>" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                                <i class="fas fa-chevron-left"></i>
+                            <a href="?page=<?php echo $page - 1; ?>" aria-label="Previous page of payments" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center px-3 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
+                                <i class="fas fa-chevron-left" aria-hidden="true"></i>
                             </a>
                             <?php endif; ?>
                             
@@ -437,8 +437,8 @@ $recentPayments = $stmt->fetchAll();
                             </span>
                             
                             <?php if ($page < $totalPages): ?>
-                            <a href="?page=<?php echo $page + 1; ?>" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                                <i class="fas fa-chevron-right"></i>
+                            <a href="?page=<?php echo $page + 1; ?>" aria-label="Next page of payments" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center px-3 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
+                                <i class="fas fa-chevron-right" aria-hidden="true"></i>
                             </a>
                             <?php endif; ?>
                         </div>
