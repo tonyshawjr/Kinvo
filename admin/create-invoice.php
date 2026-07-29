@@ -1,6 +1,7 @@
 <?php
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
+require_once '../includes/service-functions.php';
 
 // Set security headers
 setSecurityHeaders(true, true);
@@ -148,6 +149,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $item['unit_price'],
                 $item['total']
             ]);
+        }
+
+        rememberServiceUsage($pdo, array_column($items, 'description'));
+
+        $saveForReuse = $_POST['save_service'] ?? [];
+        if (is_array($saveForReuse)) {
+            foreach ($saveForReuse as $index => $flag) {
+                if (!$flag || !isset($items[$index])) {
+                    continue;
+                }
+                saveService($pdo, $items[$index]['description'], $_POST['save_service_category'][$index] ?? 'Other', $items[$index]['unit_price']);
+            }
         }
         
         $pdo->commit();
@@ -297,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div id="property-selection" style="<?php echo $selectedCustomerId ? 'display: block;' : 'display: none;'; ?>">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Property/Location (Optional)</label>
-                                <select name="property_id" id="property-select" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                <select name="property_id" id="property-select" onchange="onPropertyChange()" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                     <option value="">No specific property</option>
                                     <?php foreach ($customerProperties as $property): ?>
                                     <option value="<?php echo $property['id']; ?>" <?php echo $selectedPropertyId == $property['id'] ? 'selected' : ''; ?>>
@@ -387,6 +400,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
                 </div>
+                <?php $servicesGrouped = getServicesGrouped($pdo); ?>
+                <?php if ($servicesGrouped): ?>
+                <div class="px-4 sm:px-6 py-5 bg-white border-b border-gray-200">
+                    <h4 class="text-base font-semibold text-gray-900 mb-1">Tap a job to add it</h4>
+                    <p class="text-gray-700 mb-4">Prices are your usual ones. You can change the amount on the invoice without changing the saved default.</p>
+                    <?php foreach ($servicesGrouped as $category => $services): ?>
+                    <div class="mb-4">
+                        <p class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2"><?php echo htmlspecialchars($category); ?></p>
+                        <div class="flex flex-wrap gap-2">
+                            <?php foreach ($services as $service): ?>
+                            <button type="button"
+                                    onclick="addSavedJob(<?php echo htmlspecialchars(json_encode($service['name']), ENT_QUOTES); ?>, <?php echo (float) $service['default_price']; ?>)"
+                                    class="min-h-[44px] inline-flex items-center px-4 py-2 bg-white border border-gray-400 rounded-lg hover:bg-gray-100 hover:border-gray-900 text-gray-900 font-medium">
+                                <?php echo htmlspecialchars($service['name']); ?>
+                                <?php if ($service['default_price'] > 0): ?>
+                                <span class="ml-2 text-gray-700"><?php echo formatCurrency($service['default_price']); ?></span>
+                                <?php endif; ?>
+                            </button>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                    <a href="services.php" class="inline-flex items-center min-h-[44px] text-blue-800 font-semibold hover:underline">
+                        <i class="fas fa-sliders-h mr-2" aria-hidden="true"></i>Manage saved jobs
+                    </a>
+                </div>
+                <?php endif; ?>
                 <div class="p-4 sm:p-6">
                     <div id="line-items">
                         <!-- Header - Hidden on mobile -->
@@ -473,6 +513,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const defaultHourlyRate = <?php echo json_encode($businessSettings['default_hourly_rate']); ?>;
         const mileageRate = <?php echo json_encode($businessSettings['mileage_rate']); ?>;
         let currentCustomerRate = null;
+        const propertyDistances = <?php
+            $distances = [];
+            foreach ($customerProperties as $cp) {
+                $distances[(string) $cp['id']] = (float) ($cp['distance_miles'] ?? 0);
+            }
+            echo json_encode($distances ?: new stdClass());
+        ?>;
+
+        function onPropertyChange() {
+            const select = document.getElementById('property-select');
+            const miles = propertyDistances[String(select.value)] || 0;
+
+            document.querySelectorAll('.line-item[data-auto-mileage="1"]').forEach(el => el.remove());
+
+            if (miles > 0 && mileageRate > 0) {
+                addAutoMileage(miles);
+            }
+            calculateTotals();
+        }
+
+        function addAutoMileage(miles) {
+            hideEmptyState();
+            const roundTrip = Math.round(miles * 2 * 100) / 100;
+            const container = document.getElementById('line-items');
+            const itemHtml = `
+                <div class="line-item mb-4 p-4 bg-orange-50 rounded-lg border-l-4 border-orange-700" data-auto-mileage="1">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 bg-orange-700 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-car text-white text-sm" aria-hidden="true"></i>
+                            </span>
+                            <span class="text-sm font-semibold text-gray-800">Mileage added automatically</span>
+                        </div>
+                        <button type="button" onclick="removeLineItem(this)" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-gray-500 hover:text-red-700 rounded-lg" aria-label="Remove the mileage line">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                        <div class="sm:col-span-6">
+                            <label for="auto-mileage-desc" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <input type="text" id="auto-mileage-desc" name="item_description[]" value="Mileage - ${roundTrip} miles round trip" class="w-full px-3 py-3 border border-gray-400 rounded-lg text-base">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="auto-mileage-qty" class="block text-sm font-medium text-gray-700 mb-1">Miles</label>
+                            <input type="number" id="auto-mileage-qty" name="item_quantity[]" step="0.1" value="${roundTrip}" onchange="calculateTotals()" onkeyup="calculateTotals()" class="w-full px-3 py-3 border border-gray-400 rounded-lg text-base">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="auto-mileage-rate" class="block text-sm font-medium text-gray-700 mb-1">Rate</label>
+                            <input type="number" id="auto-mileage-rate" name="item_price[]" step="0.001" value="${mileageRate}" onchange="calculateTotals()" onkeyup="calculateTotals()" class="w-full px-3 py-3 border border-gray-400 rounded-lg text-base">
+                        </div>
+                        <div class="sm:col-span-2 flex items-center justify-between sm:justify-end pt-2">
+                            <span class="text-sm font-medium text-gray-700 sm:hidden">Total:</span>
+                            <span class="line-total text-lg font-semibold text-gray-900">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', itemHtml);
+        }
 
         function toggleCustomerFields() {
             const customerType = document.querySelector('input[name="customer_type"]:checked').value;
@@ -510,6 +609,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     properties.forEach(property => {
                         const option = document.createElement('option');
                         option.value = property.id;
+                        propertyDistances[String(property.id)] = parseFloat(property.distance_miles || 0) || 0;
                         
                         // Use address if available, otherwise fallback to property name
                         if (property.address && property.address.trim() !== '') {
@@ -608,6 +708,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             `;
             
             container.insertAdjacentHTML('beforeend', itemHtml);
+        }
+
+        let savedJobIndex = 0;
+
+        function addSavedJob(name, price) {
+            hideEmptyState();
+            const container = document.getElementById('line-items');
+            const idx = ++savedJobIndex;
+            const safeName = String(name).replace(/"/g, '&quot;');
+            const itemHtml = `
+                <div class="line-item mb-4 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-700">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 bg-blue-800 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-briefcase text-white text-sm" aria-hidden="true"></i>
+                            </span>
+                            <span class="text-sm font-semibold text-gray-800">Saved job</span>
+                        </div>
+                        <button type="button" onclick="removeLineItem(this)" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-gray-500 hover:text-red-700 rounded-lg" aria-label="Remove this line">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                        <div class="sm:col-span-6">
+                            <label for="saved-job-desc-${idx}" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <input type="text" id="saved-job-desc-${idx}" name="item_description[]" value="${safeName}" class="w-full px-3 py-3 border border-gray-400 rounded-lg text-base">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="saved-job-qty-${idx}" class="block text-sm font-medium text-gray-700 mb-1">Qty</label>
+                            <input type="number" id="saved-job-qty-${idx}" name="item_quantity[]" step="0.25" value="1" onchange="calculateTotals()" onkeyup="calculateTotals()" class="w-full px-3 py-3 border border-gray-400 rounded-lg text-base">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="saved-job-price-${idx}" class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                            <input type="number" id="saved-job-price-${idx}" name="item_price[]" step="0.01" value="${Number(price).toFixed(2)}" onchange="calculateTotals()" onkeyup="calculateTotals()" class="w-full px-3 py-3 border border-gray-400 rounded-lg text-base">
+                        </div>
+                        <div class="sm:col-span-2 flex items-center justify-between sm:justify-end pt-2">
+                            <span class="text-sm font-medium text-gray-700 sm:hidden">Total:</span>
+                            <span class="line-total text-lg font-semibold text-gray-900">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', itemHtml);
+            calculateTotals();
         }
 
         function addMileageItem() {

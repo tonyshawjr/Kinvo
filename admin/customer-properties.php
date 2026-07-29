@@ -61,15 +61,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['action'])) {
             if ($_POST['action'] === 'add') {
                 $stmt = $pdo->prepare("
-                    INSERT INTO customer_properties (customer_id, property_name, address, property_type, notes) 
-                    VALUES (?, ?, ?, ?, ?)
+                    INSERT INTO customer_properties (customer_id, property_name, address, property_type, notes, distance_miles) 
+                    VALUES (?, ?, ?, ?, ?, ?)
                 ");
                 $stmt->execute([
                     $customerId,
                     $_POST['property_name'],
                     $_POST['address'],
                     $_POST['property_type'],
-                    $_POST['notes']
+                    $_POST['notes'],
+                    $_POST['distance_miles'] === '' ? null : (float) $_POST['distance_miles']
                 ]);
                 $success = "Property added successfully!";
             } elseif ($_POST['action'] === 'toggle') {
@@ -127,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 $stmt = $pdo->prepare("
                     UPDATE customer_properties 
-                    SET property_name = ?, address = ?, property_type = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
+                    SET property_name = ?, address = ?, property_type = ?, notes = ?, distance_miles = ?, updated_at = CURRENT_TIMESTAMP
                     WHERE id = ? AND customer_id = ?
                 ");
                 $stmt->execute([
@@ -135,6 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_POST['address'],
                     $_POST['property_type'],
                     $_POST['notes'],
+                    $_POST['distance_miles'] === '' ? null : (float) $_POST['distance_miles'],
                     $propertyId,
                     $customerId
                 ]);
@@ -284,6 +286,16 @@ try {
                                 <option value="Business">Business</option>
                                 <option value="Other">Other</option>
                             </select>
+                        </div>
+
+                        <div>
+                            <label for="distance_miles" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-car mr-1" aria-hidden="true"></i>Miles from home (one way)
+                            </label>
+                            <input type="number" name="distance_miles" id="distance_miles" step="0.1" min="0"
+                                   placeholder="e.g. 8.5"
+                                   class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                            <p class="text-sm text-gray-700 mt-1">Fill this in and mileage is added to invoices for this property automatically.</p>
                         </div>
 
                         <div>
@@ -460,6 +472,14 @@ try {
                     </div>
 
                     <div>
+                        <label for="edit_distance_miles" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-car mr-1" aria-hidden="true"></i>Miles from home (one way)
+                        </label>
+                        <input type="number" name="distance_miles" id="edit_distance_miles" step="0.1" min="0"
+                               class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                    </div>
+
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-sticky-note mr-1"></i>Notes
                         </label>
@@ -489,6 +509,7 @@ try {
             document.getElementById('edit_address').value = property.address || '';
             document.getElementById('edit_property_type').value = property.property_type;
             document.getElementById('edit_notes').value = property.notes || '';
+            document.getElementById('edit_distance_miles').value = property.distance_miles || '';
             
             document.getElementById('editModal').classList.remove('hidden');
         }
