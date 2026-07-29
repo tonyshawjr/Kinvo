@@ -1,6 +1,7 @@
 <?php
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
+require_once '../includes/payment-functions.php';
 
 // Set security headers
 setSecurityHeaders(true, true);
@@ -133,9 +134,14 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                 <h2 class="text-3xl font-bold text-gray-900">All Invoices</h2>
                 <p class="text-gray-600 mt-1">Manage and track all your invoices</p>
             </div>
-            <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
-                <i class="fas fa-plus mr-2"></i>Create New Invoice
-            </a>
+            <div class="flex flex-wrap gap-3">
+                <a href="record-payments.php" class="inline-flex items-center px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors font-semibold">
+                    <i class="fas fa-check-double mr-2" aria-hidden="true"></i>Record Payments
+                </a>
+                <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
+                    <i class="fas fa-plus mr-2" aria-hidden="true"></i>Create New Invoice
+                </a>
+            </div>
         </div>
 
         <!-- Messages -->
@@ -377,20 +383,32 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="View Invoice">
-                                        <i class="fas fa-eye"></i>
+                                <div class="flex items-center justify-center gap-2">
+                                    <?php if ($invoice['balance_due'] > 0): ?>
+                                    <form method="POST" action="record-payments.php" class="inline mark-paid-form" data-invoice="<?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>" data-amount="<?php echo htmlspecialchars(formatCurrency($invoice['balance_due']), ENT_QUOTES); ?>">
+                                        <?php echo getCSRFTokenField(); ?>
+                                        <input type="hidden" name="invoice_ids[]" value="<?php echo (int) $invoice['id']; ?>">
+                                        <input type="hidden" name="method" value="<?php echo htmlspecialchars(getDefaultPaymentMethod()); ?>">
+                                        <input type="hidden" name="payment_date" value="<?php echo date('Y-m-d'); ?>">
+                                        <input type="hidden" name="return_to" value="invoices.php">
+                                        <button type="submit" class="min-h-[44px] inline-flex items-center px-3 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-semibold text-sm">
+                                            <i class="fas fa-check mr-2" aria-hidden="true"></i>Mark Paid
+                                        </button>
+                                    </form>
+                                    <?php endif; ?>
+                                    <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" aria-label="View invoice <?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>">
+                                        <i class="fas fa-eye" aria-hidden="true"></i>
                                     </a>
-                                    <a href="edit-invoice.php?id=<?php echo $invoice['id']; ?>" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Edit Invoice">
-                                        <i class="fas fa-edit"></i>
+                                    <a href="edit-invoice.php?id=<?php echo $invoice['id']; ?>" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-blue-800 hover:bg-blue-100 rounded-lg transition-colors" aria-label="Edit invoice <?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>">
+                                        <i class="fas fa-edit" aria-hidden="true"></i>
                                     </a>
                                     <?php if ($invoice['balance_due'] > 0): ?>
-                                    <a href="payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors" title="Add Payment">
-                                        <i class="fas fa-plus-circle"></i>
+                                    <a href="payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Record a partial payment on invoice <?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>">
+                                        <i class="fas fa-plus-circle" aria-hidden="true"></i>
                                     </a>
                                     <?php endif; ?>
-                                    <button onclick="deleteInvoice(<?php echo $invoice['id']; ?>, '<?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>')" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors" title="Delete Invoice">
-                                        <i class="fas fa-trash"></i>
+                                    <button onclick="deleteInvoice(<?php echo $invoice['id']; ?>, '<?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>')" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-red-700 hover:bg-red-100 rounded-lg transition-colors" aria-label="Delete invoice <?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>">
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </td>
@@ -417,12 +435,27 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                 idInput.type = 'hidden';
                 idInput.name = 'invoice_id';
                 idInput.value = invoiceId;
-                
+
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = 'csrf_token';
+                tokenInput.value = <?php echo json_encode(generateCSRFToken()); ?>;
+
                 form.appendChild(idInput);
+                form.appendChild(tokenInput);
                 document.body.appendChild(form);
                 form.submit();
             }
         }
+
+        document.querySelectorAll('.mark-paid-form').forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                const label = 'Mark invoice ' + form.dataset.invoice + ' paid in full (' + form.dataset.amount + ')?';
+                if (!confirm(label)) {
+                    event.preventDefault();
+                }
+            });
+        });
     </script>
 </body>
 </html>

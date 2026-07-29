@@ -321,14 +321,14 @@ $balance = $invoice['total'] - $totalPaid;
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                                 <input type="number" name="line_items[<?php echo $index; ?>][quantity]" 
                                        value="<?php echo $item['quantity']; ?>" step="0.01" min="0"
-                                       onchange="calculateLineTotal(this)"
+                                       onchange="calculateLineTotal(this)" onkeyup="calculateLineTotal(this)"
                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Rate</label>
                                 <input type="number" name="line_items[<?php echo $index; ?>][unit_price]" 
                                        value="<?php echo $item['unit_price']; ?>" step="0.01" min="0"
-                                       onchange="calculateLineTotal(this)"
+                                       onchange="calculateLineTotal(this)" onkeyup="calculateLineTotal(this)"
                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                             </div>
                             <div class="md:col-span-2">
@@ -517,13 +517,13 @@ $balance = $invoice['total'] - $totalPaid;
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                     <input type="number" name="line_items[${lineItemIndex}][quantity]" 
-                           step="0.01" min="0" onchange="calculateLineTotal(this)"
+                           step="0.01" min="0" onchange="calculateLineTotal(this)" onkeyup="calculateLineTotal(this)"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Rate</label>
                     <input type="number" name="line_items[${lineItemIndex}][unit_price]" 
-                           step="0.01" min="0" onchange="calculateLineTotal(this)"
+                           step="0.01" min="0" onchange="calculateLineTotal(this)" onkeyup="calculateLineTotal(this)"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                 </div>
                 <div class="md:col-span-2">

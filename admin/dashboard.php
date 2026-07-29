@@ -1,6 +1,7 @@
 <?php
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
+require_once '../includes/payment-functions.php';
 
 requireAdmin();
 
@@ -109,6 +110,32 @@ if ($monthlyComparison['last_month'] > 0) {
     $monthlyChange = (($monthlyComparison['this_month'] - $monthlyComparison['last_month']) / $monthlyComparison['last_month']) * 100;
 }
 
+$outstandingSummary = getOutstandingSummary($pdo);
+
+$stmt = $pdo->prepare("
+    SELECT DATE_FORMAT(payment_date, '%Y-%m') AS ym, SUM(amount) AS collected
+    FROM payments
+    WHERE payment_date >= DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 11 MONTH)
+    GROUP BY ym
+");
+$stmt->execute();
+$collectedByMonth = [];
+foreach ($stmt->fetchAll() as $row) {
+    $collectedByMonth[$row['ym']] = (float) $row['collected'];
+}
+
+$revenueTrend = [];
+for ($i = 11; $i >= 0; $i--) {
+    $key = date('Y-m', strtotime("first day of -$i month"));
+    $revenueTrend[] = [
+        'label' => date('M', strtotime($key . '-01')),
+        'full' => date('F Y', strtotime($key . '-01')),
+        'amount' => $collectedByMonth[$key] ?? 0.0,
+    ];
+}
+$trendPeak = max(array_column($revenueTrend, 'amount')) ?: 1;
+$trendTotal = array_sum(array_column($revenueTrend, 'amount'));
+
 // REVENUE CHART DATA - Last 12 months
 $stmt = $pdo->query("
     SELECT 
@@ -172,11 +199,11 @@ for ($i = 11; $i >= 0; $i--) {
                     <p class="text-gray-600 mt-1">Here's what needs your attention today.</p>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
-                        <i class="fas fa-plus mr-2"></i>Create Invoice
+                    <a href="record-payments.php" class="inline-flex items-center px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors font-semibold">
+                        <i class="fas fa-check-double mr-2" aria-hidden="true"></i>Record Payments<?php echo (int) $outstandingSummary['open_count'] > 0 ? ' (' . (int) $outstandingSummary['open_count'] . ')' : ''; ?>
                     </a>
-                    <a href="payments.php" class="inline-flex items-center px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold">
-                        <i class="fas fa-credit-card mr-2"></i>Record Payment
+                    <a href="create-invoice.php" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
+                        <i class="fas fa-plus mr-2" aria-hidden="true"></i>Create Invoice
                     </a>
                 </div>
             </div>
@@ -187,7 +214,17 @@ for ($i = 11; $i >= 0; $i--) {
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div>
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">Overdue Invoices Need Attention</h3>
-                    <p class="text-gray-600 mb-4"><?php echo count($overdueInvoices); ?> invoice<?php echo count($overdueInvoices) > 1 ? 's are' : ' is'; ?> past due. Consider following up with these customers.</p>
+                    <p class="text-gray-800 mb-4 text-lg">
+                        <strong><?php echo (int) $outstandingSummary['overdue_count']; ?></strong> invoice<?php echo (int) $outstandingSummary['overdue_count'] === 1 ? ' is' : 's are'; ?> past due, totalling <strong><?php echo formatCurrency($outstandingSummary['overdue_balance']); ?></strong>.
+                        <?php if ((int) $outstandingSummary['overdue_count'] > count($overdueInvoices)): ?>
+                        Showing the <?php echo count($overdueInvoices); ?> oldest below.
+                        <?php endif; ?>
+                    </p>
+                    <p class="mb-4">
+                        <a href="record-payments.php" class="inline-flex items-center min-h-[44px] px-5 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800 font-semibold">
+                            <i class="fas fa-check-double mr-2" aria-hidden="true"></i>Mark the paid ones off
+                        </a>
+                    </p>
                     <div class="space-y-3">
                         <?php foreach ($overdueInvoices as $invoice): ?>
                         <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200">
@@ -244,6 +281,32 @@ for ($i = 11; $i >= 0; $i--) {
                 </div>
             </div>
         </div>
+
+        <section aria-labelledby="revenue-trend-heading" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8 mb-8">
+            <div class="flex flex-wrap items-baseline justify-between gap-2 mb-6">
+                <h3 id="revenue-trend-heading" class="text-lg font-semibold text-gray-900">Money collected, last 12 months</h3>
+                <p class="text-gray-700"><?php echo formatCurrency($trendTotal); ?> total</p>
+            </div>
+            <ol class="flex items-end gap-1 sm:gap-2 h-48" role="list">
+                <?php foreach ($revenueTrend as $month): ?>
+                <li class="flex-1 flex flex-col items-center justify-end h-full">
+                    <span class="text-xs font-semibold text-gray-700 mb-1 whitespace-nowrap"><?php echo $month['amount'] > 0 ? '$' . number_format($month['amount'], 0) : ''; ?></span>
+                    <span class="w-full bg-green-700 rounded-t" style="height: <?php echo max(2, round(($month['amount'] / $trendPeak) * 100)); ?>%"></span>
+                    <span class="text-xs text-gray-700 mt-2"><?php echo $month['label']; ?></span>
+                </li>
+                <?php endforeach; ?>
+            </ol>
+            <table class="sr-only">
+                <caption>Money collected by month, last 12 months</caption>
+                <thead><tr><th scope="col">Month</th><th scope="col">Collected</th></tr></thead>
+                <tbody>
+                    <?php foreach ($revenueTrend as $month): ?>
+                    <tr><th scope="row"><?php echo $month['full']; ?></th><td><?php echo formatCurrency($month['amount']); ?></td></tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <p class="text-gray-700 mt-4">This only counts payments that have been recorded. If a month looks low, check whether those payments were marked off.</p>
+        </section>
 
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
             <!-- Due Soon -->
