@@ -54,6 +54,7 @@ vendor/
 # Config files with sensitive data
 config.local.php
 database.local.php
+includes/config.php
 
 # Upload directories
 uploads/
