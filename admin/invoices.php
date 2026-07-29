@@ -47,57 +47,67 @@ try {
     $hasPropertyColumn = false;
 }
 
-// Simple query without any complex joins or subqueries
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$perPage = 25;
+
+$whereSql = implode(' AND ', $where);
+
+$summaryStmt = $pdo->prepare("
+    SELECT COUNT(*) AS n,
+           COALESCE(SUM(i.total), 0) AS total_amount,
+           COALESCE(SUM(COALESCE(paid.total_paid, 0)), 0) AS total_paid
+    FROM invoices i
+    JOIN customers c ON i.customer_id = c.id
+    LEFT JOIN (
+        SELECT invoice_id, SUM(amount) AS total_paid
+        FROM payments
+        GROUP BY invoice_id
+    ) paid ON paid.invoice_id = i.id
+    WHERE $whereSql
+");
+$summaryStmt->execute($params);
+$summaryRow = $summaryStmt->fetch();
+$totalInvoices = (int) $summaryRow['n'];
+$summaryTotalAmount = (float) $summaryRow['total_amount'];
+$summaryTotalPaid = (float) $summaryRow['total_paid'];
+$totalPages = max(1, (int) ceil($totalInvoices / $perPage));
+$page = min($page, $totalPages);
+$offset = ($page - 1) * $perPage;
+
+$propertySelect = $hasPropertyColumn ? 'cp.property_name, cp.property_type' : 'NULL AS property_name, NULL AS property_type';
+$propertyJoin = $hasPropertyColumn ? 'LEFT JOIN customer_properties cp ON cp.id = i.property_id' : '';
+
 $sql = "
-    SELECT DISTINCT i.id, i.invoice_number, i.date, i.due_date, i.total, i.unique_id, i.customer_id, i.property_id,
-           c.name as customer_name
-    FROM invoices i 
-    JOIN customers c ON i.customer_id = c.id 
-    WHERE " . implode(' AND ', $where) . "
+    SELECT i.id, i.invoice_number, i.date, i.due_date, i.total, i.unique_id, i.customer_id,
+           c.name AS customer_name,
+           COALESCE(paid.total_paid, 0) AS total_paid,
+           i.total - COALESCE(paid.total_paid, 0) AS balance_due,
+           $propertySelect
+    FROM invoices i
+    JOIN customers c ON i.customer_id = c.id
+    LEFT JOIN (
+        SELECT invoice_id, SUM(amount) AS total_paid
+        FROM payments
+        GROUP BY invoice_id
+    ) paid ON paid.invoice_id = i.id
+    $propertyJoin
+    WHERE $whereSql
     ORDER BY $orderBy
+    LIMIT $perPage OFFSET $offset
 ";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $invoices = $stmt->fetchAll();
 
-// Secure debug: Only allow in debug mode
-if (isset($_GET['debug4']) && defined('APP_DEBUG') && APP_DEBUG) {
-    logSecureError("Debug mode accessed for invoices", [
-        'sql' => $sql,
-        'params' => $params,
-        'result_count' => count($invoices)
-    ], 'DEBUG');
-    
-    echo "<pre>Debug mode enabled. Check error logs for SQL details.\n";
-    echo "Total rows: " . count($invoices) . "</pre>";
-    exit;
-}
-
-// Now fetch additional data for each invoice
 foreach ($invoices as $key => $invoice) {
-    // Get payment total
-    $stmt = $pdo->prepare("SELECT COALESCE(SUM(amount), 0) as total_paid FROM payments WHERE invoice_id = ?");
-    $stmt->execute([$invoice['id']]);
-    $invoice['total_paid'] = $stmt->fetchColumn();
-    
-    // Get property info if property_id exists
-    if ($hasPropertyColumn && !empty($invoice['property_id'])) {
-        $stmt = $pdo->prepare("SELECT property_name, property_type FROM customer_properties WHERE id = ?");
-        $stmt->execute([$invoice['property_id']]);
-        $property = $stmt->fetch();
-        $invoice['property_name'] = $property ? $property['property_name'] : null;
-        $invoice['property_type'] = $property ? $property['property_type'] : null;
+    if ($invoice['total_paid'] >= $invoice['total']) {
+        $invoices[$key]['actual_status'] = 'Paid';
+    } elseif ($invoice['total_paid'] > 0) {
+        $invoices[$key]['actual_status'] = 'Partial';
     } else {
-        $invoice['property_name'] = null;
-        $invoice['property_type'] = null;
+        $invoices[$key]['actual_status'] = 'Unpaid';
     }
-    
-    $invoice['actual_status'] = getInvoiceStatus($invoice, $pdo);
-    $invoice['balance_due'] = $invoice['total'] - $invoice['total_paid'];
-    
-    // Update the array with the modified invoice
-    $invoices[$key] = $invoice;
 }
 
 // Remove any reference that might be lingering
@@ -216,9 +226,8 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         <!-- Summary Stats -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <?php
-            $totalInvoices = count($invoices);
-            $totalAmount = array_sum(array_column($invoices, 'total'));
-            $totalPaid = array_sum(array_column($invoices, 'total_paid'));
+            $totalAmount = $summaryTotalAmount;
+            $totalPaid = $summaryTotalPaid;
             $totalOutstanding = $totalAmount - $totalPaid;
             ?>
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -266,7 +275,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                     <i class="fas fa-list mr-3 text-gray-600"></i>
                     Invoice List
                 </h3>
-                <p class="text-sm text-gray-600 mt-1"><?php echo count($invoices); ?> result<?php echo count($invoices) != 1 ? 's' : ''; ?> found</p>
+                <p class="text-sm text-gray-600 mt-1"><?php echo number_format($totalInvoices); ?> invoice<?php echo $totalInvoices != 1 ? 's' : ''; ?> &middot; showing <?php echo count($invoices); ?> on page <?php echo $page; ?> of <?php echo $totalPages; ?></p>
             </div>
             <div class="overflow-x-auto">
                 <?php if (empty($invoices)): ?>
@@ -382,6 +391,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php echo renderPagination($page, $totalPages, $totalInvoices, 'invoices'); ?>
                 <?php endif; ?>
             </div>
         </div>

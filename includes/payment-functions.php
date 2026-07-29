@@ -177,3 +177,47 @@ function getOutstandingSummary($pdo)
 
     return $stmt->fetch();
 }
+
+function renderPagination($page, $totalPages, $totalItems, $itemLabel = 'items')
+{
+    if ($totalPages <= 1) {
+        return '';
+    }
+
+    $link = function ($target) {
+        $params = array_merge($_GET, ['page' => $target]);
+        return '?' . http_build_query($params);
+    };
+
+    $base = 'min-h-[44px] min-w-[44px] inline-flex items-center justify-center px-4 rounded-lg font-semibold';
+    $html = '<nav aria-label="Pagination" class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-t border-gray-200">';
+    $html .= '<p class="text-gray-700">Showing page ' . $page . ' of ' . $totalPages
+           . ' &middot; ' . number_format($totalItems) . ' ' . htmlspecialchars($itemLabel) . ' total</p>';
+    $html .= '<div class="flex items-center gap-2">';
+
+    if ($page > 1) {
+        $html .= '<a href="' . htmlspecialchars($link($page - 1)) . '" class="' . $base . ' bg-gray-200 text-gray-900 hover:bg-gray-300">'
+               . '<i class="fas fa-chevron-left mr-2" aria-hidden="true"></i>Previous</a>';
+    }
+
+    $start = max(1, $page - 2);
+    $end = min($totalPages, $start + 4);
+    $start = max(1, $end - 4);
+
+    for ($i = $start; $i <= $end; $i++) {
+        if ($i === $page) {
+            $html .= '<span aria-current="page" class="' . $base . ' bg-gray-900 text-white">' . $i . '</span>';
+        } else {
+            $html .= '<a href="' . htmlspecialchars($link($i)) . '" aria-label="Go to page ' . $i . '" class="' . $base . ' bg-white border border-gray-400 text-gray-900 hover:bg-gray-100">' . $i . '</a>';
+        }
+    }
+
+    if ($page < $totalPages) {
+        $html .= '<a href="' . htmlspecialchars($link($page + 1)) . '" class="' . $base . ' bg-gray-200 text-gray-900 hover:bg-gray-300">'
+               . 'Next<i class="fas fa-chevron-right ml-2" aria-hidden="true"></i></a>';
+    }
+
+    $html .= '</div></nav>';
+
+    return $html;
+}

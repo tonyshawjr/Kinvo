@@ -1,6 +1,7 @@
 <?php
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
+require_once '../includes/payment-functions.php';
 require_once '../includes/estimate-functions.php';
 
 // Set security headers
@@ -45,7 +46,24 @@ if ($search) {
     $params[] = "%$search%";
 }
 
-$query .= " GROUP BY e.id ORDER BY e.created_at DESC";
+$countQuery = "
+    SELECT COUNT(DISTINCT e.id)
+    FROM estimates e
+    LEFT JOIN customers c ON e.customer_id = c.id
+    WHERE 1=1
+" . substr($query, strpos($query, 'WHERE 1=1') + strlen('WHERE 1=1'));
+
+$countStmt = $pdo->prepare($countQuery);
+$countStmt->execute($params);
+$filteredEstimates = (int) $countStmt->fetchColumn();
+
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$perPage = 25;
+$totalPages = max(1, (int) ceil($filteredEstimates / $perPage));
+$page = min($page, $totalPages);
+$offset = ($page - 1) * $perPage;
+
+$query .= " GROUP BY e.id ORDER BY e.created_at DESC LIMIT $perPage OFFSET $offset";
 
 // Prepare and execute
 $stmt = $pdo->prepare($query);
@@ -207,7 +225,7 @@ $statusCounts = $pdo->query("
                     <i class="fas fa-list mr-3 text-gray-600"></i>
                     Estimate List
                 </h3>
-                <p class="text-sm text-gray-600 mt-1"><?php echo count($estimates); ?> result<?php echo count($estimates) != 1 ? 's' : ''; ?> found</p>
+                <p class="text-sm text-gray-600 mt-1"><?php echo number_format($filteredEstimates); ?> estimate<?php echo $filteredEstimates != 1 ? 's' : ''; ?> &middot; showing <?php echo count($estimates); ?> on page <?php echo $page; ?> of <?php echo $totalPages; ?></p>
             </div>
             <div class="overflow-x-auto">
                 <?php if (empty($estimates)): ?>
@@ -316,6 +334,7 @@ $statusCounts = $pdo->query("
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php echo renderPagination($page, $totalPages, $filteredEstimates, 'estimates'); ?>
                 <?php endif; ?>
             </div>
         </div>
