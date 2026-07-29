@@ -191,7 +191,7 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
                 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
                     <p role="status" aria-live="polite" class="text-lg text-gray-900" id="running-total">Nothing selected yet.</p>
                     <button type="submit" id="submit-button" disabled
-                            class="min-h-[56px] px-8 py-4 bg-green-700 text-white rounded-lg font-bold text-lg hover:bg-green-800 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                            class="min-h-[56px] px-8 py-4 bg-green-700 text-white rounded-lg font-bold text-lg hover:bg-green-800 disabled:bg-gray-600 disabled:cursor-not-allowed">
                         <i class="fas fa-check mr-2" aria-hidden="true"></i>Mark selected paid
                     </button>
                 </div>
