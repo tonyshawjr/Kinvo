@@ -531,9 +531,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         propertySelect.appendChild(option);
                     });
                 })
-                .catch(error => {
-                    console.log('Could not load properties:', error);
-                });
+                .catch(() => {});
         }
 
         function hideEmptyState() {
