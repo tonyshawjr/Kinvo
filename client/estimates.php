@@ -144,12 +144,12 @@ logClientActivity($pdo, $customer_id, 'estimates_view', 'Viewed estimate list');
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estimate #</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expires</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Estimate #</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Expires</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -159,21 +159,21 @@ logClientActivity($pdo, $customer_id, 'estimates_view', 'Viewed estimate list');
                                         <div class="text-sm font-medium text-gray-900">
                                             <?php echo htmlspecialchars($estimate['estimate_number']); ?>
                                             <?php if ($estimate['has_invoice']): ?>
-                                                <span class="ml-2 text-xs text-green-600">
+                                                <span class="ml-2 text-xs text-green-700">
                                                     <i class="fas fa-check-circle"></i> Invoiced
                                                 </span>
                                             <?php endif; ?>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                         <?php echo date('M j, Y', strtotime($estimate['date'])); ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                         <?php 
                                         $expires_date = strtotime($estimate['expires_date']);
                                         $is_expired = $expires_date < time() && $estimate['status'] !== 'Approved';
                                         ?>
-                                        <span class="<?php echo $is_expired ? 'text-red-600 font-semibold' : ''; ?>">
+                                        <span class="<?php echo $is_expired ? 'text-red-700 font-semibold' : ''; ?>">
                                             <?php echo date('M j, Y', $expires_date); ?>
                                             <?php if ($is_expired): ?>
                                                 <i class="fas fa-exclamation-triangle ml-1"></i>
@@ -189,15 +189,15 @@ logClientActivity($pdo, $customer_id, 'estimates_view', 'Viewed estimate list');
                                         echo formatEstimateStatus($display_status); 
                                         ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                         <div class="flex space-x-2">
                                             <a href="/public/view-estimate.php?id=<?php echo $estimate['unique_id']; ?>" 
-                                               class="text-blue-600 hover:text-blue-500" target="_blank" title="View Estimate">
+                                               class="text-blue-800 hover:text-blue-500" target="_blank" title="View Estimate">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <?php if ($estimate['status'] === 'Sent'): ?>
                                                 <a href="/public/view-estimate.php?id=<?php echo $estimate['unique_id']; ?>" 
-                                                   class="text-green-600 hover:text-green-500" title="Review & Approve">
+                                                   class="text-green-700 hover:text-green-500" title="Review & Approve">
                                                     <i class="fas fa-check-circle"></i>
                                                 </a>
                                             <?php endif; ?>
@@ -207,7 +207,7 @@ logClientActivity($pdo, $customer_id, 'estimates_view', 'Viewed estimate list');
                             <?php endforeach; ?>
                             <?php if (empty($estimates)): ?>
                                 <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-700">
                                         No estimates found matching your criteria
                                     </td>
                                 </tr>

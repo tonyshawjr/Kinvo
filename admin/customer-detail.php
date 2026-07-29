@@ -333,7 +333,7 @@ foreach ($monthlyPayments as $payment) {
         <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
             <div class="mb-4 lg:mb-0">
                 <div class="flex items-center space-x-4">
-                    <a href="customers.php" class="p-2 text-gray-500 hover:text-gray-700 transition-colors">
+                    <a href="customers.php" class="p-2 text-gray-700 hover:text-gray-700 transition-colors">
                         <i class="fas fa-arrow-left"></i>
                     </a>
                     <div>
@@ -373,16 +373,16 @@ foreach ($monthlyPayments as $payment) {
         <?php if ($success): ?>
         <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
             <div class="flex items-start space-x-3">
-                <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                <i class="fas fa-check-circle text-green-700 mt-1"></i>
                 <div>
                     <h4 class="font-semibold text-green-900">Success!</h4>
                     <p class="text-sm text-green-700 mt-1"><?php echo htmlspecialchars($success); ?></p>
                     <?php if (strpos($success, 'PIN:') !== false): ?>
                     <div class="mt-2 p-3 bg-white rounded border border-green-200">
                         <p class="text-sm"><strong>Email:</strong> <?php echo htmlspecialchars($customer['email']); ?></p>
-                        <p class="text-sm"><strong>Login URL:</strong> <a href="/client/login.php?email=<?php echo urlencode($customer['email']); ?>" class="text-blue-600 hover:text-blue-500" target="_blank">/client/login.php</a></p>
+                        <p class="text-sm"><strong>Login URL:</strong> <a href="/client/login.php?email=<?php echo urlencode($customer['email']); ?>" class="text-blue-800 hover:text-blue-500" target="_blank">/client/login.php</a></p>
                     </div>
-                    <p class="text-xs text-green-600 mt-2">
+                    <p class="text-xs text-green-700 mt-2">
                         <i class="fas fa-info-circle"></i> 
                         Send these credentials to your customer so they can access their invoices and payment history.
                     </p>
@@ -395,7 +395,7 @@ foreach ($monthlyPayments as $payment) {
         <?php if ($error): ?>
         <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <div class="flex items-start space-x-3">
-                <i class="fas fa-exclamation-triangle text-red-600 mt-1"></i>
+                <i class="fas fa-exclamation-triangle text-red-700 mt-1"></i>
                 <div>
                     <h4 class="font-semibold text-red-900">Error</h4>
                     <p class="text-sm text-red-700"><?php echo htmlspecialchars($error); ?></p>
@@ -419,7 +419,7 @@ foreach ($monthlyPayments as $payment) {
                             <i class="fas fa-user text-gray-600"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500">Customer Name</p>
+                            <p class="text-sm text-gray-700">Customer Name</p>
                             <p class="font-semibold text-gray-900"><?php echo htmlspecialchars($customer['name']); ?></p>
                         </div>
                     </div>
@@ -428,13 +428,13 @@ foreach ($monthlyPayments as $payment) {
                             <i class="fas fa-envelope text-gray-600"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500">Email Address</p>
+                            <p class="text-sm text-gray-700">Email Address</p>
                             <?php if ($customer['email']): ?>
                             <a href="mailto:<?php echo htmlspecialchars($customer['email']); ?>" class="font-semibold text-gray-900 hover:text-gray-700">
                                 <?php echo htmlspecialchars($customer['email']); ?>
                             </a>
                             <?php else: ?>
-                            <p class="font-semibold text-gray-400">Not provided</p>
+                            <p class="font-semibold text-gray-700">Not provided</p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -443,13 +443,13 @@ foreach ($monthlyPayments as $payment) {
                             <i class="fas fa-phone text-gray-600"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500">Phone Number</p>
+                            <p class="text-sm text-gray-700">Phone Number</p>
                             <?php if ($customer['phone']): ?>
-                            <a href="tel:<?php echo htmlspecialchars($customer['phone']); ?>" class="font-semibold text-blue-600 hover:text-blue-700">
+                            <a href="tel:<?php echo htmlspecialchars($customer['phone']); ?>" class="font-semibold text-blue-800 hover:text-blue-700">
                                 <?php echo htmlspecialchars($customer['phone']); ?>
                             </a>
                             <?php else: ?>
-                            <p class="font-semibold text-gray-400">Not provided</p>
+                            <p class="font-semibold text-gray-700">Not provided</p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -465,9 +465,9 @@ foreach ($monthlyPayments as $payment) {
                     <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Total Invoices</p>
                     <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo $stats['total_invoices']; ?></p>
                     <div class="flex items-center justify-center space-x-2 text-xs">
-                        <span class="text-gray-500"><?php echo $stats['paid_invoices']; ?> paid</span>
-                        <span class="text-gray-400">•</span>
-                        <span class="text-gray-500"><?php echo $stats['unpaid_invoices']; ?> unpaid</span>
+                        <span class="text-gray-700"><?php echo $stats['paid_invoices']; ?> paid</span>
+                        <span class="text-gray-700">•</span>
+                        <span class="text-gray-700"><?php echo $stats['unpaid_invoices']; ?> unpaid</span>
                     </div>
                 </div>
             </div>
@@ -475,14 +475,14 @@ foreach ($monthlyPayments as $payment) {
                 <div class="text-center">
                     <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Total Revenue</p>
                     <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($stats['total_paid']); ?></p>
-                    <p class="text-sm text-gray-500">from <?php echo formatCurrency($stats['total_invoiced']); ?> invoiced</p>
+                    <p class="text-sm text-gray-700">from <?php echo formatCurrency($stats['total_invoiced']); ?> invoiced</p>
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
                 <div class="text-center">
                     <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Outstanding</p>
                     <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($stats['total_outstanding']); ?></p>
-                    <p class="text-sm text-gray-500">amount due</p>
+                    <p class="text-sm text-gray-700">amount due</p>
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
@@ -490,7 +490,7 @@ foreach ($monthlyPayments as $payment) {
                     <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Average Invoice</p>
                     <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($stats['avg_invoice_amount']); ?></p>
                     <?php if ($stats['first_invoice_date']): ?>
-                    <p class="text-sm text-gray-500">Customer since <?php echo date('M Y', strtotime($stats['first_invoice_date'])); ?></p>
+                    <p class="text-sm text-gray-700">Customer since <?php echo date('M Y', strtotime($stats['first_invoice_date'])); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -526,7 +526,7 @@ foreach ($monthlyPayments as $payment) {
                         <?php if (empty($invoices)): ?>
                         <div class="text-center py-12">
                             <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-file-invoice text-gray-400 text-2xl"></i>
+                                <i class="fas fa-file-invoice text-gray-700 text-2xl"></i>
                             </div>
                             <h4 class="text-lg font-semibold text-gray-900 mb-2">No Invoices Yet</h4>
                             <p class="text-gray-600 mb-6">This customer doesn't have any invoices.</p>
@@ -563,7 +563,7 @@ foreach ($monthlyPayments as $payment) {
                                         </span>
                                         <?php endif; ?>
                                         <?php else: ?>
-                                        <div class="text-gray-400 text-sm">No property</div>
+                                        <div class="text-gray-700 text-sm">No property</div>
                                         <?php endif; ?>
                                     </td>
                                     <td class="px-6 py-4">
@@ -573,7 +573,7 @@ foreach ($monthlyPayments as $payment) {
                                         <div class="text-gray-600">
                                             <?php echo date('M d, Y', strtotime($invoice['due_date'])); ?>
                                             <?php if ($invoice['actual_status'] === 'Unpaid' && strtotime($invoice['due_date']) < time()): ?>
-                                            <span class="block text-xs text-red-600 font-medium">Overdue</span>
+                                            <span class="block text-xs text-red-700 font-medium">Overdue</span>
                                             <?php endif; ?>
                                         </div>
                                     </td>
@@ -586,17 +586,17 @@ foreach ($monthlyPayments as $payment) {
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <div class="font-semibold <?php echo $invoice['balance_due'] > 0 ? 'text-red-600' : 'text-green-600'; ?>">
+                                        <div class="font-semibold <?php echo $invoice['balance_due'] > 0 ? 'text-red-700' : 'text-green-700'; ?>">
                                             <?php echo formatCurrency($invoice['balance_due']); ?>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center justify-center space-x-2">
-                                            <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Invoice">
+                                            <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="p-2 text-blue-800 hover:bg-blue-50 rounded-lg transition-colors" title="View Invoice">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <?php if ($invoice['balance_due'] > 0): ?>
-                                            <a href="payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="Add Payment">
+                                            <a href="payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="p-2 text-green-700 hover:bg-green-50 rounded-lg transition-colors" title="Add Payment">
                                                 <i class="fas fa-plus-circle"></i>
                                             </a>
                                             <?php endif; ?>
@@ -628,7 +628,7 @@ foreach ($monthlyPayments as $payment) {
                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                 <div>
                                     <p class="font-medium text-gray-900"><?php echo htmlspecialchars($payment['invoice_number']); ?></p>
-                                    <div class="flex items-center text-xs text-gray-500 space-x-2">
+                                    <div class="flex items-center text-xs text-gray-700 space-x-2">
                                         <span><?php echo htmlspecialchars($payment['method']); ?></span>
                                         <span>•</span>
                                         <span><?php echo date('M d, Y', strtotime($payment['payment_date'])); ?></span>
@@ -669,7 +669,7 @@ foreach ($monthlyPayments as $payment) {
                         <?php endif; ?>
                         <?php if ($customer['phone']): ?>
                         <a href="tel:<?php echo htmlspecialchars($customer['phone']); ?>" class="flex items-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors group">
-                            <i class="fas fa-phone text-blue-600 mr-3"></i>
+                            <i class="fas fa-phone text-blue-800 mr-3"></i>
                             <span class="font-medium text-gray-900 group-hover:text-blue-700">Call Customer</span>
                         </a>
                         <?php endif; ?>
@@ -697,7 +697,7 @@ foreach ($monthlyPayments as $payment) {
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-600">Payment rate:</span>
-                            <span class="font-medium text-green-600">
+                            <span class="font-medium text-green-700">
                                 <?php 
                                 $paymentRate = $stats['total_invoiced'] > 0 ? ($stats['total_paid'] / $stats['total_invoiced']) * 100 : 0;
                                 echo number_format($paymentRate, 1) . '%';
@@ -714,7 +714,7 @@ foreach ($monthlyPayments as $payment) {
                                         <?php echo $portalAccess['is_active'] ? 'Active' : 'Inactive'; ?>
                                     </span>
                                 <?php else: ?>
-                                    <span class="text-gray-400">Not created</span>
+                                    <span class="text-gray-700">Not created</span>
                                 <?php endif; ?>
                             </div>
                             
@@ -723,17 +723,17 @@ foreach ($monthlyPayments as $payment) {
                                 <form method="POST" onsubmit="return confirm('Are you sure you want to reset the PIN? The customer will need the new PIN to access their portal.');" class="inline">
                                     <?php echo getCSRFTokenField(); ?>
                                     <input type="hidden" name="reset_pin" value="1">
-                                    <button type="submit" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                    <button type="submit" class="text-sm text-blue-800 hover:text-blue-700 font-medium">
                                         <i class="fas fa-sync-alt mr-1"></i>Reset PIN
                                     </button>
                                 </form>
                                 
-                                <span class="text-gray-400 mx-2">•</span>
+                                <span class="text-gray-700 mx-2">•</span>
                                 
                                 <form method="POST" onsubmit="return confirm('Are you sure you want to <?php echo $portalAccess['is_active'] ? 'deactivate' : 'activate'; ?> the portal?');" class="inline">
                                     <?php echo getCSRFTokenField(); ?>
                                     <input type="hidden" name="toggle_portal" value="1">
-                                    <button type="submit" class="text-sm <?php echo $portalAccess['is_active'] ? 'text-red-600 hover:text-red-700' : 'text-green-600 hover:text-green-700'; ?> font-medium">
+                                    <button type="submit" class="text-sm <?php echo $portalAccess['is_active'] ? 'text-red-700 hover:text-red-700' : 'text-green-700 hover:text-green-700'; ?> font-medium">
                                         <i class="fas fa-<?php echo $portalAccess['is_active'] ? 'times-circle' : 'check-circle'; ?> mr-1"></i>
                                         <?php echo $portalAccess['is_active'] ? 'Deactivate' : 'Activate'; ?>
                                     </button>

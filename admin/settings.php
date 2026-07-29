@@ -229,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    <i class="fas fa-check-circle text-green-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Settings Updated Successfully!</h3>
@@ -243,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                    <i class="fas fa-exclamation-circle text-red-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Error Updating Settings</h3>
@@ -267,49 +267,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <?php echo getCSRFTokenField(); ?>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="business-name" class="block text-sm font-medium text-gray-700 mb-2">
                                     <i class="fas fa-store mr-1"></i>Business Name *
                                 </label>
                                 <input type="text" name="business_name" required
                                        value="<?php echo htmlspecialchars($businessSettings['business_name']); ?>"
                                        placeholder="Your Business Name"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
-                                <p class="mt-1 text-sm text-gray-500">This will appear prominently on all invoices</p>
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="business-name">
+                                <p class="mt-1 text-sm text-gray-700">This will appear prominently on all invoices</p>
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="business-phone" class="block text-sm font-medium text-gray-700 mb-2">
                                     <i class="fas fa-phone mr-1"></i>Business Phone *
                                 </label>
                                 <input type="tel" name="business_phone" required
                                        value="<?php echo htmlspecialchars($businessSettings['business_phone']); ?>"
                                        placeholder="(555) 123-4567"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
-                                <p class="mt-1 text-sm text-gray-500">Include area code for professional appearance</p>
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="business-phone">
+                                <p class="mt-1 text-sm text-gray-700">Include area code for professional appearance</p>
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="business-email" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-envelope mr-1"></i>Business Email *
                             </label>
                             <input type="email" name="business_email" required
                                    value="<?php echo htmlspecialchars($businessSettings['business_email']); ?>"
                                    placeholder="business@example.com"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
-                            <p class="mt-1 text-sm text-gray-500">Contact email for customer inquiries and support</p>
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="business-email">
+                            <p class="mt-1 text-sm text-gray-700">Contact email for customer inquiries and support</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="business-ein" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-id-card mr-1"></i>Business EIN (Optional)
                             </label>
                             <input type="text" name="business_ein"
                                    value="<?php echo htmlspecialchars($businessSettings['business_ein'] ?? ''); ?>"
                                    placeholder="12-3456789"
                                    maxlength="20"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
-                            <p class="mt-1 text-sm text-gray-500">Employer Identification Number - will appear on invoices if provided</p>
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="business-ein">
+                            <p class="mt-1 text-sm text-gray-700">Employer Identification Number - will appear on invoices if provided</p>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -318,28 +318,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <i class="fas fa-mobile-alt mr-1"></i>Cash App Username (Optional)
                                 </label>
                                 <div class="flex">
-                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">$</span>
+                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-700 text-sm">$</span>
                                     <input type="text" name="cashapp_username"
                                            value="<?php echo htmlspecialchars($businessSettings['cashapp_username'] ?? ''); ?>"
                                            placeholder="username"
                                            maxlength="50"
                                            class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                 </div>
-                                <p class="mt-1 text-sm text-gray-500">Creates direct payment link: cash.app/$username</p>
+                                <p class="mt-1 text-sm text-gray-700">Creates direct payment link: cash.app/$username</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     <i class="fab fa-venmo mr-1"></i>Venmo Username (Optional)
                                 </label>
                                 <div class="flex">
-                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">@</span>
+                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-700 text-sm">@</span>
                                     <input type="text" name="venmo_username"
                                            value="<?php echo htmlspecialchars($businessSettings['venmo_username'] ?? ''); ?>"
                                            placeholder="username"
                                            maxlength="50"
                                            class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                 </div>
-                                <p class="mt-1 text-sm text-gray-500">Creates direct payment link with invoice amount pre-filled</p>
+                                <p class="mt-1 text-sm text-gray-700">Creates direct payment link with invoice amount pre-filled</p>
                             </div>
                         </div>
 
@@ -349,38 +349,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <i class="fas fa-clock mr-1"></i>Default Hourly Rate *
                                 </label>
                                 <div class="flex">
-                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">$</span>
+                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-700 text-sm">$</span>
                                     <input type="number" name="default_hourly_rate" step="0.01" min="0" required
                                            value="<?php echo htmlspecialchars($businessSettings['default_hourly_rate'] ?? '45.00'); ?>"
                                            placeholder="45.00"
                                            class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                 </div>
-                                <p class="mt-1 text-sm text-gray-500">Default rate per hour - can be overridden per customer</p>
+                                <p class="mt-1 text-sm text-gray-700">Default rate per hour - can be overridden per customer</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     <i class="fas fa-car mr-1"></i>Mileage Rate *
                                 </label>
                                 <div class="flex">
-                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">$</span>
+                                    <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-700 text-sm">$</span>
                                     <input type="number" name="mileage_rate" step="0.001" min="0" required
                                            value="<?php echo htmlspecialchars($businessSettings['mileage_rate'] ?? '0.650'); ?>"
                                            placeholder="0.650"
                                            class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
-                                    <span class="inline-flex items-center px-3 rounded-r-lg border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">per mile</span>
+                                    <span class="inline-flex items-center px-3 rounded-r-lg border border-l-0 border-gray-300 bg-gray-50 text-gray-700 text-sm">per mile</span>
                                 </div>
-                                <p class="mt-1 text-sm text-gray-500">Standard IRS rate is $0.650 per mile (2023)</p>
+                                <p class="mt-1 text-sm text-gray-700">Standard IRS rate is $0.650 per mile (2023)</p>
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="payment-instructions" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-credit-card mr-1"></i>Payment Instructions *
                             </label>
                             <textarea name="payment_instructions" rows="6" required
                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all resize-none"
-                                      placeholder="Example: Payment is due within 7 days. Please pay via:&#10;• Zelle: 555-123-4567&#10;• Venmo: @yourusername&#10;• Cash App: $yourusername"><?php echo htmlspecialchars($businessSettings['payment_instructions']); ?></textarea>
-                            <p class="mt-1 text-sm text-gray-500">
+                                      placeholder="Example: Payment is due within 7 days. Please pay via:&#10;• Zelle: 555-123-4567&#10;• Venmo: @yourusername&#10;• Cash App: $yourusername" id="payment-instructions"><?php echo htmlspecialchars($businessSettings['payment_instructions']); ?></textarea>
+                            <p class="mt-1 text-sm text-gray-700">
                                 These instructions will appear on every invoice. Include your preferred payment methods with account details.
                             </p>
                         </div>
@@ -395,29 +395,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <label for="current-password" class="block text-sm font-medium text-gray-700 mb-2">
                                         Current Password
                                     </label>
                                     <input type="password" name="current_password"
                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all"
-                                           placeholder="Enter current password">
+                                           placeholder="Enter current password" id="current-password">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <label for="new-password" class="block text-sm font-medium text-gray-700 mb-2">
                                         New Password
                                     </label>
                                     <input type="password" name="new_password"
                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all"
-                                           placeholder="Enter new password">
-                                    <p class="mt-1 text-sm text-gray-500">Minimum 6 characters</p>
+                                           placeholder="Enter new password" id="new-password">
+                                    <p class="mt-1 text-sm text-gray-700">Minimum 6 characters</p>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-2">
                                         Confirm New Password
                                     </label>
                                     <input type="password" name="confirm_password"
                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all"
-                                           placeholder="Confirm new password">
+                                           placeholder="Confirm new password" id="confirm-password">
                                 </div>
                             </div>
                         </div>
@@ -496,7 +496,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="bg-white rounded-lg shadow-sm border border-red-200 overflow-hidden">
                     <div class="bg-red-50 px-6 py-4 border-b border-red-200">
                         <h3 class="text-lg font-semibold text-red-900 flex items-center">
-                            <i class="fas fa-exclamation-triangle mr-3 text-red-600"></i>
+                            <i class="fas fa-exclamation-triangle mr-3 text-red-700"></i>
                             Danger Zone
                         </h3>
                     </div>
@@ -508,7 +508,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     The estimates feature allows you to create quotes that can be converted to invoices. If you no longer need this feature, you can remove it completely.
                                 </p>
                                 <button type="button" onclick="confirmRemoveEstimates()" 
-                                   class="inline-flex items-center px-4 py-2 bg-yellow-600 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 transition-colors">
+                                   class="inline-flex items-center px-4 py-2 bg-yellow-700 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 transition-colors">
                                     <i class="fas fa-file-invoice mr-2"></i>
                                     Remove Estimates Feature
                                 </button>

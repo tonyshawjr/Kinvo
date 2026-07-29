@@ -198,7 +198,7 @@ if ($format === 'pdf') {
             <!-- Navigation & Title -->
             <div class="mb-6">
                 <div class="flex items-center space-x-4 mb-4">
-                    <a href="customer-detail.php?id=<?php echo $customer['id']; ?>" class="inline-flex items-center text-gray-500 hover:text-gray-700 transition-colors group">
+                    <a href="customer-detail.php?id=<?php echo $customer['id']; ?>" class="inline-flex items-center text-gray-700 hover:text-gray-700 transition-colors group">
                         <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
                         <span class="text-sm font-medium">Back to Customer</span>
                     </a>
@@ -208,10 +208,10 @@ if ($format === 'pdf') {
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <p class="text-xl text-gray-600"><?php echo htmlspecialchars($customer['name']); ?></p>
-                            <p class="text-sm text-gray-500 mt-1">Statement Period: <?php echo $rangeLabel; ?></p>
+                            <p class="text-sm text-gray-700 mt-1">Statement Period: <?php echo $rangeLabel; ?></p>
                         </div>
                         <div class="mt-4 sm:mt-0">
-                            <p class="text-sm text-gray-500">Generated on</p>
+                            <p class="text-sm text-gray-700">Generated on</p>
                             <p class="text-lg font-semibold text-gray-900"><?php echo date('M j, Y \a\t g:i A'); ?></p>
                         </div>
                     </div>
@@ -223,7 +223,7 @@ if ($format === 'pdf') {
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-1">Statement Actions</h3>
-                        <p class="text-sm text-gray-500">Generate, print, or share this statement</p>
+                        <p class="text-sm text-gray-700">Generate, print, or share this statement</p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-3">
                         <button onclick="window.print()" class="inline-flex items-center justify-center px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
@@ -243,7 +243,7 @@ if ($format === 'pdf') {
             <div class="bg-white rounded-lg border border-gray-200 p-6">
                 <div class="mb-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-1">Statement Options</h3>
-                    <p class="text-sm text-gray-500">Customize the date range and content for this statement</p>
+                    <p class="text-sm text-gray-700">Customize the date range and content for this statement</p>
                 </div>
                 
                 <form method="GET" class="space-y-8">
@@ -254,8 +254,8 @@ if ($format === 'pdf') {
                         <h4 class="text-sm font-semibold text-gray-900 uppercase tracking-wide">Date Range</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
-                                <select name="date_range" onchange="toggleCustomDates()" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                                <label for="date-range" class="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
+                                <select name="date_range" onchange="toggleCustomDates()" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="date-range">
                                     <option value="30_days" <?php echo $dateRange === '30_days' ? 'selected' : ''; ?>>Last 30 Days</option>
                                     <option value="90_days" <?php echo $dateRange === '90_days' ? 'selected' : ''; ?>>Last 90 Days</option>
                                     <option value="6_months" <?php echo $dateRange === '6_months' ? 'selected' : ''; ?>>Last 6 Months</option>
@@ -267,12 +267,12 @@ if ($format === 'pdf') {
                             <div id="custom-dates" class="space-y-4" style="display: <?php echo $dateRange === 'custom' ? 'block' : 'none'; ?>;">
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">From Date</label>
-                                        <input type="date" name="start_date" value="<?php echo $customStartDate; ?>" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                                        <label for="start-date" class="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+                                        <input type="date" name="start_date" value="<?php echo $customStartDate; ?>" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="start-date">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">To Date</label>
-                                        <input type="date" name="end_date" value="<?php echo $customEndDate; ?>" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                                        <label for="end-date" class="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+                                        <input type="date" name="end_date" value="<?php echo $customEndDate; ?>" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="end-date">
                                     </div>
                                 </div>
                             </div>
@@ -286,10 +286,10 @@ if ($format === 'pdf') {
                             <div class="space-y-4">
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <label class="flex items-start space-x-3 cursor-pointer">
-                                        <input type="checkbox" name="outstanding_only" value="1" <?php echo $includeOutstandingOnly ? 'checked' : ''; ?> class="w-5 h-5 text-gray-600 border-gray-300 rounded focus:ring-gray-500 mt-0.5">
+                                        <input type="checkbox" name="outstanding_only" value="1" <?php echo $includeOutstandingOnly ? 'checked' : ''; ?> class="w-6 h-6 text-gray-700 border-gray-400 rounded focus:ring-gray-500 mt-0.5">
                                         <div>
                                             <span class="text-sm font-medium text-gray-900">Outstanding Invoices Only</span>
-                                            <p class="text-xs text-gray-500 mt-1">Show only invoices with remaining balances</p>
+                                            <p class="text-xs text-gray-700 mt-1">Show only invoices with remaining balances</p>
                                         </div>
                                     </label>
                                 </div>
@@ -298,10 +298,10 @@ if ($format === 'pdf') {
                             <div class="space-y-4">
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <label class="flex items-start space-x-3 cursor-pointer">
-                                        <input type="checkbox" name="include_payments" value="1" <?php echo $includePayments ? 'checked' : ''; ?> class="w-5 h-5 text-gray-600 border-gray-300 rounded focus:ring-gray-500 mt-0.5">
+                                        <input type="checkbox" name="include_payments" value="1" <?php echo $includePayments ? 'checked' : ''; ?> class="w-6 h-6 text-gray-700 border-gray-400 rounded focus:ring-gray-500 mt-0.5">
                                         <div>
                                             <span class="text-sm font-medium text-gray-900">Include Payments</span>
-                                            <p class="text-xs text-gray-500 mt-1">Show payment history in the statement</p>
+                                            <p class="text-xs text-gray-700 mt-1">Show payment history in the statement</p>
                                         </div>
                                     </label>
                                 </div>
@@ -379,7 +379,7 @@ if ($format === 'pdf') {
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Current Account Balance:</span>
-                                    <span class="font-bold text-xl <?php echo $overallBalance > 0 ? 'text-red-600' : 'text-green-600'; ?>">$<?php echo number_format($overallBalance, 2); ?></span>
+                                    <span class="font-bold text-xl <?php echo $overallBalance > 0 ? 'text-red-700' : 'text-green-700'; ?>">$<?php echo number_format($overallBalance, 2); ?></span>
                                 </div>
                             </div>
                         </div>
@@ -394,27 +394,27 @@ if ($format === 'pdf') {
                     <div class="bg-white rounded-lg p-6 border border-gray-200">
                         <div class="flex items-center justify-between mb-4">
                             <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-file-invoice text-blue-600 text-xl"></i>
+                                <i class="fas fa-file-invoice text-blue-800 text-xl"></i>
                             </div>
                             <div class="text-right">
                                 <div class="text-2xl font-bold text-gray-900">$<?php echo number_format($totalInvoiced, 2); ?></div>
-                                <div class="text-sm text-gray-500">Total Invoiced</div>
+                                <div class="text-sm text-gray-700">Total Invoiced</div>
                             </div>
                         </div>
-                        <div class="text-xs text-gray-500">New charges for this period</div>
+                        <div class="text-xs text-gray-700">New charges for this period</div>
                     </div>
                     
                     <div class="bg-white rounded-lg p-6 border border-gray-200">
                         <div class="flex items-center justify-between mb-4">
                             <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-credit-card text-green-600 text-xl"></i>
+                                <i class="fas fa-credit-card text-green-700 text-xl"></i>
                             </div>
                             <div class="text-right">
                                 <div class="text-2xl font-bold text-gray-900">$<?php echo number_format($totalPaid, 2); ?></div>
-                                <div class="text-sm text-gray-500">Payments Received</div>
+                                <div class="text-sm text-gray-700">Payments Received</div>
                             </div>
                         </div>
-                        <div class="text-xs text-gray-500">Payments applied this period</div>
+                        <div class="text-xs text-gray-700">Payments applied this period</div>
                     </div>
                     
                     <div class="bg-white rounded-lg p-6 border border-gray-200">
@@ -423,11 +423,11 @@ if ($format === 'pdf') {
                                 <i class="fas fa-balance-scale text-gray-600 text-xl"></i>
                             </div>
                             <div class="text-right">
-                                <div class="text-2xl font-bold <?php echo $currentBalance > 0 ? 'text-red-600' : 'text-green-600'; ?>">$<?php echo number_format($currentBalance, 2); ?></div>
-                                <div class="text-sm text-gray-500">Net Change</div>
+                                <div class="text-2xl font-bold <?php echo $currentBalance > 0 ? 'text-red-700' : 'text-green-700'; ?>">$<?php echo number_format($currentBalance, 2); ?></div>
+                                <div class="text-sm text-gray-700">Net Change</div>
                             </div>
                         </div>
-                        <div class="text-xs text-gray-500">Period activity balance</div>
+                        <div class="text-xs text-gray-700">Period activity balance</div>
                     </div>
                 </div>
             </div>
@@ -439,10 +439,10 @@ if ($format === 'pdf') {
                     <h3 class="text-xl font-bold text-gray-900">
                         Invoice Details
                         <?php if ($includeOutstandingOnly): ?>
-                        <span class="text-sm font-normal text-gray-500 ml-2">- Outstanding Balances Only</span>
+                        <span class="text-sm font-normal text-gray-700 ml-2">- Outstanding Balances Only</span>
                         <?php endif; ?>
                     </h3>
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm text-gray-700">
                         <?php echo count($invoices); ?> invoice<?php echo count($invoices) != 1 ? 's' : ''; ?> in this period
                     </div>
                 </div>
@@ -464,14 +464,14 @@ if ($format === 'pdf') {
                                 <?php foreach ($invoices as $index => $invoice): ?>
                                 <tr class="<?php echo $index % 2 === 0 ? 'bg-white' : 'bg-gray-50'; ?> hover:bg-blue-50 transition-colors">
                                     <td class="px-6 py-4">
-                                        <a href="../public/view-invoice.php?id=<?php echo htmlspecialchars($invoice['unique_id']); ?>" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                                        <a href="../public/view-invoice.php?id=<?php echo htmlspecialchars($invoice['unique_id']); ?>" target="_blank" class="text-blue-800 hover:text-blue-800 font-medium transition-colors">
                                             <?php echo htmlspecialchars($invoice['invoice_number']); ?>
                                         </a>
                                     </td>
                                     <td class="px-6 py-4 text-gray-600"><?php echo date('M j, Y', strtotime($invoice['date'])); ?></td>
                                     <td class="px-6 py-4 text-right font-mono text-gray-900">$<?php echo number_format($invoice['total'], 2); ?></td>
                                     <td class="px-6 py-4 text-right font-mono text-gray-900">$<?php echo number_format($invoice['total_paid'], 2); ?></td>
-                                    <td class="px-6 py-4 text-right font-mono font-semibold <?php echo $invoice['balance_due'] > 0 ? 'text-red-600' : 'text-green-600'; ?>">
+                                    <td class="px-6 py-4 text-right font-mono font-semibold <?php echo $invoice['balance_due'] > 0 ? 'text-red-700' : 'text-green-700'; ?>">
                                         $<?php echo number_format($invoice['balance_due'], 2); ?>
                                     </td>
                                     <td class="px-6 py-4 text-center">
@@ -498,7 +498,7 @@ if ($format === 'pdf') {
                                     <td colspan="2" class="px-6 py-4 font-semibold text-gray-900">TOTALS</td>
                                     <td class="px-6 py-4 text-right font-mono font-bold text-gray-900">$<?php echo number_format($totalInvoiced, 2); ?></td>
                                     <td class="px-6 py-4 text-right font-mono font-bold text-gray-900">$<?php echo number_format($totalPaid, 2); ?></td>
-                                    <td class="px-6 py-4 text-right font-mono font-bold <?php echo $currentBalance > 0 ? 'text-red-600' : 'text-green-600'; ?>">$<?php echo number_format($currentBalance, 2); ?></td>
+                                    <td class="px-6 py-4 text-right font-mono font-bold <?php echo $currentBalance > 0 ? 'text-red-700' : 'text-green-700'; ?>">$<?php echo number_format($currentBalance, 2); ?></td>
                                     <td class="px-6 py-4"></td>
                                 </tr>
                             </tfoot>
@@ -510,10 +510,10 @@ if ($format === 'pdf') {
             <div class="p-8 text-center">
                 <div class="max-w-sm mx-auto">
                     <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-file-invoice text-gray-400 text-2xl"></i>
+                        <i class="fas fa-file-invoice text-gray-700 text-2xl"></i>
                     </div>
                     <h4 class="text-lg font-semibold text-gray-900 mb-2">No Invoices Found</h4>
-                    <p class="text-gray-500 mb-6">No invoices were found for the selected date range and filters.</p>
+                    <p class="text-gray-700 mb-6">No invoices were found for the selected date range and filters.</p>
                     <a href="?customer_id=<?php echo $customer['id']; ?>&date_range=1_year" class="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-semibold">
                         <i class="fas fa-search mr-2"></i>Try Broader Date Range
                     </a>
@@ -526,7 +526,7 @@ if ($format === 'pdf') {
             <div class="p-8 border-t border-gray-200 bg-gray-50">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-gray-900">Payment History</h3>
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm text-gray-700">
                         <?php echo count($payments); ?> payment<?php echo count($payments) != 1 ? 's' : ''; ?> received in this period
                     </div>
                 </div>
@@ -548,7 +548,7 @@ if ($format === 'pdf') {
                                 <tr class="<?php echo $index % 2 === 0 ? 'bg-white' : 'bg-green-25'; ?> hover:bg-green-50 transition-colors">
                                     <td class="px-6 py-4 text-gray-600"><?php echo date('M j, Y', strtotime($payment['payment_date'])); ?></td>
                                     <td class="px-6 py-4 text-gray-900 font-medium"><?php echo htmlspecialchars($payment['invoice_number']); ?></td>
-                                    <td class="px-6 py-4 text-right font-mono font-bold text-green-600">$<?php echo number_format($payment['amount'], 2); ?></td>
+                                    <td class="px-6 py-4 text-right font-mono font-bold text-green-700">$<?php echo number_format($payment['amount'], 2); ?></td>
                                     <td class="px-6 py-4 text-gray-600">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                                             <?php echo htmlspecialchars($payment['payment_method'] ?? 'Not specified'); ?>
@@ -561,7 +561,7 @@ if ($format === 'pdf') {
                             <tfoot class="bg-green-50">
                                 <tr>
                                     <td colspan="2" class="px-6 py-4 font-semibold text-gray-900">TOTAL PAYMENTS</td>
-                                    <td class="px-6 py-4 text-right font-mono font-bold text-green-600">$<?php echo number_format(array_sum(array_column($payments, 'amount')), 2); ?></td>
+                                    <td class="px-6 py-4 text-right font-mono font-bold text-green-700">$<?php echo number_format(array_sum(array_column($payments, 'amount')), 2); ?></td>
                                     <td colspan="2" class="px-6 py-4"></td>
                                 </tr>
                             </tfoot>
@@ -586,7 +586,7 @@ if ($format === 'pdf') {
                             <?php endif; ?>
                         </div>
                     </div>
-                    <div class="text-xs text-gray-500 border-t border-gray-200 pt-4">
+                    <div class="text-xs text-gray-700 border-t border-gray-200 pt-4">
                         This statement was generated on <?php echo date('F j, Y \a\t g:i A T'); ?>
                     </div>
                 </div>
@@ -603,26 +603,26 @@ if ($format === 'pdf') {
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div class="sm:flex sm:items-start">
                             <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <i class="fas fa-envelope text-blue-600"></i>
+                                <i class="fas fa-envelope text-blue-800"></i>
                             </div>
                             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Email Statement</h3>
                                 <div class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                        <label for="email-address" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                                         <input type="email" name="email_address" value="<?php echo htmlspecialchars($customer['email'] ?? ''); ?>" required 
-                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500" id="email-address">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                        <label for="email-subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
                                         <input type="text" name="email_subject" value="Account Statement - <?php echo htmlspecialchars($businessSettings['business_name']); ?>" required 
-                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500" id="email-subject">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                        <label for="email-message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
                                         <textarea name="email_message" rows="3" 
                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                                  placeholder="Please find your account statement attached.">Please find your account statement for the period <?php echo date('M j, Y', strtotime($startDate)); ?> - <?php echo date('M j, Y', strtotime($endDate)); ?> attached.</textarea>
+                                                  placeholder="Please find your account statement attached." id="email-message">Please find your account statement for the period <?php echo date('M j, Y', strtotime($startDate)); ?> - <?php echo date('M j, Y', strtotime($endDate)); ?> attached.</textarea>
                                     </div>
                                 </div>
                             </div>

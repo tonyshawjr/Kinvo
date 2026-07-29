@@ -125,7 +125,7 @@ $balance = $invoice['total'] - $totalPaid;
         <!-- Header -->
         <div class="mb-8">
             <div class="flex items-center space-x-4">
-                <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="p-2 text-gray-500 hover:text-gray-700 transition-colors">
+                <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="p-2 text-gray-700 hover:text-gray-700 transition-colors">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <div>
@@ -139,7 +139,7 @@ $balance = $invoice['total'] - $totalPaid;
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    <i class="fas fa-check-circle text-green-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Success!</h3>
@@ -153,7 +153,7 @@ $balance = $invoice['total'] - $totalPaid;
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                    <i class="fas fa-exclamation-circle text-red-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-red-900 mb-2">Error</h3>
@@ -171,16 +171,16 @@ $balance = $invoice['total'] - $totalPaid;
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="text-center">
-                    <p class="text-sm text-gray-500 mb-1">Invoice Total</p>
+                    <p class="text-sm text-gray-700 mb-1">Invoice Total</p>
                     <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($invoice['total']); ?></p>
                 </div>
                 <div class="text-center">
-                    <p class="text-sm text-gray-500 mb-1">Total Paid</p>
-                    <p class="text-2xl font-bold text-green-600"><?php echo formatCurrency($totalPaid); ?></p>
+                    <p class="text-sm text-gray-700 mb-1">Total Paid</p>
+                    <p class="text-2xl font-bold text-green-700"><?php echo formatCurrency($totalPaid); ?></p>
                 </div>
                 <div class="text-center">
-                    <p class="text-sm text-gray-500 mb-1">Balance Due</p>
-                    <p class="text-2xl font-bold <?php echo $balance > 0 ? 'text-red-600' : 'text-green-600'; ?>">
+                    <p class="text-sm text-gray-700 mb-1">Balance Due</p>
+                    <p class="text-2xl font-bold <?php echo $balance > 0 ? 'text-red-700' : 'text-green-700'; ?>">
                         <?php echo formatCurrency($balance); ?>
                     </p>
                 </div>
@@ -193,7 +193,7 @@ $balance = $invoice['total'] - $totalPaid;
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-plus mr-3 text-green-600"></i>
+                            <i class="fas fa-plus mr-3 text-green-700"></i>
                             Add New Payment
                         </h3>
                     </div>
@@ -201,16 +201,16 @@ $balance = $invoice['total'] - $totalPaid;
                         <input type="hidden" name="action" value="add">
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Amount *</label>
+                            <label for="amount" class="block text-sm font-medium text-gray-700 mb-2">Amount *</label>
                             <input type="number" name="amount" step="0.01" min="0" max="<?php echo $balance; ?>" 
                                    value="<?php echo $balance > 0 ? number_format($balance, 2, '.', '') : ''; ?>" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="amount">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method *</label>
+                            <label for="method" class="block text-sm font-medium text-gray-700 mb-2">Payment Method *</label>
                             <select name="method" required
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="method">
                                 <option value="Cash">Cash</option>
                                 <option value="Check">Check</option>
                                 <option value="Credit Card">Credit Card</option>
@@ -224,15 +224,15 @@ $balance = $invoice['total'] - $totalPaid;
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Payment Date *</label>
+                            <label for="payment-date" class="block text-sm font-medium text-gray-700 mb-2">Payment Date *</label>
                             <input type="date" name="payment_date" value="<?php echo date('Y-m-d'); ?>" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="payment-date">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
                             <textarea name="notes" rows="3" placeholder="Payment reference, confirmation number, etc."
-                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all resize-none"></textarea>
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all resize-none" id="notes"></textarea>
                         </div>
 
                         <button type="submit" class="w-full px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
@@ -256,7 +256,7 @@ $balance = $invoice['total'] - $totalPaid;
                         <?php if (empty($payments)): ?>
                         <div class="text-center py-12">
                             <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-credit-card text-gray-400 text-2xl"></i>
+                                <i class="fas fa-credit-card text-gray-700 text-2xl"></i>
                             </div>
                             <h4 class="text-lg font-semibold text-gray-900 mb-2">No Payments Yet</h4>
                             <p class="text-gray-600">Add the first payment for this invoice using the form on the left.</p>
@@ -268,7 +268,7 @@ $balance = $invoice['total'] - $totalPaid;
                                 <div class="flex items-start justify-between">
                                     <div class="flex-1">
                                         <div class="flex items-center space-x-3 mb-2">
-                                            <span class="font-semibold text-lg text-green-600"><?php echo formatCurrency($payment['amount']); ?></span>
+                                            <span class="font-semibold text-lg text-green-700"><?php echo formatCurrency($payment['amount']); ?></span>
                                             <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
                                                 <?php echo htmlspecialchars($payment['method']); ?>
                                             </span>
@@ -290,7 +290,7 @@ $balance = $invoice['total'] - $totalPaid;
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button onclick="deletePayment(<?php echo $payment['id']; ?>)" 
-                                                class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Payment">
+                                                class="p-2 text-red-700 hover:bg-red-50 rounded-lg transition-colors" title="Delete Payment">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -303,16 +303,16 @@ $balance = $invoice['total'] - $totalPaid;
                                         <input type="hidden" name="payment_id" value="<?php echo $payment['id']; ?>">
                                         
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                                            <label for="amount-2" class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
                                             <input type="number" name="amount" value="<?php echo $payment['amount']; ?>" 
                                                    step="0.01" min="0" required
-                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="amount-2">
                                         </div>
                                         
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">Method</label>
+                                            <label for="method-2" class="block text-sm font-medium text-gray-700 mb-2">Method</label>
                                             <select name="method" required
-                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="method-2">
                                                 <option value="Cash" <?php echo $payment['method'] === 'Cash' ? 'selected' : ''; ?>>Cash</option>
                                                 <option value="Check" <?php echo $payment['method'] === 'Check' ? 'selected' : ''; ?>>Check</option>
                                                 <option value="Credit Card" <?php echo $payment['method'] === 'Credit Card' ? 'selected' : ''; ?>>Credit Card</option>
@@ -326,15 +326,15 @@ $balance = $invoice['total'] - $totalPaid;
                                         </div>
                                         
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                            <label for="payment-date-2" class="block text-sm font-medium text-gray-700 mb-2">Date</label>
                                             <input type="date" name="payment_date" value="<?php echo $payment['payment_date']; ?>" required
-                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="payment-date-2">
                                         </div>
                                         
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                                            <label for="notes-2" class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
                                             <input type="text" name="notes" value="<?php echo htmlspecialchars($payment['notes']); ?>"
-                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="notes-2">
                                         </div>
                                         
                                         <div class="md:col-span-2 flex space-x-3">

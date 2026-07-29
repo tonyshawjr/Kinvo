@@ -98,7 +98,7 @@ $deletedName = $_GET['name'] ?? '';
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    <i class="fas fa-check-circle text-green-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Customer Deleted Successfully!</h3>
@@ -126,7 +126,7 @@ $deletedName = $_GET['name'] ?? '';
                     <button type="submit" class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                         <i class="fas fa-search mr-2"></i>Search
                     </button>
-                    <a href="customers.php" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold">
+                    <a href="customers.php" aria-label="Clear filters" class="min-h-[44px] inline-flex items-center px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-semibold">
                         <i class="fas fa-times"></i>
                     </a>
                 </form>
@@ -138,7 +138,7 @@ $deletedName = $_GET['name'] ?? '';
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Total Customers</p>
+                        <p class="text-sm font-medium text-gray-700 mb-1">Total Customers</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo $totalCustomers; ?></p>
                     </div>
                     <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
@@ -149,9 +149,9 @@ $deletedName = $_GET['name'] ?? '';
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Active Customers</p>
+                        <p class="text-sm font-medium text-gray-700 mb-1">Active Customers</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo $activeCustomers; ?></p>
-                        <p class="text-sm text-gray-500">with invoices</p>
+                        <p class="text-sm text-gray-700">with invoices</p>
                     </div>
                     <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-user-check text-gray-600 text-lg"></i>
@@ -161,9 +161,9 @@ $deletedName = $_GET['name'] ?? '';
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
+                        <p class="text-sm font-medium text-gray-700 mb-1">Total Revenue</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($totalRevenue); ?></p>
-                        <p class="text-sm text-gray-500">from all customers</p>
+                        <p class="text-sm text-gray-700">from all customers</p>
                     </div>
                     <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-dollar-sign text-gray-600 text-lg"></i>
@@ -173,9 +173,9 @@ $deletedName = $_GET['name'] ?? '';
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Outstanding</p>
-                        <p class="text-2xl font-bold text-red-600"><?php echo formatCurrency($totalOutstanding); ?></p>
-                        <p class="text-sm text-gray-500">unpaid amount</p>
+                        <p class="text-sm font-medium text-gray-700 mb-1">Outstanding</p>
+                        <p class="text-2xl font-bold text-red-700"><?php echo formatCurrency($totalOutstanding); ?></p>
+                        <p class="text-sm text-gray-700">unpaid amount</p>
                     </div>
                     <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-exclamation-triangle text-gray-600 text-lg"></i>
@@ -196,7 +196,7 @@ $deletedName = $_GET['name'] ?? '';
             <?php if (empty($customers)): ?>
             <div class="text-center py-12">
                 <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-users text-gray-400 text-3xl"></i>
+                    <i class="fas fa-users text-gray-700 text-3xl"></i>
                 </div>
                 <h4 class="text-xl font-semibold text-gray-900 mb-2">No Customers Found</h4>
                 <p class="text-gray-600 mb-6">No customers match your current search.</p>
@@ -226,9 +226,9 @@ $deletedName = $_GET['name'] ?? '';
                                 <div>
                                     <div class="font-semibold text-gray-900"><?php echo htmlspecialchars($customer['name']); ?></div>
                                     <?php if ($customer['total_invoices'] > 0): ?>
-                                    <div class="text-sm text-green-600 font-medium">Active Customer</div>
+                                    <div class="text-sm text-green-700 font-medium">Active Customer</div>
                                     <?php else: ?>
-                                    <div class="text-sm text-gray-500">No invoices yet</div>
+                                    <div class="text-sm text-gray-700">No invoices yet</div>
                                     <?php endif; ?>
                                 </div>
                             </td>
@@ -236,16 +236,16 @@ $deletedName = $_GET['name'] ?? '';
                                 <div class="text-sm text-gray-900">
                                     <?php if ($customer['email']): ?>
                                     <div class="flex items-center mb-1">
-                                        <i class="fas fa-envelope text-gray-400 mr-2"></i>
-                                        <a href="mailto:<?php echo htmlspecialchars($customer['email']); ?>" class="text-gray-700 hover:text-gray-900">
+                                        <i class="fas fa-envelope text-gray-700 mr-2"></i>
+                                        <a href="mailto:<?php echo htmlspecialchars($customer['email']); ?>" class="inline-flex items-center min-h-[44px] text-gray-700 hover:text-gray-900">
                                             <?php echo htmlspecialchars($customer['email']); ?>
                                         </a>
                                     </div>
                                     <?php endif; ?>
                                     <?php if ($customer['phone']): ?>
                                     <div class="flex items-center">
-                                        <i class="fas fa-phone text-gray-400 mr-2"></i>
-                                        <a href="tel:<?php echo htmlspecialchars($customer['phone']); ?>" class="text-gray-700 hover:text-gray-900">
+                                        <i class="fas fa-phone text-gray-700 mr-2"></i>
+                                        <a href="tel:<?php echo htmlspecialchars($customer['phone']); ?>" class="inline-flex items-center min-h-[44px] text-gray-700 hover:text-gray-900">
                                             <?php echo htmlspecialchars($customer['phone']); ?>
                                         </a>
                                     </div>
@@ -255,17 +255,17 @@ $deletedName = $_GET['name'] ?? '';
                             <td class="px-6 py-4 text-center">
                                 <div class="font-semibold text-gray-900"><?php echo $customer['total_invoices']; ?></div>
                                 <?php if ($customer['unpaid_invoices'] > 0): ?>
-                                <div class="text-xs text-red-600 font-medium"><?php echo $customer['unpaid_invoices']; ?> unpaid</div>
+                                <div class="text-xs text-red-700 font-medium"><?php echo $customer['unpaid_invoices']; ?> unpaid</div>
                                 <?php else: ?>
-                                <div class="text-xs text-green-600">All paid</div>
+                                <div class="text-xs text-green-700">All paid</div>
                                 <?php endif; ?>
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="font-semibold text-gray-900"><?php echo formatCurrency($customer['total_paid']); ?></div>
-                                <div class="text-xs text-gray-500">of <?php echo formatCurrency($customer['total_invoiced']); ?></div>
+                                <div class="text-xs text-gray-700">of <?php echo formatCurrency($customer['total_invoiced']); ?></div>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <div class="font-semibold <?php echo $customer['total_outstanding'] > 0 ? 'text-red-600' : 'text-green-600'; ?>">
+                                <div class="font-semibold <?php echo $customer['total_outstanding'] > 0 ? 'text-red-700' : 'text-green-700'; ?>">
                                     <?php echo formatCurrency($customer['total_outstanding']); ?>
                                 </div>
                             </td>
@@ -273,7 +273,7 @@ $deletedName = $_GET['name'] ?? '';
                                 <?php if ($customer['last_invoice_date']): ?>
                                 <div class="text-sm text-gray-900"><?php echo date('M d, Y', strtotime($customer['last_invoice_date'])); ?></div>
                                 <?php else: ?>
-                                <div class="text-sm text-gray-500">Never</div>
+                                <div class="text-sm text-gray-700">Never</div>
                                 <?php endif; ?>
                             </td>
                             <td class="px-6 py-4">
@@ -330,16 +330,16 @@ $deletedName = $_GET['name'] ?? '';
                     <div class="mb-3">
                         <?php if ($customer['email']): ?>
                         <div class="flex items-center mb-2">
-                            <i class="fas fa-envelope text-gray-400 mr-2 w-4"></i>
-                            <a href="mailto:<?php echo htmlspecialchars($customer['email']); ?>" class="text-sm text-gray-700 hover:text-gray-900">
+                            <i class="fas fa-envelope text-gray-700 mr-2 w-4"></i>
+                            <a href="mailto:<?php echo htmlspecialchars($customer['email']); ?>" class="inline-flex items-center min-h-[44px] text-sm text-gray-700 hover:text-gray-900">
                                 <?php echo htmlspecialchars($customer['email']); ?>
                             </a>
                         </div>
                         <?php endif; ?>
                         <?php if ($customer['phone']): ?>
                         <div class="flex items-center">
-                            <i class="fas fa-phone text-gray-400 mr-2 w-4"></i>
-                            <a href="tel:<?php echo htmlspecialchars($customer['phone']); ?>" class="text-sm text-gray-700 hover:text-gray-900">
+                            <i class="fas fa-phone text-gray-700 mr-2 w-4"></i>
+                            <a href="tel:<?php echo htmlspecialchars($customer['phone']); ?>" class="inline-flex items-center min-h-[44px] text-sm text-gray-700 hover:text-gray-900">
                                 <?php echo htmlspecialchars($customer['phone']); ?>
                             </a>
                         </div>
@@ -349,35 +349,35 @@ $deletedName = $_GET['name'] ?? '';
                     <!-- Financial Summary -->
                     <div class="grid grid-cols-2 gap-4 mb-3">
                         <div class="bg-gray-50 p-3 rounded-lg">
-                            <div class="text-xs text-gray-500 mb-1">Invoices</div>
+                            <div class="text-xs text-gray-700 mb-1">Invoices</div>
                             <div class="font-semibold text-gray-900"><?php echo $customer['total_invoices']; ?></div>
                             <?php if ($customer['unpaid_invoices'] > 0): ?>
-                            <div class="text-xs text-red-600 font-medium"><?php echo $customer['unpaid_invoices']; ?> unpaid</div>
+                            <div class="text-xs text-red-700 font-medium"><?php echo $customer['unpaid_invoices']; ?> unpaid</div>
                             <?php else: ?>
-                            <div class="text-xs text-green-600">All paid</div>
+                            <div class="text-xs text-green-700">All paid</div>
                             <?php endif; ?>
                         </div>
                         <div class="bg-gray-50 p-3 rounded-lg">
-                            <div class="text-xs text-gray-500 mb-1">Total Revenue</div>
+                            <div class="text-xs text-gray-700 mb-1">Total Revenue</div>
                             <div class="font-semibold text-gray-900"><?php echo formatCurrency($customer['total_paid']); ?></div>
-                            <div class="text-xs text-gray-500">of <?php echo formatCurrency($customer['total_invoiced']); ?></div>
+                            <div class="text-xs text-gray-700">of <?php echo formatCurrency($customer['total_invoiced']); ?></div>
                         </div>
                     </div>
 
                     <!-- Outstanding & Last Invoice -->
                     <div class="grid grid-cols-2 gap-4">
                         <div class="bg-gray-50 p-3 rounded-lg">
-                            <div class="text-xs text-gray-500 mb-1">Outstanding</div>
-                            <div class="font-semibold <?php echo $customer['total_outstanding'] > 0 ? 'text-red-600' : 'text-green-600'; ?>">
+                            <div class="text-xs text-gray-700 mb-1">Outstanding</div>
+                            <div class="font-semibold <?php echo $customer['total_outstanding'] > 0 ? 'text-red-700' : 'text-green-700'; ?>">
                                 <?php echo formatCurrency($customer['total_outstanding']); ?>
                             </div>
                         </div>
                         <div class="bg-gray-50 p-3 rounded-lg">
-                            <div class="text-xs text-gray-500 mb-1">Last Invoice</div>
+                            <div class="text-xs text-gray-700 mb-1">Last Invoice</div>
                             <?php if ($customer['last_invoice_date']): ?>
                             <div class="font-semibold text-gray-900"><?php echo date('M d, Y', strtotime($customer['last_invoice_date'])); ?></div>
                             <?php else: ?>
-                            <div class="font-semibold text-gray-500">Never</div>
+                            <div class="font-semibold text-gray-700">Never</div>
                             <?php endif; ?>
                         </div>
                     </div>

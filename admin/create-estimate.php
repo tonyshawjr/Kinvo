@@ -224,16 +224,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    <i class="fas fa-check-circle text-green-700 text-xl"></i>
                 </div>
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold text-green-900 mb-2">Estimate Created Successfully!</h3>
                     <p class="text-green-700 mb-4">Estimate Number: <strong><?php echo htmlspecialchars($estimateNumber); ?></strong></p>
                     <div class="flex flex-col sm:flex-row gap-3">
-                        <a href="<?php echo htmlspecialchars($estimateUrl); ?>" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                        <a href="<?php echo htmlspecialchars($estimateUrl); ?>" class="inline-flex items-center px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-700 transition-colors">
                             <i class="fas fa-eye mr-2"></i>View Estimate
                         </a>
-                        <a href="create-estimate.php" class="inline-flex items-center px-4 py-2 bg-white text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors">
+                        <a href="create-estimate.php" class="inline-flex items-center px-4 py-2 bg-white text-green-700 border border-green-300 rounded-lg hover:bg-green-50 transition-colors">
                             <i class="fas fa-plus mr-2"></i>Create Another
                         </a>
                     </div>
@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                    <i class="fas fa-exclamation-circle text-red-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-red-900 mb-2">Error Creating Estimate</h3>
@@ -271,11 +271,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label class="block text-sm font-medium text-gray-700 mb-3">Customer Type</label>
                         <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6">
                             <label class="inline-flex items-center cursor-pointer">
-                                <input type="radio" name="customer_type" value="existing" checked onchange="toggleCustomerFields()" class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500">
+                                <input type="radio" name="customer_type" value="existing" checked onchange="toggleCustomerFields()" class="w-6 h-6 text-gray-700 border-gray-400 focus:ring-gray-500">
                                 <span class="ml-2 text-sm font-medium text-gray-700">Existing Customer</span>
                             </label>
                             <label class="inline-flex items-center cursor-pointer">
-                                <input type="radio" name="customer_type" value="new" onchange="toggleCustomerFields()" class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500">
+                                <input type="radio" name="customer_type" value="new" onchange="toggleCustomerFields()" class="w-6 h-6 text-gray-700 border-gray-400 focus:ring-gray-500">
                                 <span class="ml-2 text-sm font-medium text-gray-700">New Customer</span>
                             </label>
                         </div>
@@ -323,23 +323,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </option>
                                     <?php endforeach; ?>
                                 </select>
-                                <p class="mt-1 text-sm text-gray-500">Select the property where work will be performed</p>
+                                <p class="mt-1 text-sm text-gray-700">Select the property where work will be performed</p>
                             </div>
                         </div>
                     </div>
 
                     <div id="new-customer" class="grid grid-cols-1 md:grid-cols-3 gap-6" style="display: none;">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
-                            <input type="text" name="name" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="Customer name">
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+                            <input type="text" name="name" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="Customer name" id="name">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" name="email" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="customer@email.com">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" name="email" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="customer@email.com" id="email">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                            <input type="tel" name="phone" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="(555) 123-4567">
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                            <input type="tel" name="phone" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="(555) 123-4567" id="phone">
                         </div>
                     </div>
                 </div>
@@ -356,12 +356,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="p-4 sm:p-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Estimate Date</label>
-                            <input type="date" name="estimate_date" value="<?php echo date('Y-m-d'); ?>" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                            <label for="estimate-date" class="block text-sm font-medium text-gray-700 mb-2">Estimate Date</label>
+                            <input type="date" name="estimate_date" value="<?php echo date('Y-m-d'); ?>" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="estimate-date">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Valid For</label>
-                            <select name="expiration_days" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                            <label for="expiration-days" class="block text-sm font-medium text-gray-700 mb-2">Valid For</label>
+                            <select name="expiration_days" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="expiration-days">
                                 <option value="7" <?php echo $estimateSettings['default_expiration'] == '7' ? 'selected' : ''; ?>>7 days</option>
                                 <option value="14" <?php echo $estimateSettings['default_expiration'] == '14' ? 'selected' : ''; ?>>14 days</option>
                                 <option value="30" <?php echo $estimateSettings['default_expiration'] == '30' ? 'selected' : ''; ?>>30 days</option>
@@ -422,22 +422,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="p-4 sm:p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Notes (visible on estimate)</label>
-                            <textarea name="notes" rows="3" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="Any special notes for this estimate..."></textarea>
+                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Notes (visible on estimate)</label>
+                            <textarea name="notes" rows="3" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="Any special notes for this estimate..." id="notes"></textarea>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Terms & Conditions</label>
-                            <textarea name="terms" rows="3" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="Payment terms, conditions..."></textarea>
+                            <label for="terms" class="block text-sm font-medium text-gray-700 mb-2">Terms & Conditions</label>
+                            <textarea name="terms" rows="3" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="Payment terms, conditions..." id="terms"></textarea>
                         </div>
                     </div>
 
                     <!-- Email Option -->
                     <div class="mb-6 p-4 bg-gray-50 rounded-lg">
                         <label class="flex items-center cursor-pointer">
-                            <input type="checkbox" name="send_email" value="1" class="w-5 h-5 text-gray-600 border-gray-300 rounded focus:ring-gray-500" <?php echo $estimateSettings['email_by_default'] == '1' ? 'checked' : ''; ?>>
+                            <input type="checkbox" name="send_email" value="1" class="w-6 h-6 w-5 h-5 text-gray-600 border-gray-300 rounded focus:ring-gray-500" <?php echo $estimateSettings['email_by_default'] == '1' ? 'checked' : ''; ?>>
                             <span class="ml-3 text-base font-medium text-gray-700">Email this estimate to customer</span>
                         </label>
-                        <p class="mt-2 ml-8 text-sm text-gray-500">Customer will receive the estimate with approve/reject options</p>
+                        <p class="mt-2 ml-8 text-sm text-gray-700">Customer will receive the estimate with approve/reject options</p>
                     </div>
                 </div>
             </div>
@@ -555,7 +555,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <span class="text-lg font-medium">$<span id="line-total-${lineItemCount}">0.00</span></span>
                     </div>
                     <div class="md:col-span-1 flex items-center">
-                        <button type="button" onclick="removeLineItem(${lineItemCount})" class="text-red-600 hover:text-red-800 transition-colors">
+                        <button type="button" onclick="removeLineItem(${lineItemCount})" class="text-red-700 hover:text-red-800 transition-colors">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>

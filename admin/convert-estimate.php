@@ -159,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         
         <form method="POST" class="flex flex-col sm:flex-row gap-4">
-            <button type="submit" class="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+            <button type="submit" class="px-6 py-3 bg-green-700 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
                 <i class="fas fa-file-invoice mr-2"></i>Convert to Invoice
             </button>
             <a href="estimate-detail.php?id=<?php echo $estimateId; ?>" 

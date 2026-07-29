@@ -203,7 +203,7 @@ try {
         <!-- Header -->
         <div class="mb-6">
             <div class="flex items-center space-x-4">
-                <a href="customer-detail.php?id=<?php echo $customer['id']; ?>" class="p-2 text-gray-500 hover:text-gray-700 transition-colors">
+                <a href="customer-detail.php?id=<?php echo $customer['id']; ?>" class="p-2 text-gray-700 hover:text-gray-700 transition-colors">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <div>
@@ -254,30 +254,30 @@ try {
                         <input type="hidden" name="action" value="add">
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="property-name" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-home mr-1"></i>Property Name *
                             </label>
                             <input type="text" name="property_name" required
                                    placeholder="e.g., Downtown AirBnB, Main House"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
-                            <p class="mt-1 text-sm text-gray-500">A short name to identify the property</p>
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500" id="property-name">
+                            <p class="mt-1 text-sm text-gray-700">A short name to identify the property</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-map-marker-alt mr-1"></i>Address
                             </label>
                             <textarea name="address" rows="3"
                                       placeholder="123 Main St, City, State 12345"
-                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none"></textarea>
-                            <p class="mt-1 text-sm text-gray-500">Full address of the property</p>
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none" id="address"></textarea>
+                            <p class="mt-1 text-sm text-gray-700">Full address of the property</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="property-type" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-tag mr-1"></i>Property Type
                             </label>
-                            <select name="property_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                            <select name="property_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500" id="property-type">
                                 <option value="AirBnB">AirBnB</option>
                                 <option value="Personal Home">Personal Home</option>
                                 <option value="Rental Property">Rental Property</option>
@@ -287,12 +287,12 @@ try {
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-sticky-note mr-1"></i>Notes
                             </label>
                             <textarea name="notes" rows="3"
                                       placeholder="Special instructions, access codes, etc."
-                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none"></textarea>
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none" id="notes"></textarea>
                         </div>
 
                         <button type="submit" class="w-full px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
@@ -316,7 +316,7 @@ try {
                         <?php if (empty($properties)): ?>
                         <div class="text-center py-12">
                             <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-building text-gray-400 text-2xl"></i>
+                                <i class="fas fa-building text-gray-700 text-2xl"></i>
                             </div>
                             <h4 class="text-lg font-semibold text-gray-900 mb-2">No Properties Yet</h4>
                             <p class="text-gray-600">Add the first property for this customer using the form on the left.</p>
@@ -353,7 +353,7 @@ try {
                                         </div>
                                         <?php endif; ?>
                                         
-                                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                        <div class="flex items-center space-x-4 text-sm text-gray-700">
                                             <span><i class="fas fa-file-invoice mr-1"></i><?php echo $property['invoice_count']; ?> invoice<?php echo $property['invoice_count'] != 1 ? 's' : ''; ?></span>
                                             <?php if ($property['last_invoice_date']): ?>
                                             <span><i class="fas fa-clock mr-1"></i>Last: <?php echo date('M d, Y', strtotime($property['last_invoice_date'])); ?></span>
@@ -364,7 +364,7 @@ try {
                                     
                                     <div class="flex items-center space-x-2 ml-4">
                                         <a href="create-invoice.php?customer_id=<?php echo $customerId; ?>&property_id=<?php echo $property['id']; ?>" 
-                                           class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Create Invoice">
+                                           class="p-2 text-blue-800 hover:bg-blue-50 rounded-lg transition-colors" title="Create Invoice">
                                             <i class="fas fa-plus"></i>
                                         </a>
                                         
@@ -377,7 +377,7 @@ try {
                                             <?php echo getCSRFTokenField(); ?>
                                             <input type="hidden" name="action" value="toggle">
                                             <input type="hidden" name="property_id" value="<?php echo $property['id']; ?>">
-                                            <button type="submit" class="p-2 <?php echo $property['is_active'] ? 'text-orange-600 hover:bg-orange-50' : 'text-green-600 hover:bg-green-50'; ?> rounded-lg transition-colors" 
+                                            <button type="submit" class="p-2 <?php echo $property['is_active'] ? 'text-orange-600 hover:bg-orange-50' : 'text-green-700 hover:bg-green-50'; ?> rounded-lg transition-colors" 
                                                     title="<?php echo $property['is_active'] ? 'Deactivate' : 'Activate'; ?> Property">
                                                 <i class="fas <?php echo $property['is_active'] ? 'fa-pause' : 'fa-play'; ?>"></i>
                                             </button>
@@ -388,12 +388,12 @@ try {
                                             <?php echo getCSRFTokenField(); ?>
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="property_id" value="<?php echo $property['id']; ?>">
-                                            <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Property">
+                                            <button type="submit" class="p-2 text-red-700 hover:bg-red-50 rounded-lg transition-colors" title="Delete Property">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
                                         <?php else: ?>
-                                        <div class="p-2 text-gray-400" title="Cannot delete - has invoices">
+                                        <div class="p-2 text-gray-700" title="Cannot delete - has invoices">
                                             <i class="fas fa-trash"></i>
                                         </div>
                                         <?php endif; ?>
@@ -420,7 +420,7 @@ try {
                         <i class="fas fa-edit mr-2 text-gray-600"></i>
                         Edit Property
                     </h3>
-                    <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
+                    <button onclick="closeEditModal()" class="text-gray-700 hover:text-gray-600">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>

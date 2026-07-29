@@ -182,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                    <i class="fas fa-exclamation-circle text-red-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-red-900 mb-2">Error Updating Estimate</h3>
@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </option>
                                 <?php endforeach; ?>
                             </select>
-                            <p class="mt-1 text-sm text-gray-500">Select the property where work will be performed</p>
+                            <p class="mt-1 text-sm text-gray-700">Select the property where work will be performed</p>
                         </div>
                     </div>
                 </div>
@@ -263,14 +263,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="p-4 sm:p-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Estimate Date</label>
+                            <label for="estimate-date" class="block text-sm font-medium text-gray-700 mb-2">Estimate Date</label>
                             <input type="date" name="estimate_date" value="<?php echo $estimate['date']; ?>" 
-                                   class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                   class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="estimate-date">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Expires Date</label>
+                            <label for="expires-date" class="block text-sm font-medium text-gray-700 mb-2">Expires Date</label>
                             <input type="date" name="expires_date" value="<?php echo $estimate['expires_date']; ?>" 
-                                   class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                   class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="expires-date">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Tax Rate (%)</label>
@@ -330,16 +330,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="p-4 sm:p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Notes (visible on estimate)</label>
+                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Notes (visible on estimate)</label>
                             <textarea name="notes" rows="3" 
                                       class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" 
-                                      placeholder="Any special notes for this estimate..."><?php echo htmlspecialchars($estimate['notes'] ?? ''); ?></textarea>
+                                      placeholder="Any special notes for this estimate..." id="notes"><?php echo htmlspecialchars($estimate['notes'] ?? ''); ?></textarea>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Terms & Conditions</label>
+                            <label for="terms" class="block text-sm font-medium text-gray-700 mb-2">Terms & Conditions</label>
                             <textarea name="terms" rows="3" 
                                       class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" 
-                                      placeholder="Payment terms, conditions..."><?php echo htmlspecialchars($estimate['terms'] ?? ''); ?></textarea>
+                                      placeholder="Payment terms, conditions..." id="terms"><?php echo htmlspecialchars($estimate['terms'] ?? ''); ?></textarea>
                         </div>
                     </div>
                 </div>
@@ -454,7 +454,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <span class="text-lg font-medium">$<span id="line-total-${lineItemCount}">0.00</span></span>
                     </div>
                     <div class="md:col-span-1 flex items-center">
-                        <button type="button" onclick="removeLineItem(${lineItemCount})" class="text-red-600 hover:text-red-800 transition-colors">
+                        <button type="button" onclick="removeLineItem(${lineItemCount})" class="text-red-700 hover:text-red-800 transition-colors">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>

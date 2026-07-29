@@ -27,14 +27,14 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
                 <!-- Right side - User and mobile menu -->
                 <div class="flex items-center space-x-6">
                     <div class="hidden lg:flex items-center">
-                        <a href="logout.php" class="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">
+                        <a href="logout.php" class="min-h-[44px] inline-flex items-center text-sm font-semibold text-gray-700 hover:text-gray-900 transition-colors">
                             Logout
                         </a>
                     </div>
                     
                     <!-- Mobile menu button -->
-                    <button id="mobile-menu-button" class="lg:hidden p-2 text-gray-600 hover:text-gray-900">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button id="mobile-menu-button" type="button" aria-label="Open main menu" aria-expanded="false" aria-controls="mobile-menu" class="lg:hidden min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-gray-700 hover:text-gray-900">
+                        <svg class="w-6 h-6" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     </button>
@@ -47,22 +47,22 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
     <nav class="hidden lg:block border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex space-x-8 py-4">
-                <a href="dashboard.php" class="text-base font-semibold <?php echo $current_page === 'dashboard' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                <a href="dashboard.php" class="min-h-[44px] inline-flex items-center text-base font-semibold <?php echo $current_page === 'dashboard' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
                     Dashboard
                 </a>
-                <a href="invoices.php" class="text-base font-semibold <?php echo in_array($current_page, ['invoices', 'create-invoice', 'edit-invoice']) ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                <a href="invoices.php" class="min-h-[44px] inline-flex items-center text-base font-semibold <?php echo in_array($current_page, ['invoices', 'create-invoice', 'edit-invoice']) ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
                     Invoices
                 </a>
-                <a href="estimates.php" class="text-base font-semibold <?php echo in_array($current_page, ['estimates', 'create-estimate', 'estimate-detail', 'edit-estimate']) ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                <a href="estimates.php" class="min-h-[44px] inline-flex items-center text-base font-semibold <?php echo in_array($current_page, ['estimates', 'create-estimate', 'estimate-detail', 'edit-estimate']) ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
                     Estimates
                 </a>
-                <a href="customers.php" class="text-base font-semibold <?php echo in_array($current_page, ['customers', 'customer-detail', 'customer-edit']) ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                <a href="customers.php" class="min-h-[44px] inline-flex items-center text-base font-semibold <?php echo in_array($current_page, ['customers', 'customer-detail', 'customer-edit']) ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
                     Customers
                 </a>
-                <a href="payments.php" class="text-base font-semibold <?php echo $current_page === 'payments' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                <a href="payments.php" class="min-h-[44px] inline-flex items-center text-base font-semibold <?php echo $current_page === 'payments' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
                     Payments
                 </a>
-                <a href="settings.php" class="text-base font-semibold <?php echo $current_page === 'settings' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
+                <a href="settings.php" class="min-h-[44px] inline-flex items-center text-base font-semibold <?php echo $current_page === 'settings' ? 'text-gray-900 border-b-2 border-gray-900 pb-1' : 'text-gray-600 hover:text-gray-900 transition-colors'; ?>">
                     Settings
                 </a>
             </div>
@@ -79,8 +79,8 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
         <!-- Mobile Menu Header -->
         <div class="flex items-center justify-between p-6 border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-900">Menu</h2>
-            <button id="mobile-menu-close" class="p-2 text-gray-400 hover:text-gray-600">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button id="mobile-menu-close" type="button" aria-label="Close main menu" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-gray-700 hover:text-gray-900">
+                <svg class="w-5 h-5" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
@@ -88,39 +88,39 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
         
         <!-- Mobile Navigation -->
         <nav class="flex-1 px-6 py-8 space-y-6 overflow-y-auto">
-            <a href="dashboard.php" class="block text-lg font-semibold <?php echo $current_page === 'dashboard' ? 'text-gray-900' : 'text-gray-600'; ?>">
+            <a href="dashboard.php" class="flex items-center min-h-[44px] text-lg font-semibold <?php echo $current_page === 'dashboard' ? 'text-gray-900' : 'text-gray-600'; ?>">
                 Dashboard
             </a>
             <div class="space-y-2">
-                <a href="invoices.php" class="block text-lg font-semibold <?php echo in_array($current_page, ['invoices', 'create-invoice', 'edit-invoice']) ? 'text-gray-900' : 'text-gray-600'; ?>">
+                <a href="invoices.php" class="flex items-center min-h-[44px] text-lg font-semibold <?php echo in_array($current_page, ['invoices', 'create-invoice', 'edit-invoice']) ? 'text-gray-900' : 'text-gray-600'; ?>">
                     Invoices
                 </a>
-                <a href="create-invoice.php" class="block ml-4 text-base <?php echo $current_page === 'create-invoice' ? 'text-gray-900' : 'text-gray-500'; ?>">
+                <a href="create-invoice.php" class="flex items-center min-h-[44px] ml-4 text-base <?php echo $current_page === 'create-invoice' ? 'text-gray-900' : 'text-gray-700'; ?>">
                     + New Invoice
                 </a>
             </div>
             <div class="space-y-2">
-                <a href="estimates.php" class="block text-lg font-semibold <?php echo in_array($current_page, ['estimates', 'create-estimate', 'estimate-detail', 'edit-estimate']) ? 'text-gray-900' : 'text-gray-600'; ?>">
+                <a href="estimates.php" class="flex items-center min-h-[44px] text-lg font-semibold <?php echo in_array($current_page, ['estimates', 'create-estimate', 'estimate-detail', 'edit-estimate']) ? 'text-gray-900' : 'text-gray-600'; ?>">
                     Estimates
                 </a>
-                <a href="create-estimate.php" class="block ml-4 text-base <?php echo $current_page === 'create-estimate' ? 'text-gray-900' : 'text-gray-500'; ?>">
+                <a href="create-estimate.php" class="flex items-center min-h-[44px] ml-4 text-base <?php echo $current_page === 'create-estimate' ? 'text-gray-900' : 'text-gray-700'; ?>">
                     + New Estimate
                 </a>
             </div>
-            <a href="customers.php" class="block text-lg font-semibold <?php echo in_array($current_page, ['customers', 'customer-detail', 'customer-edit']) ? 'text-gray-900' : 'text-gray-600'; ?>">
+            <a href="customers.php" class="flex items-center min-h-[44px] text-lg font-semibold <?php echo in_array($current_page, ['customers', 'customer-detail', 'customer-edit']) ? 'text-gray-900' : 'text-gray-600'; ?>">
                 Customers
             </a>
-            <a href="payments.php" class="block text-lg font-semibold <?php echo $current_page === 'payments' ? 'text-gray-900' : 'text-gray-600'; ?>">
+            <a href="payments.php" class="flex items-center min-h-[44px] text-lg font-semibold <?php echo $current_page === 'payments' ? 'text-gray-900' : 'text-gray-600'; ?>">
                 Payments
             </a>
-            <a href="settings.php" class="block text-lg font-semibold <?php echo $current_page === 'settings' ? 'text-gray-900' : 'text-gray-600'; ?>">
+            <a href="settings.php" class="flex items-center min-h-[44px] text-lg font-semibold <?php echo $current_page === 'settings' ? 'text-gray-900' : 'text-gray-600'; ?>">
                 Settings
             </a>
         </nav>
         
         <!-- Mobile Menu Footer -->
         <div class="p-6 border-t border-gray-200">
-            <a href="logout.php" class="block text-center text-sm font-semibold text-red-600 hover:text-red-700">
+            <a href="logout.php" class="flex items-center justify-center min-h-[44px] text-sm font-semibold text-red-700 hover:text-red-800">
                 Logout
             </a>
         </div>

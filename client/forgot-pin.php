@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // For demo purposes, we'll show the reset link
             $resetLink = "/client/forgot-pin.php?step=reset&token=" . $resetToken;
             
-            $success = "PIN reset instructions have been sent to your email address. For demo purposes, here is your reset link: <a href='$resetLink' class='text-blue-600 hover:text-blue-500 underline'>Reset PIN</a>";
+            $success = "PIN reset instructions have been sent to your email address. For demo purposes, here is your reset link: <a href='$resetLink' class='text-blue-800 hover:text-blue-500 underline'>Reset PIN</a>";
             
         } elseif ($step === 'reset') {
             $newPin = trim($_POST['pin'] ?? '');
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Clear rate limits for successful PIN reset
             recordSuccessfulAttempt($pdo, 'pin_reset');
             
-            $success = 'Your PIN has been successfully reset. You can now <a href="/client/login.php?email=' . urlencode($client['email']) . '" class="text-blue-600 hover:text-blue-500 underline">sign in</a> with your new PIN.';
+            $success = 'Your PIN has been successfully reset. You can now <a href="/client/login.php?email=' . urlencode($client['email']) . '" class="text-blue-800 hover:text-blue-500 underline">sign in</a> with your new PIN.';
         }
         
     } catch (Exception $e) {

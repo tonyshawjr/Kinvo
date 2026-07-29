@@ -220,16 +220,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    <i class="fas fa-check-circle text-green-700 text-xl"></i>
                 </div>
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold text-green-900 mb-2">Invoice Created Successfully!</h3>
                     <p class="text-green-700 mb-4">Invoice Number: <strong><?php echo htmlspecialchars($invoiceNumber); ?></strong></p>
                     <div class="flex flex-col sm:flex-row gap-3">
-                        <a href="<?php echo htmlspecialchars($invoiceUrl); ?>" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                        <a href="<?php echo htmlspecialchars($invoiceUrl); ?>" class="inline-flex items-center px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-700 transition-colors">
                             <i class="fas fa-eye mr-2"></i>View Invoice
                         </a>
-                        <a href="create-invoice.php" class="inline-flex items-center px-4 py-2 bg-white text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors">
+                        <a href="create-invoice.php" class="inline-flex items-center px-4 py-2 bg-white text-green-700 border border-green-300 rounded-lg hover:bg-green-50 transition-colors">
                             <i class="fas fa-plus mr-2"></i>Create Another
                         </a>
                     </div>
@@ -242,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                    <i class="fas fa-exclamation-circle text-red-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-red-900 mb-2">Error Creating Invoice</h3>
@@ -267,11 +267,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label class="block text-sm font-medium text-gray-700 mb-3">Customer Type</label>
                         <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6">
                             <label class="inline-flex items-center cursor-pointer">
-                                <input type="radio" name="customer_type" value="existing" checked onchange="toggleCustomerFields()" class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500">
+                                <input type="radio" name="customer_type" value="existing" checked onchange="toggleCustomerFields()" class="w-6 h-6 text-gray-700 border-gray-400 focus:ring-gray-500">
                                 <span class="ml-2 text-sm font-medium text-gray-700">Existing Customer</span>
                             </label>
                             <label class="inline-flex items-center cursor-pointer">
-                                <input type="radio" name="customer_type" value="new" onchange="toggleCustomerFields()" class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500">
+                                <input type="radio" name="customer_type" value="new" onchange="toggleCustomerFields()" class="w-6 h-6 text-gray-700 border-gray-400 focus:ring-gray-500">
                                 <span class="ml-2 text-sm font-medium text-gray-700">New Customer</span>
                             </label>
                         </div>
@@ -281,7 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Select Customer</label>
-                                <select name="customer_id" id="customer-select" onchange="loadCustomerData()" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                <select name="customer_id" id="customer-select" aria-label="Customer" onchange="loadCustomerData()" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                     <option value="">Choose a customer...</option>
                                     <?php foreach ($customers as $customer): ?>
                                     <option value="<?php echo $customer['id']; ?>" 
@@ -322,23 +322,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </option>
                                     <?php endforeach; ?>
                                 </select>
-                                <p class="mt-1 text-sm text-gray-500">Select the property where work will be performed</p>
+                                <p class="mt-1 text-sm text-gray-700">Select the property where work will be performed</p>
                             </div>
                         </div>
                     </div>
 
                     <div id="new-customer" class="grid grid-cols-1 md:grid-cols-3 gap-6" style="display: none;">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
-                            <input type="text" name="name" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="Customer name">
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+                            <input type="text" name="name" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="Customer name" id="name">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" name="email" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="customer@email.com">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" name="email" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="customer@email.com" id="email">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                            <input type="tel" name="phone" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="(555) 123-4567">
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                            <input type="tel" name="phone" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" placeholder="(555) 123-4567" id="phone">
                         </div>
                     </div>
                 </div>
@@ -355,12 +355,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="p-4 sm:p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Invoice Date *</label>
-                            <input type="date" name="invoice_date" value="<?php echo date('Y-m-d'); ?>" required class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                            <label for="invoice-date" class="block text-sm font-medium text-gray-700 mb-2">Invoice Date *</label>
+                            <input type="date" name="invoice_date" value="<?php echo date('Y-m-d'); ?>" required class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="invoice-date">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Due Date *</label>
-                            <input type="date" name="due_date" value="<?php echo date('Y-m-d', strtotime('+30 days')); ?>" required class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                            <label for="due-date" class="block text-sm font-medium text-gray-700 mb-2">Due Date *</label>
+                            <input type="date" name="due_date" value="<?php echo date('Y-m-d', strtotime('+30 days')); ?>" required class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="due-date">
                         </div>
                     </div>
                 </div>
@@ -371,17 +371,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="bg-gray-50 px-4 sm:px-6 py-4 border-b border-gray-200">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-list mr-3 text-green-600"></i>
+                            <i class="fas fa-list mr-3 text-green-700"></i>
                             Line Items
                         </h3>
                         <div class="flex flex-col sm:flex-row w-full sm:w-auto space-y-2 sm:space-y-0 sm:space-x-2 mobile-action-buttons">
                             <button type="button" onclick="addLaborItem()" class="inline-flex items-center justify-center px-4 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm font-semibold touch-feedback">
                                 <i class="fas fa-clock mr-2"></i>Add Labor
                             </button>
-                            <button type="button" onclick="addMileageItem()" class="inline-flex items-center justify-center px-4 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium touch-feedback">
+                            <button type="button" onclick="addMileageItem()" class="inline-flex items-center justify-center px-4 py-3 bg-orange-700 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium touch-feedback">
                                 <i class="fas fa-car mr-2"></i>Add Mileage
                             </button>
-                            <button type="button" onclick="addMaterialItem()" class="inline-flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium touch-feedback">
+                            <button type="button" onclick="addMaterialItem()" class="inline-flex items-center justify-center px-4 py-3 bg-green-700 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium touch-feedback">
                                 <i class="fas fa-plus mr-2"></i>Add Material
                             </button>
                         </div>
@@ -399,7 +399,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         
                         <!-- Empty state -->
-                        <div id="empty-state" class="text-center py-8 text-gray-500">
+                        <div id="empty-state" class="text-center py-8 text-gray-700">
                             <i class="fas fa-plus-circle text-4xl mb-4"></i>
                             <p class="text-sm sm:text-base">Click the buttons above to add Labor, Mileage, or Material line items</p>
                         </div>
@@ -438,8 +438,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <span id="subtotal" class="font-semibold text-gray-900">$0.00</span>
                             </div>
                             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
-                                <label class="font-medium text-gray-700">Tax Rate (%):</label>
-                                <input type="number" name="tax_rate" step="0.01" value="0" onchange="calculateTotals()" class="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-right text-base">
+                                <label for="tax-rate" class="font-medium text-gray-700">Tax Rate (%):</label>
+                                <input type="number" name="tax_rate" step="0.01" value="0" onchange="calculateTotals()" class="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-right text-base" id="tax-rate">
                             </div>
                             <div class="flex justify-between text-lg">
                                 <span class="font-medium text-gray-700">Tax Amount:</span>
@@ -557,22 +557,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <span class="text-sm font-medium text-gray-700">Labor</span>
                             </div>
-                            <button type="button" onclick="removeLineItem(this)" class="text-red-600 hover:text-red-800 p-2">
+                            <button type="button" onclick="removeLineItem(this)" class="text-red-700 hover:text-red-800 p-2">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                            <input type="text" name="item_description[]" placeholder="Labor description (e.g., Handyman work, Lawn maintenance)" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                            <label for="item-description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <input type="text" name="item_description[]" placeholder="Labor description (e.g., Handyman work, Lawn maintenance)" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="item-description">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Hours</label>
-                                <input type="number" name="item_quantity[]" step="0.25" placeholder="Hours" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                                <label for="item-quantity" class="block text-sm font-medium text-gray-700 mb-1">Hours</label>
+                                <input type="number" name="item_quantity[]" step="0.25" placeholder="Hours" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="item-quantity">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Rate</label>
-                                <input type="number" name="item_price[]" step="0.01" value="${rate}" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                                <label for="item-price" class="block text-sm font-medium text-gray-700 mb-1">Rate</label>
+                                <input type="number" name="item_price[]" step="0.01" value="${rate}" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="item-price">
                             </div>
                         </div>
                         <div class="flex justify-between items-center pt-2 border-t border-gray-200">
@@ -599,7 +599,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <div class="col-span-2 flex items-center justify-between">
                             <span class="line-total text-lg font-semibold text-gray-900">$0.00</span>
-                            <button type="button" onclick="removeLineItem(this)" class="text-red-600 hover:text-red-800 ml-2">
+                            <button type="button" onclick="removeLineItem(this)" class="text-red-700 hover:text-red-800 ml-2">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -620,27 +620,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="block sm:hidden space-y-3">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-2">
-                                <div class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
+                                <div class="w-8 h-8 bg-orange-700 rounded-lg flex items-center justify-center">
                                     <i class="fas fa-car text-white text-sm"></i>
                                 </div>
                                 <span class="text-sm font-medium text-gray-700">Mileage</span>
                             </div>
-                            <button type="button" onclick="removeLineItem(this)" class="text-red-600 hover:text-red-800 p-2">
+                            <button type="button" onclick="removeLineItem(this)" class="text-red-700 hover:text-red-800 p-2">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                            <input type="text" name="item_description[]" placeholder="Travel description (e.g., Travel to job site)" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                            <label for="item-description-2" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <input type="text" name="item_description[]" placeholder="Travel description (e.g., Travel to job site)" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="item-description-2">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Miles</label>
-                                <input type="number" name="item_quantity[]" step="0.1" placeholder="Miles" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                                <label for="item-quantity-2" class="block text-sm font-medium text-gray-700 mb-1">Miles</label>
+                                <input type="number" name="item_quantity[]" step="0.1" placeholder="Miles" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="item-quantity-2">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Rate</label>
-                                <input type="number" name="item_price[]" step="0.001" value="${mileageRate}" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                                <label for="item-price-2" class="block text-sm font-medium text-gray-700 mb-1">Rate</label>
+                                <input type="number" name="item_price[]" step="0.001" value="${mileageRate}" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="item-price-2">
                             </div>
                         </div>
                         <div class="flex justify-between items-center pt-2 border-t border-gray-200">
@@ -652,7 +652,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- Desktop Layout -->
                     <div class="hidden sm:grid grid-cols-12 gap-4 items-center">
                         <div class="col-span-1 flex items-center">
-                            <div class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
+                            <div class="w-8 h-8 bg-orange-700 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-car text-white text-sm"></i>
                             </div>
                         </div>
@@ -667,7 +667,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <div class="col-span-2 flex items-center justify-between">
                             <span class="line-total text-lg font-semibold text-gray-900">$0.00</span>
-                            <button type="button" onclick="removeLineItem(this)" class="text-red-600 hover:text-red-800 ml-2">
+                            <button type="button" onclick="removeLineItem(this)" class="text-red-700 hover:text-red-800 ml-2">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -688,27 +688,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="block sm:hidden space-y-3">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-2">
-                                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                                <div class="w-8 h-8 bg-green-700 rounded-lg flex items-center justify-center">
                                     <i class="fas fa-box text-white text-sm"></i>
                                 </div>
                                 <span class="text-sm font-medium text-gray-700">Material</span>
                             </div>
-                            <button type="button" onclick="removeLineItem(this)" class="text-red-600 hover:text-red-800 p-2">
+                            <button type="button" onclick="removeLineItem(this)" class="text-red-700 hover:text-red-800 p-2">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                            <input type="text" name="item_description[]" placeholder="Material/part description (e.g., Light fixture, Paint, Lumber)" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                            <label for="item-description-3" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <input type="text" name="item_description[]" placeholder="Material/part description (e.g., Light fixture, Paint, Lumber)" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="item-description-3">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-                                <input type="number" name="item_quantity[]" step="0.01" placeholder="Quantity" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                                <label for="item-quantity-3" class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                                <input type="number" name="item_quantity[]" step="0.01" placeholder="Quantity" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="item-quantity-3">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Price Each</label>
-                                <input type="number" name="item_price[]" step="0.01" placeholder="Price each" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base">
+                                <label for="item-price-3" class="block text-sm font-medium text-gray-700 mb-1">Price Each</label>
+                                <input type="number" name="item_price[]" step="0.01" placeholder="Price each" onchange="calculateTotals()" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all text-base" id="item-price-3">
                             </div>
                         </div>
                         <div class="flex justify-between items-center pt-2 border-t border-gray-200">
@@ -720,7 +720,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- Desktop Layout -->
                     <div class="hidden sm:grid grid-cols-12 gap-4 items-center">
                         <div class="col-span-1 flex items-center">
-                            <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                            <div class="w-8 h-8 bg-green-700 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-box text-white text-sm"></i>
                             </div>
                         </div>
@@ -735,7 +735,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <div class="col-span-2 flex items-center justify-between">
                             <span class="line-total text-lg font-semibold text-gray-900">$0.00</span>
-                            <button type="button" onclick="removeLineItem(this)" class="text-red-600 hover:text-red-800 ml-2">
+                            <button type="button" onclick="removeLineItem(this)" class="text-red-700 hover:text-red-800 ml-2">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>

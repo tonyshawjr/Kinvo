@@ -107,11 +107,11 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <i class="fas fa-file-invoice text-blue-600"></i>
+                            <i class="fas fa-file-invoice text-blue-800"></i>
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Total Invoices</p>
+                        <p class="text-sm font-medium text-gray-700">Total Invoices</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo $summary['total_invoices']; ?></p>
                     </div>
                 </div>
@@ -121,11 +121,11 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                            <i class="fas fa-dollar-sign text-green-600"></i>
+                            <i class="fas fa-dollar-sign text-green-700"></i>
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Total Billed</p>
+                        <p class="text-sm font-medium text-gray-700">Total Billed</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($summary['total_billed'] ?? 0); ?></p>
                     </div>
                 </div>
@@ -139,7 +139,7 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Total Paid</p>
+                        <p class="text-sm font-medium text-gray-700">Total Paid</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($summary['total_payments'] ?? 0); ?></p>
                     </div>
                 </div>
@@ -153,7 +153,7 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Balance Due</p>
+                        <p class="text-sm font-medium text-gray-700">Balance Due</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($summary['balance_due'] ?? 0); ?></p>
                     </div>
                 </div>
@@ -180,7 +180,7 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
             <div class="px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-medium text-gray-900">Recent Invoices</h2>
-                    <a href="/client/invoices.php" class="text-sm text-blue-600 hover:text-blue-500">
+                    <a href="/client/invoices.php" class="text-sm text-blue-800 hover:text-blue-500">
                         View all <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
@@ -189,11 +189,11 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -202,7 +202,7 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($invoice['invoice_number']); ?></div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                     <?php echo date('M j, Y', strtotime($invoice['date'])); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -213,9 +213,9 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
                                         <?php echo htmlspecialchars($invoice['status']); ?>
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                     <a href="/public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" 
-                                       class="text-blue-600 hover:text-blue-500" target="_blank">
+                                       class="text-blue-800 hover:text-blue-500" target="_blank">
                                         <i class="fas fa-eye"></i> View
                                     </a>
                                 </td>
@@ -223,7 +223,7 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
                         <?php endforeach; ?>
                         <?php if (empty($recent_invoices)): ?>
                             <tr>
-                                <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                                <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-700">
                                     No invoices found
                                 </td>
                             </tr>
@@ -238,7 +238,7 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
             <div class="px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-medium text-gray-900">Recent Payments</h2>
-                    <a href="/client/payments.php" class="text-sm text-blue-600 hover:text-blue-500">
+                    <a href="/client/payments.php" class="text-sm text-blue-800 hover:text-blue-500">
                         View all <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
@@ -247,10 +247,10 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Method</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -259,20 +259,20 @@ logClientActivity($pdo, $customer_id, 'dashboard_view', 'Viewed dashboard');
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($payment['invoice_number']); ?></div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                     <?php echo date('M j, Y', strtotime($payment['payment_date'])); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     <?php echo formatCurrency($payment['amount']); ?>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                     <?php echo htmlspecialchars($payment['method']); ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                         <?php if (empty($recent_payments)): ?>
                             <tr>
-                                <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
+                                <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-700">
                                     No payments found
                                 </td>
                             </tr>

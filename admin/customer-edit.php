@@ -154,7 +154,7 @@ $businessSettings = getBusinessSettings($pdo);
         <!-- Header -->
         <div class="mb-8">
             <div class="flex items-center space-x-4">
-                <a href="customer-detail.php?id=<?php echo $customer['id']; ?>" class="p-2 text-gray-500 hover:text-gray-700 transition-colors">
+                <a href="customer-detail.php?id=<?php echo $customer['id']; ?>" class="p-2 text-gray-700 hover:text-gray-700 transition-colors">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <div>
@@ -168,7 +168,7 @@ $businessSettings = getBusinessSettings($pdo);
         <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 mb-8">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    <i class="fas fa-check-circle text-green-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-green-900 mb-2">Customer Updated Successfully!</h3>
@@ -182,7 +182,7 @@ $businessSettings = getBusinessSettings($pdo);
         <div class="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-2xl p-6 mb-8">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                    <i class="fas fa-exclamation-circle text-red-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-red-900 mb-2">Error Updating Customer</h3>
@@ -198,43 +198,43 @@ $businessSettings = getBusinessSettings($pdo);
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-100">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-user-edit mr-3 text-blue-600"></i>
+                            <i class="fas fa-user-edit mr-3 text-blue-800"></i>
                             Customer Information
                         </h3>
                     </div>
                     <form method="POST" class="p-6 space-y-6">
                         <?php echo getCSRFTokenField(); ?>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-user mr-1"></i>Customer Name *
                             </label>
                             <input type="text" name="name" required
                                    value="<?php echo htmlspecialchars($customer['name']); ?>"
                                    placeholder="Customer's full name"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
-                            <p class="mt-1 text-sm text-gray-500">The name that will appear on invoices</p>
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" id="name">
+                            <p class="mt-1 text-sm text-gray-700">The name that will appear on invoices</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-envelope mr-1"></i>Email Address
                             </label>
                             <input type="email" name="email"
                                    value="<?php echo htmlspecialchars($customer['email']); ?>"
                                    placeholder="customer@example.com"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
-                            <p class="mt-1 text-sm text-gray-500">Optional - for sending invoices and communication</p>
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" id="email">
+                            <p class="mt-1 text-sm text-gray-700">Optional - for sending invoices and communication</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-phone mr-1"></i>Phone Number
                             </label>
                             <input type="tel" name="phone"
                                    value="<?php echo htmlspecialchars($customer['phone']); ?>"
                                    placeholder="(555) 123-4567"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
-                            <p class="mt-1 text-sm text-gray-500">Optional - for follow-ups and communication</p>
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" id="phone">
+                            <p class="mt-1 text-sm text-gray-700">Optional - for follow-ups and communication</p>
                         </div>
 
                         <div>
@@ -242,13 +242,13 @@ $businessSettings = getBusinessSettings($pdo);
                                 <i class="fas fa-clock mr-1"></i>Custom Hourly Rate (Optional)
                             </label>
                             <div class="flex">
-                                <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">$</span>
+                                <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-gray-300 bg-gray-50 text-gray-700 text-sm">$</span>
                                 <input type="number" name="custom_hourly_rate" step="0.01" min="0"
                                        value="<?php echo htmlspecialchars($customer['custom_hourly_rate'] ?? ''); ?>"
                                        placeholder="<?php echo htmlspecialchars($businessSettings['default_hourly_rate']); ?>"
                                        class="flex-1 px-4 py-3 border border-gray-300 rounded-r-xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
                             </div>
-                            <p class="mt-1 text-sm text-gray-500">
+                            <p class="mt-1 text-sm text-gray-700">
                                 Leave empty to use default rate ($<?php echo htmlspecialchars($businessSettings['default_hourly_rate']); ?>/hr). 
                                 Override only if this customer has a special rate.
                             </p>
@@ -288,12 +288,12 @@ $businessSettings = getBusinessSettings($pdo);
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-600">Total Paid:</span>
-                                <span class="font-semibold text-green-600"><?php echo formatCurrency($stats['total_paid']); ?></span>
+                                <span class="font-semibold text-green-700"><?php echo formatCurrency($stats['total_paid']); ?></span>
                             </div>
                             <div class="border-t pt-4">
                                 <div class="flex justify-between items-center">
                                     <span class="text-sm text-gray-600">Outstanding:</span>
-                                    <span class="font-semibold text-red-600"><?php echo formatCurrency($stats['total_invoiced'] - $stats['total_paid']); ?></span>
+                                    <span class="font-semibold text-red-700"><?php echo formatCurrency($stats['total_invoiced'] - $stats['total_paid']); ?></span>
                                 </div>
                             </div>
                         </div>
@@ -304,7 +304,7 @@ $businessSettings = getBusinessSettings($pdo);
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-100">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                            <i class="fas fa-clock mr-3 text-green-600"></i>
+                            <i class="fas fa-clock mr-3 text-green-700"></i>
                             Customer Timeline
                         </h3>
                     </div>
@@ -329,7 +329,7 @@ $businessSettings = getBusinessSettings($pdo);
                 <div class="bg-white rounded-2xl shadow-sm border border-red-200 overflow-hidden">
                     <div class="bg-gradient-to-r from-red-50 to-pink-50 px-6 py-4 border-b border-red-200">
                         <h3 class="text-lg font-semibold text-red-900 flex items-center">
-                            <i class="fas fa-exclamation-triangle mr-3 text-red-600"></i>
+                            <i class="fas fa-exclamation-triangle mr-3 text-red-700"></i>
                             Danger Zone
                         </h3>
                     </div>
@@ -361,16 +361,16 @@ $businessSettings = getBusinessSettings($pdo);
                 <!-- Quick Actions -->
                 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <i class="fas fa-bolt mr-2 text-blue-600"></i>
+                        <i class="fas fa-bolt mr-2 text-blue-800"></i>
                         Quick Actions
                     </h3>
                     <div class="space-y-3">
                         <a href="create-invoice.php?customer_id=<?php echo $customer['id']; ?>" class="flex items-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors group">
-                            <i class="fas fa-plus-circle text-blue-600 mr-3"></i>
+                            <i class="fas fa-plus-circle text-blue-800 mr-3"></i>
                             <span class="font-medium text-gray-900 group-hover:text-blue-700">Create New Invoice</span>
                         </a>
                         <a href="customer-detail.php?id=<?php echo $customer['id']; ?>" class="flex items-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors group">
-                            <i class="fas fa-eye text-blue-600 mr-3"></i>
+                            <i class="fas fa-eye text-blue-800 mr-3"></i>
                             <span class="font-medium text-gray-900 group-hover:text-blue-700">View Customer Details</span>
                         </a>
                     </div>

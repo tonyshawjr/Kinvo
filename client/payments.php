@@ -121,11 +121,11 @@ logClientActivity($pdo, $customer_id, 'payments_view', 'Viewed payment history')
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                            <i class="fas fa-dollar-sign text-green-600"></i>
+                            <i class="fas fa-dollar-sign text-green-700"></i>
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Total Payments</p>
+                        <p class="text-sm font-medium text-gray-700">Total Payments</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($payment_summary['total_payments'] ?? 0); ?></p>
                     </div>
                 </div>
@@ -135,11 +135,11 @@ logClientActivity($pdo, $customer_id, 'payments_view', 'Viewed payment history')
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <i class="fas fa-credit-card text-blue-600"></i>
+                            <i class="fas fa-credit-card text-blue-800"></i>
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Payment Count</p>
+                        <p class="text-sm font-medium text-gray-700">Payment Count</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo $payment_summary['payment_count'] ?? 0; ?></p>
                     </div>
                 </div>
@@ -153,7 +153,7 @@ logClientActivity($pdo, $customer_id, 'payments_view', 'Viewed payment history')
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">First Payment</p>
+                        <p class="text-sm font-medium text-gray-700">First Payment</p>
                         <p class="text-sm font-bold text-gray-900">
                             <?php 
                             echo $payment_summary['first_payment'] 
@@ -173,7 +173,7 @@ logClientActivity($pdo, $customer_id, 'payments_view', 'Viewed payment history')
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Last Payment</p>
+                        <p class="text-sm font-medium text-gray-700">Last Payment</p>
                         <p class="text-sm font-bold text-gray-900">
                             <?php 
                             echo $payment_summary['last_payment'] 
@@ -239,12 +239,12 @@ logClientActivity($pdo, $customer_id, 'payments_view', 'Viewed payment history')
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Method</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Notes</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -254,7 +254,7 @@ logClientActivity($pdo, $customer_id, 'payments_view', 'Viewed payment history')
                                     <div class="text-sm font-medium text-gray-900">
                                         <?php echo date('M j, Y', strtotime($payment['payment_date'])); ?>
                                     </div>
-                                    <div class="text-sm text-gray-500">
+                                    <div class="text-sm text-gray-700">
                                         <?php echo date('g:i A', strtotime($payment['created_at'])); ?>
                                     </div>
                                 </td>
@@ -262,12 +262,12 @@ logClientActivity($pdo, $customer_id, 'payments_view', 'Viewed payment history')
                                     <div class="text-sm font-medium text-gray-900">
                                         <?php echo htmlspecialchars($payment['invoice_number']); ?>
                                     </div>
-                                    <div class="text-sm text-gray-500">
+                                    <div class="text-sm text-gray-700">
                                         Invoice Total: <?php echo formatCurrency($payment['invoice_total']); ?>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-bold text-green-600">
+                                    <div class="text-sm font-bold text-green-700">
                                         <?php echo formatCurrency($payment['amount']); ?>
                                     </div>
                                 </td>
@@ -281,9 +281,9 @@ logClientActivity($pdo, $customer_id, 'payments_view', 'Viewed payment history')
                                         <?php echo htmlspecialchars($payment['notes'] ?? ''); ?>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                     <a href="/public/view-invoice.php?id=<?php echo $payment['invoice_unique_id']; ?>" 
-                                       class="text-blue-600 hover:text-blue-500" target="_blank" title="View Invoice">
+                                       class="text-blue-800 hover:text-blue-500" target="_blank" title="View Invoice">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                 </td>
@@ -291,7 +291,7 @@ logClientActivity($pdo, $customer_id, 'payments_view', 'Viewed payment history')
                         <?php endforeach; ?>
                         <?php if (empty($payments)): ?>
                             <tr>
-                                <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                                <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-700">
                                     No payments found matching your criteria
                                 </td>
                             </tr>

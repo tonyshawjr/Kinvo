@@ -329,7 +329,7 @@ if (empty($invoiceId)) {
     <div class="min-h-screen flex items-center justify-center p-4">
         <div class="max-w-md w-full bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
             <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                <i class="fas fa-exclamation-triangle text-red-700 text-2xl"></i>
             </div>
             <h3 class="text-xl font-semibold text-gray-900 mb-2">Invoice Not Found</h3>
             <p class="text-gray-600"><?php echo htmlspecialchars($error); ?></p>
@@ -347,7 +347,7 @@ if (empty($invoiceId)) {
                     <i class="fas fa-print mr-2"></i>Print Invoice
                 </button>
                 <?php if (isAdmin()): ?>
-                <a href="/admin/manage-payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="inline-flex items-center px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-600 transition-colors font-semibold">
+                <a href="/admin/manage-payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="inline-flex items-center px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold">
                     <i class="fas fa-credit-card mr-2"></i>Manage Payments
                 </a>
                 <a href="/admin/edit-invoice.php?id=<?php echo $invoice['id']; ?>" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
@@ -437,11 +437,11 @@ if (empty($invoiceId)) {
                             <?php if ($totalPaid > 0): ?>
                             <tr>
                                 <td class="py-2 text-gray-600 font-medium">Amount Paid:</td>
-                                <td class="py-2 text-green-600 text-right font-semibold"><?php echo formatCurrency($totalPaid); ?></td>
+                                <td class="py-2 text-green-700 text-right font-semibold"><?php echo formatCurrency($totalPaid); ?></td>
                             </tr>
                             <tr>
                                 <td class="py-2 text-gray-600 font-medium">Balance Due:</td>
-                                <td class="py-2 <?php echo $balance > 0 ? 'text-red-600' : 'text-green-600'; ?> text-right font-semibold"><?php echo formatCurrency($balance); ?></td>
+                                <td class="py-2 <?php echo $balance > 0 ? 'text-red-700' : 'text-green-700'; ?> text-right font-semibold"><?php echo formatCurrency($balance); ?></td>
                             </tr>
                             <?php endif; ?>
                         </table>
@@ -540,7 +540,7 @@ if (empty($invoiceId)) {
                                     <?php endif; ?>
                                 </div>
                             </div>
-                            <div class="text-green-600 font-semibold">
+                            <div class="text-green-700 font-semibold">
                                 <i class="fas fa-check-circle"></i>
                             </div>
                         </div>
@@ -560,7 +560,7 @@ if (empty($invoiceId)) {
                        target="_blank" 
                        class="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors">
                         <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                            <div class="w-10 h-10 bg-green-700 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-dollar-sign text-white"></i>
                             </div>
                             <div>
@@ -568,7 +568,7 @@ if (empty($invoiceId)) {
                                 <div class="text-sm text-gray-600">$<?php echo htmlspecialchars($businessSettings['cashapp_username']); ?></div>
                             </div>
                         </div>
-                        <i class="fas fa-external-link-alt text-green-600"></i>
+                        <i class="fas fa-external-link-alt text-green-700"></i>
                     </a>
                     <?php endif; ?>
                     
@@ -585,7 +585,7 @@ if (empty($invoiceId)) {
                                 <div class="text-sm text-gray-600">@<?php echo htmlspecialchars($businessSettings['venmo_username']); ?></div>
                             </div>
                         </div>
-                        <i class="fas fa-external-link-alt text-blue-600"></i>
+                        <i class="fas fa-external-link-alt text-blue-800"></i>
                     </a>
                     <?php endif; ?>
                 </div>

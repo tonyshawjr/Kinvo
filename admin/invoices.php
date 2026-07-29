@@ -176,14 +176,14 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             <div class="p-6">
                 <form method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                        <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search</label>
                         <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" 
                                placeholder="Customer name or invoice #"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="search">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                        <select name="status" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <select name="status" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="status">
                             <option value="">All Statuses</option>
                             <option value="Unpaid" <?php echo $status === 'Unpaid' ? 'selected' : ''; ?>>🔴 Unpaid</option>
                             <option value="Partial" <?php echo $status === 'Partial' ? 'selected' : ''; ?>>🟡 Partial</option>
@@ -191,8 +191,8 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
-                        <select name="sort" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                        <label for="sort" class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                        <select name="sort" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="sort">
                             <option value="date" <?php echo $sortBy === 'date' ? 'selected' : ''; ?>>📅 Invoice Date</option>
                             <option value="due_date" <?php echo $sortBy === 'due_date' ? 'selected' : ''; ?>>⏰ Due Date</option>
                             <option value="total" <?php echo $sortBy === 'total' ? 'selected' : ''; ?>>💰 Amount</option>
@@ -204,7 +204,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                         <button type="submit" class="flex-1 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                             <i class="fas fa-search mr-2"></i>Filter
                         </button>
-                        <a href="invoices.php" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold">
+                        <a href="invoices.php" aria-label="Clear all filters" class="min-h-[44px] inline-flex items-center px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-semibold">
                             <i class="fas fa-times"></i>
                         </a>
                     </div>
@@ -224,9 +224,9 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Total Invoices</p>
+                        <p class="text-sm font-medium text-gray-700 mb-1">Total Invoices</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo $totalInvoices; ?></p>
-                        <p class="text-sm text-gray-500">invoice<?php echo $totalInvoices != 1 ? 's' : ''; ?></p>
+                        <p class="text-sm text-gray-700">invoice<?php echo $totalInvoices != 1 ? 's' : ''; ?></p>
                     </div>
                     <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-file-invoice text-gray-600 text-lg"></i>
@@ -236,9 +236,9 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Total Amount</p>
+                        <p class="text-sm font-medium text-gray-700 mb-1">Total Amount</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($totalAmount); ?></p>
-                        <p class="text-sm text-gray-500">invoiced</p>
+                        <p class="text-sm text-gray-700">invoiced</p>
                     </div>
                     <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-dollar-sign text-gray-600 text-lg"></i>
@@ -248,9 +248,9 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Outstanding</p>
-                        <p class="text-2xl font-bold text-red-600"><?php echo formatCurrency($totalOutstanding); ?></p>
-                        <p class="text-sm text-gray-500">unpaid</p>
+                        <p class="text-sm font-medium text-gray-700 mb-1">Outstanding</p>
+                        <p class="text-2xl font-bold text-red-700"><?php echo formatCurrency($totalOutstanding); ?></p>
+                        <p class="text-sm text-gray-700">unpaid</p>
                     </div>
                     <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-exclamation-triangle text-gray-600 text-lg"></i>
@@ -272,7 +272,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                 <?php if (empty($invoices)): ?>
                 <div class="text-center py-12">
                     <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-file-invoice text-gray-400 text-3xl"></i>
+                        <i class="fas fa-file-invoice text-gray-700 text-3xl"></i>
                     </div>
                     <h4 class="text-xl font-semibold text-gray-900 mb-2">No Invoices Found</h4>
                     <p class="text-gray-600 mb-6">No invoices match your current filters.</p>
@@ -285,7 +285,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-200">
                             <th class="px-6 py-4 text-left">
-                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'invoice_number', 'order' => $sortBy === 'invoice_number' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'invoice_number', 'order' => $sortBy === 'invoice_number' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center min-h-[44px] text-sm font-medium text-gray-700 hover:text-gray-900">
                                     Invoice #
                                     <?php if ($sortBy === 'invoice_number'): ?>
                                         <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-1 text-xs"></i>
@@ -293,7 +293,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                                 </a>
                             </th>
                             <th class="px-6 py-4 text-left">
-                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'customer_name', 'order' => $sortBy === 'customer_name' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'customer_name', 'order' => $sortBy === 'customer_name' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center min-h-[44px] text-sm font-medium text-gray-700 hover:text-gray-900">
                                     Customer
                                     <?php if ($sortBy === 'customer_name'): ?>
                                         <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-1 text-xs"></i>
@@ -304,7 +304,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                                 <span class="text-sm font-medium text-gray-700">Property</span>
                             </th>
                             <th class="px-6 py-4 text-left">
-                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'date', 'order' => $sortBy === 'date' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'date', 'order' => $sortBy === 'date' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center min-h-[44px] text-sm font-medium text-gray-700 hover:text-gray-900">
                                     Date
                                     <?php if ($sortBy === 'date'): ?>
                                         <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-1 text-xs"></i>
@@ -312,7 +312,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                                 </a>
                             </th>
                             <th class="px-6 py-4 text-left">
-                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'due_date', 'order' => $sortBy === 'due_date' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'due_date', 'order' => $sortBy === 'due_date' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center min-h-[44px] text-sm font-medium text-gray-700 hover:text-gray-900">
                                     Due Date
                                     <?php if ($sortBy === 'due_date'): ?>
                                         <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-1 text-xs"></i>
@@ -320,7 +320,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                                 </a>
                             </th>
                             <th class="px-6 py-4 text-right">
-                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'total', 'order' => $sortBy === 'total' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center justify-end text-sm font-medium text-gray-700 hover:text-gray-900">
+                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'total', 'order' => $sortBy === 'total' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center justify-end min-h-[44px] text-sm font-medium text-gray-700 hover:text-gray-900">
                                     Amount
                                     <?php if ($sortBy === 'total'): ?>
                                         <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-1 text-xs"></i>
@@ -355,7 +355,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                                 </span>
                                 <?php endif; ?>
                                 <?php else: ?>
-                                <div class="text-gray-400 text-sm">No property</div>
+                                <div class="text-gray-700 text-sm">No property</div>
                                 <?php endif; ?>
                             </td>
                             <td class="px-6 py-4">
@@ -365,7 +365,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                                 <div class="text-gray-600">
                                     <?php echo date('M d, Y', strtotime($invoice['due_date'])); ?>
                                     <?php if ($invoice['actual_status'] === 'Unpaid' && strtotime($invoice['due_date']) < time()): ?>
-                                    <span class="block text-xs text-red-600 font-medium">Overdue</span>
+                                    <span class="block text-xs text-red-700 font-medium">Overdue</span>
                                     <?php endif; ?>
                                 </div>
                             </td>
@@ -378,7 +378,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <div class="font-semibold <?php echo $invoice['balance_due'] > 0 ? 'text-red-600' : 'text-green-600'; ?>">
+                                <div class="font-semibold <?php echo $invoice['balance_due'] > 0 ? 'text-red-700' : 'text-green-700'; ?>">
                                     <?php echo formatCurrency($invoice['balance_due']); ?>
                                 </div>
                             </td>

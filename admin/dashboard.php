@@ -185,7 +185,6 @@ for ($i = 11; $i >= 0; $i--) {
     <meta name="apple-mobile-web-app-title" content="Kinvo">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <?php include '../includes/header.php'; ?>
@@ -231,11 +230,11 @@ for ($i = 11; $i >= 0; $i--) {
                             <div>
                                 <span class="font-semibold text-gray-900"><?php echo htmlspecialchars($invoice['customer_name']); ?></span>
                                 <span class="text-gray-600 ml-2"><?php echo htmlspecialchars($invoice['invoice_number']); ?></span>
-                                <span class="text-sm text-gray-500 ml-2"><?php echo $invoice['days_overdue']; ?> day<?php echo $invoice['days_overdue'] > 1 ? 's' : ''; ?> overdue</span>
+                                <span class="text-sm text-gray-700 ml-2"><?php echo $invoice['days_overdue']; ?> day<?php echo $invoice['days_overdue'] > 1 ? 's' : ''; ?> overdue</span>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <span class="font-semibold text-gray-900"><?php echo formatCurrency($invoice['balance_due']); ?></span>
-                                <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="text-sm bg-gray-900 text-white px-3 py-1 rounded-lg hover:bg-gray-800 transition-colors font-semibold">
+                                <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="min-h-[44px] inline-flex items-center text-sm bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold">
                                     View
                                 </a>
                             </div>
@@ -254,7 +253,7 @@ for ($i = 11; $i >= 0; $i--) {
                 <div class="text-center">
                     <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Outstanding</p>
                     <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($totalOutstanding); ?></p>
-                    <p class="text-sm text-gray-500">Total owed to you</p>
+                    <p class="text-sm text-gray-700">Total owed to you</p>
                 </div>
             </div>
 
@@ -263,7 +262,7 @@ for ($i = 11; $i >= 0; $i--) {
                 <div class="text-center">
                     <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">This Week</p>
                     <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($thisWeekPayments['total']); ?></p>
-                    <p class="text-sm text-gray-500"><?php echo $thisWeekPayments['count']; ?> payment<?php echo $thisWeekPayments['count'] != 1 ? 's' : ''; ?> received</p>
+                    <p class="text-sm text-gray-700"><?php echo $thisWeekPayments['count']; ?> payment<?php echo $thisWeekPayments['count'] != 1 ? 's' : ''; ?> received</p>
                 </div>
             </div>
 
@@ -277,7 +276,7 @@ for ($i = 11; $i >= 0; $i--) {
                         </span>
                     </div>
                     <p class="text-4xl font-bold text-gray-900 mb-1"><?php echo formatCurrency($monthlyComparison['this_month']); ?></p>
-                    <p class="text-sm text-gray-500">vs last month</p>
+                    <p class="text-sm text-gray-700">vs last month</p>
                 </div>
             </div>
         </div>
@@ -331,7 +330,7 @@ for ($i = 11; $i >= 0; $i--) {
                                 </div>
                                 <div class="text-right">
                                     <p class="font-semibold text-gray-900"><?php echo formatCurrency($invoice['balance_due']); ?></p>
-                                    <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="text-sm text-gray-700 hover:text-gray-900 font-medium">View →</a>
+                                    <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="min-h-[44px] inline-flex items-center text-sm text-gray-700 hover:text-gray-900 font-medium">View →</a>
                                 </div>
                             </div>
                             <?php endforeach; ?>
@@ -350,20 +349,6 @@ for ($i = 11; $i >= 0; $i--) {
 
             <!-- Right Sidebar -->
             <div class="space-y-6">
-                <!-- Revenue Trend -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Revenue Trend</h3>
-                        <select id="chartPeriod" class="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
-                            <option value="12">Last 12 months</option>
-                            <option value="6">Last 6 months</option>
-                            <option value="3">Last 3 months</option>
-                        </select>
-                    </div>
-                    <div class="h-64">
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-                </div>
                 <?php if (!empty($recentPayments)): ?>
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
@@ -401,73 +386,6 @@ for ($i = 11; $i >= 0; $i--) {
     <?php include '../includes/footer.php'; ?>
 
     <script>
-    // Revenue Chart
-    const chartData = <?php echo json_encode($chartData); ?>;
-    const chartLabels = <?php echo json_encode($chartLabels); ?>;
-    
-    let revenueChart;
-    
-    function initChart(months = 12) {
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        
-        // Slice data based on selected period
-        const dataSlice = chartData.slice(-months);
-        const labelSlice = chartLabels.slice(-months);
-        
-        if (revenueChart) {
-            revenueChart.destroy();
-        }
-        
-        revenueChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labelSlice,
-                datasets: [{
-                    label: 'Revenue',
-                    data: dataSlice,
-                    borderColor: '#374151',
-                    backgroundColor: '#374151',
-                    borderWidth: 2,
-                    fill: false,
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '$' + value.toLocaleString();
-                            }
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            maxRotation: 45
-                        }
-                    }
-                }
-            }
-        });
-    }
-    
-    // Initialize chart
-    document.addEventListener('DOMContentLoaded', function() {
-        initChart();
-        
-        // Handle period changes
-        document.getElementById('chartPeriod').addEventListener('change', function() {
-            initChart(parseInt(this.value));
-        });
-    });
     </script>
 </body>
 </html>

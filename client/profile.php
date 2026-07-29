@@ -114,7 +114,7 @@ logClientActivity($pdo, $customer_id, 'profile_view', 'Viewed profile page');
             <?php if ($success): ?>
             <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
                 <div class="flex items-start space-x-3">
-                    <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                    <i class="fas fa-check-circle text-green-700 mt-1"></i>
                     <div>
                         <h4 class="font-semibold text-green-900">Success</h4>
                         <p class="text-sm text-green-700"><?php echo htmlspecialchars($success); ?></p>
@@ -126,7 +126,7 @@ logClientActivity($pdo, $customer_id, 'profile_view', 'Viewed profile page');
             <?php if ($error): ?>
             <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
                 <div class="flex items-start space-x-3">
-                    <i class="fas fa-exclamation-triangle text-red-600 mt-1"></i>
+                    <i class="fas fa-exclamation-triangle text-red-700 mt-1"></i>
                     <div>
                         <h4 class="font-semibold text-red-900">Error</h4>
                         <p class="text-sm text-red-700"><?php echo htmlspecialchars($error); ?></p>
@@ -168,8 +168,8 @@ logClientActivity($pdo, $customer_id, 'profile_view', 'Viewed profile page');
                                        id="email" 
                                        value="<?php echo htmlspecialchars($customer['email']); ?>"
                                        disabled
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-500">
-                                <p class="mt-1 text-xs text-gray-500">Email cannot be changed. Contact support if needed.</p>
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-700">
+                                <p class="mt-1 text-xs text-gray-700">Email cannot be changed. Contact support if needed.</p>
                             </div>
 
                             <div>
@@ -298,11 +298,11 @@ logClientActivity($pdo, $customer_id, 'profile_view', 'Viewed profile page');
                                         echo htmlspecialchars($actionLabels[$activity['action']] ?? ucfirst(str_replace('_', ' ', $activity['action'])));
                                         ?>
                                     </p>
-                                    <p class="text-gray-500"><?php echo date('M j, g:i A', strtotime($activity['created_at'])); ?></p>
+                                    <p class="text-gray-700"><?php echo date('M j, g:i A', strtotime($activity['created_at'])); ?></p>
                                 </div>
                             <?php endforeach; ?>
                             <?php if (empty($recent_activity)): ?>
-                                <p class="text-sm text-gray-500">No recent activity</p>
+                                <p class="text-sm text-gray-700">No recent activity</p>
                             <?php endif; ?>
                         </div>
                     </div>

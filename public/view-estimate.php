@@ -96,7 +96,7 @@ if ($error) {
         <div class="max-w-md w-full">
             <div class="bg-white rounded-lg shadow-sm p-8 text-center">
                 <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-exclamation-triangle text-red-600 text-3xl"></i>
+                    <i class="fas fa-exclamation-triangle text-red-700 text-3xl"></i>
                 </div>
                 <h1 class="text-2xl font-bold text-gray-900 mb-2">Estimate Not Found</h1>
                 <p class="text-gray-600"><?php echo htmlspecialchars($error); ?></p>
@@ -163,7 +163,7 @@ if ($error) {
             <!-- Estimate Info -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">Bill To</h3>
+                    <h3 class="text-sm font-medium text-gray-700 uppercase tracking-wide mb-3">Bill To</h3>
                     <p class="text-lg font-medium text-gray-900"><?php echo htmlspecialchars($estimate['customer_name']); ?></p>
                     <?php if ($estimate['customer_email']): ?>
                         <p class="text-gray-600"><?php echo htmlspecialchars($estimate['customer_email']); ?></p>
@@ -173,7 +173,7 @@ if ($error) {
                     <?php endif; ?>
                 </div>
                 <div>
-                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">Estimate Details</h3>
+                    <h3 class="text-sm font-medium text-gray-700 uppercase tracking-wide mb-3">Estimate Details</h3>
                     <dl class="space-y-2">
                         <div class="flex justify-between">
                             <dt class="text-gray-600">Date:</dt>
@@ -181,7 +181,7 @@ if ($error) {
                         </div>
                         <div class="flex justify-between">
                             <dt class="text-gray-600">Valid Until:</dt>
-                            <dd class="font-medium <?php echo strtotime($estimate['expires_date']) < time() ? 'text-red-600' : ''; ?>">
+                            <dd class="font-medium <?php echo strtotime($estimate['expires_date']) < time() ? 'text-red-700' : ''; ?>">
                                 <?php echo date('F d, Y', strtotime($estimate['expires_date'])); ?>
                                 <?php if (strtotime($estimate['expires_date']) < time()): ?>
                                     <span class="text-xs">(Expired)</span>
@@ -198,7 +198,7 @@ if ($error) {
 
             <?php if ($estimate['property_name']): ?>
             <div class="mt-6 pt-6 border-t border-gray-200">
-                <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">Property/Location</h3>
+                <h3 class="text-sm font-medium text-gray-700 uppercase tracking-wide mb-2">Property/Location</h3>
                 <p class="font-medium text-gray-900"><?php echo htmlspecialchars($estimate['property_name']); ?></p>
                 <?php if ($estimate['property_address']): ?>
                     <p class="text-gray-600"><?php echo nl2br(htmlspecialchars($estimate['property_address'])); ?></p>
@@ -213,16 +213,16 @@ if ($error) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                                 Description
                             </th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
                                 Qty
                             </th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
                                 Price
                             </th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
                                 Total
                             </th>
                         </tr>
@@ -233,10 +233,10 @@ if ($error) {
                             <td class="px-6 py-4 text-sm text-gray-900">
                                 <?php echo htmlspecialchars($item['description']); ?>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 text-right">
+                            <td class="px-6 py-4 text-sm text-gray-700 text-right">
                                 <?php echo number_format($item['quantity'], 2); ?>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 text-right">
+                            <td class="px-6 py-4 text-sm text-gray-700 text-right">
                                 $<?php echo number_format($item['unit_price'], 2); ?>
                             </td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900 text-right">
@@ -304,7 +304,7 @@ if ($error) {
             
             <form method="POST" class="flex flex-col sm:flex-row gap-4">
                 <button type="submit" name="action" value="approve" 
-                        class="flex-1 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                        class="flex-1 px-6 py-3 bg-green-700 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
                     <i class="fas fa-check mr-2"></i>Approve Estimate
                 </button>
                 <button type="submit" name="action" value="reject" 
@@ -315,18 +315,18 @@ if ($error) {
         </div>
         <?php elseif ($estimate['status'] === 'Approved'): ?>
         <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center no-print">
-            <i class="fas fa-check-circle text-4xl text-green-600 mb-3"></i>
+            <i class="fas fa-check-circle text-4xl text-green-700 mb-3"></i>
             <h3 class="text-lg font-semibold text-green-900 mb-2">This estimate has been approved</h3>
             <p class="text-green-700">We'll contact you shortly to proceed with the work.</p>
         </div>
         <?php elseif ($estimate['status'] === 'Rejected'): ?>
         <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center no-print">
-            <i class="fas fa-times-circle text-4xl text-red-600 mb-3"></i>
+            <i class="fas fa-times-circle text-4xl text-red-700 mb-3"></i>
             <h3 class="text-lg font-semibold text-red-900 mb-2">This estimate has been rejected</h3>
         </div>
         <?php elseif ($estimate['status'] === 'Expired'): ?>
         <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center no-print">
-            <i class="fas fa-clock text-4xl text-yellow-600 mb-3"></i>
+            <i class="fas fa-clock text-4xl text-yellow-800 mb-3"></i>
             <h3 class="text-lg font-semibold text-yellow-900 mb-2">This estimate has expired</h3>
             <p class="text-yellow-700">Please contact us if you'd like an updated estimate.</p>
         </div>

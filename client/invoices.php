@@ -156,14 +156,14 @@ logClientActivity($pdo, $customer_id, 'invoices_view', 'Viewed invoice list');
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice #</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Due Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Paid</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Balance</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -172,15 +172,15 @@ logClientActivity($pdo, $customer_id, 'invoices_view', 'Viewed invoice list');
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($invoice['invoice_number']); ?></div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                     <?php echo date('M j, Y', strtotime($invoice['date'])); ?>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                     <?php 
                                     $due_date = strtotime($invoice['due_date']);
                                     $is_overdue = $due_date < time() && $invoice['balance_due'] > 0;
                                     ?>
-                                    <span class="<?php echo $is_overdue ? 'text-red-600 font-semibold' : ''; ?>">
+                                    <span class="<?php echo $is_overdue ? 'text-red-700 font-semibold' : ''; ?>">
                                         <?php echo date('M j, Y', $due_date); ?>
                                         <?php if ($is_overdue): ?>
                                             <i class="fas fa-exclamation-triangle ml-1"></i>
@@ -194,7 +194,7 @@ logClientActivity($pdo, $customer_id, 'invoices_view', 'Viewed invoice list');
                                     <?php echo formatCurrency($invoice['total_paid']); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    <span class="<?php echo $invoice['balance_due'] > 0 ? 'text-red-600 font-semibold' : 'text-green-600'; ?>">
+                                    <span class="<?php echo $invoice['balance_due'] > 0 ? 'text-red-700 font-semibold' : 'text-green-700'; ?>">
                                         <?php echo formatCurrency($invoice['balance_due']); ?>
                                     </span>
                                 </td>
@@ -203,14 +203,14 @@ logClientActivity($pdo, $customer_id, 'invoices_view', 'Viewed invoice list');
                                         <?php echo htmlspecialchars($invoice['status']); ?>
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                     <div class="flex space-x-2">
                                         <a href="/public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" 
-                                           class="text-blue-600 hover:text-blue-500" target="_blank" title="View Invoice">
+                                           class="text-blue-800 hover:text-blue-500" target="_blank" title="View Invoice">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="/public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>&download=1" 
-                                           class="text-green-600 hover:text-green-500" title="Download PDF">
+                                           class="text-green-700 hover:text-green-500" title="Download PDF">
                                             <i class="fas fa-download"></i>
                                         </a>
                                     </div>
@@ -219,7 +219,7 @@ logClientActivity($pdo, $customer_id, 'invoices_view', 'Viewed invoice list');
                         <?php endforeach; ?>
                         <?php if (empty($invoices)): ?>
                             <tr>
-                                <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
+                                <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-700">
                                     No invoices found matching your criteria
                                 </td>
                             </tr>

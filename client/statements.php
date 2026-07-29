@@ -115,11 +115,11 @@ logClientActivity($pdo, $customer_id, 'statement_view', "Viewed statement for pe
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-file-invoice text-blue-600"></i>
+                                <i class="fas fa-file-invoice text-blue-800"></i>
                             </div>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">Total Invoiced</p>
+                            <p class="text-sm font-medium text-gray-700">Total Invoiced</p>
                             <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($total_invoiced); ?></p>
                         </div>
                     </div>
@@ -129,11 +129,11 @@ logClientActivity($pdo, $customer_id, 'statement_view', "Viewed statement for pe
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-dollar-sign text-green-600"></i>
+                                <i class="fas fa-dollar-sign text-green-700"></i>
                             </div>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">Total Paid</p>
+                            <p class="text-sm font-medium text-gray-700">Total Paid</p>
                             <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($total_paid); ?></p>
                         </div>
                     </div>
@@ -147,7 +147,7 @@ logClientActivity($pdo, $customer_id, 'statement_view', "Viewed statement for pe
                             </div>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">Balance</p>
+                            <p class="text-sm font-medium text-gray-700">Balance</p>
                             <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($total_balance); ?></p>
                         </div>
                     </div>
@@ -200,11 +200,11 @@ logClientActivity($pdo, $customer_id, 'statement_view', "Viewed statement for pe
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice #</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Paid</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Balance</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -213,7 +213,7 @@ logClientActivity($pdo, $customer_id, 'statement_view', "Viewed statement for pe
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                 <?php echo htmlspecialchars($invoice['invoice_number']); ?>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                                 <?php echo date('M j, Y', strtotime($invoice['date'])); ?>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -223,7 +223,7 @@ logClientActivity($pdo, $customer_id, 'statement_view', "Viewed statement for pe
                                                 <?php echo formatCurrency($invoice['total_paid']); ?>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                <span class="<?php echo $invoice['balance_due'] > 0 ? 'text-red-600' : 'text-green-600'; ?>">
+                                                <span class="<?php echo $invoice['balance_due'] > 0 ? 'text-red-700' : 'text-green-700'; ?>">
                                                     <?php echo formatCurrency($invoice['balance_due']); ?>
                                                 </span>
                                             </td>
@@ -233,7 +233,7 @@ logClientActivity($pdo, $customer_id, 'statement_view', "Viewed statement for pe
                             </table>
                         </div>
                     <?php else: ?>
-                        <p class="text-gray-500 text-center py-8">No invoices found for this period</p>
+                        <p class="text-gray-700 text-center py-8">No invoices found for this period</p>
                     <?php endif; ?>
                 </div>
 
@@ -245,25 +245,25 @@ logClientActivity($pdo, $customer_id, 'statement_view', "Viewed statement for pe
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice #</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Method</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     <?php foreach ($payments as $payment): ?>
                                         <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                                 <?php echo date('M j, Y', strtotime($payment['payment_date'])); ?>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                 <?php echo htmlspecialchars($payment['invoice_number']); ?>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-700 font-semibold">
                                                 <?php echo formatCurrency($payment['amount']); ?>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                                 <?php echo htmlspecialchars($payment['method']); ?>
                                             </td>
                                         </tr>
@@ -272,7 +272,7 @@ logClientActivity($pdo, $customer_id, 'statement_view', "Viewed statement for pe
                             </table>
                         </div>
                     <?php else: ?>
-                        <p class="text-gray-500 text-center py-8">No payments found for this period</p>
+                        <p class="text-gray-700 text-center py-8">No payments found for this period</p>
                     <?php endif; ?>
                 </div>
             </div>

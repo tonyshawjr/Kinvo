@@ -103,9 +103,9 @@ $statusCounts = $pdo->query("
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Total Estimates</p>
+                        <p class="text-sm font-medium text-gray-700 mb-1">Total Estimates</p>
                         <p class="text-2xl font-bold text-gray-900"><?php echo $totalEstimates; ?></p>
-                        <p class="text-sm text-gray-500">estimate<?php echo $totalEstimates != 1 ? 's' : ''; ?></p>
+                        <p class="text-sm text-gray-700">estimate<?php echo $totalEstimates != 1 ? 's' : ''; ?></p>
                     </div>
                     <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-file-invoice text-gray-600 text-lg"></i>
@@ -115,24 +115,24 @@ $statusCounts = $pdo->query("
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Pending</p>
-                        <p class="text-2xl font-bold text-blue-600"><?php echo $pendingCount; ?></p>
-                        <p class="text-sm text-gray-500">awaiting response</p>
+                        <p class="text-sm font-medium text-gray-700 mb-1">Pending</p>
+                        <p class="text-2xl font-bold text-blue-800"><?php echo $pendingCount; ?></p>
+                        <p class="text-sm text-gray-700">awaiting response</p>
                     </div>
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-clock text-blue-600 text-lg"></i>
+                        <i class="fas fa-clock text-blue-800 text-lg"></i>
                     </div>
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-500 mb-1">Approved</p>
-                        <p class="text-2xl font-bold text-green-600"><?php echo $approvedCount; ?></p>
-                        <p class="text-sm text-gray-500">ready to convert</p>
+                        <p class="text-sm font-medium text-gray-700 mb-1">Approved</p>
+                        <p class="text-2xl font-bold text-green-700"><?php echo $approvedCount; ?></p>
+                        <p class="text-sm text-gray-700">ready to convert</p>
                     </div>
                     <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-check-circle text-green-600 text-lg"></i>
+                        <i class="fas fa-check-circle text-green-700 text-lg"></i>
                     </div>
                 </div>
             </div>
@@ -149,14 +149,14 @@ $statusCounts = $pdo->query("
             <div class="p-6">
                 <form method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                        <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search</label>
                         <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" 
                                placeholder="Customer name or estimate #"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="search">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                        <select name="status" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <select name="status" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="status">
                             <option value="">All Statuses</option>
                             <?php foreach (['Draft', 'Sent', 'Approved', 'Rejected', 'Expired'] as $statusOption): ?>
                                 <option value="<?php echo $statusOption; ?>" <?php echo $status === $statusOption ? 'selected' : ''; ?>>
@@ -176,8 +176,8 @@ $statusCounts = $pdo->query("
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Customer</label>
-                        <select name="customer" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                        <label for="customer" class="block text-sm font-medium text-gray-700 mb-2">Customer</label>
+                        <select name="customer" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="customer">
                             <option value="">All Customers</option>
                             <?php foreach ($customers as $customer): ?>
                                 <option value="<?php echo $customer['id']; ?>" <?php echo $customer_id == $customer['id'] ? 'selected' : ''; ?>>
@@ -191,7 +191,7 @@ $statusCounts = $pdo->query("
                             <i class="fas fa-search mr-2"></i>Filter
                         </button>
                         <?php if ($search || $status || $customer_id): ?>
-                            <a href="estimates.php" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold">
+                            <a href="estimates.php" aria-label="Clear filters" class="min-h-[44px] inline-flex items-center px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-semibold">
                                 <i class="fas fa-times"></i>
                             </a>
                         <?php endif; ?>
@@ -213,7 +213,7 @@ $statusCounts = $pdo->query("
                 <?php if (empty($estimates)): ?>
                 <div class="text-center py-12">
                     <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-file-invoice text-gray-400 text-3xl"></i>
+                        <i class="fas fa-file-invoice text-gray-700 text-3xl"></i>
                     </div>
                     <h4 class="text-xl font-semibold text-gray-900 mb-2">No Estimates Found</h4>
                     <p class="text-gray-600 mb-6">No estimates match your current filters.</p>
@@ -276,9 +276,9 @@ $statusCounts = $pdo->query("
                                 <div class="text-gray-600">
                                     <?php echo date('M d, Y', $expiresDate); ?>
                                     <?php if ($isExpired): ?>
-                                        <span class="block text-xs text-red-600 font-medium">Expired</span>
+                                        <span class="block text-xs text-red-700 font-medium">Expired</span>
                                     <?php elseif ($isExpiringSoon): ?>
-                                        <span class="block text-xs text-yellow-600 font-medium">Expiring Soon</span>
+                                        <span class="block text-xs text-yellow-800 font-medium">Expiring Soon</span>
                                     <?php endif; ?>
                                 </div>
                             </td>
@@ -307,7 +307,7 @@ $statusCounts = $pdo->query("
                                         </a>
                                     <?php endif; ?>
                                     <a href="../public/view-estimate.php?id=<?php echo $estimate['unique_id']; ?>" 
-                                       target="_blank" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Share Link">
+                                       target="_blank" class="p-2 text-blue-800 hover:bg-blue-100 rounded-lg transition-colors" title="Share Link">
                                         <i class="fas fa-share"></i>
                                     </a>
                                 </div>

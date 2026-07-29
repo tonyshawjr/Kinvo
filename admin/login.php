@@ -143,7 +143,7 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
                             placeholder="Enter password"
                             autocomplete="current-password"
                         >
-                        <button type="button" id="toggle-password" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                        <button type="button" id="toggle-password" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-700 hover:text-gray-600">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -172,7 +172,7 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
         </div>
 
         <!-- Footer -->
-        <p class="mt-8 text-center text-xs text-gray-500">
+        <p class="mt-8 text-center text-xs text-gray-700">
             &copy; <?php echo date('Y'); ?> Kinvo &middot; Powered by Kinvo
         </p>
     </div>

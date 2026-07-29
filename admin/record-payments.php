@@ -114,7 +114,7 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
 
         <?php if (!$grouped): ?>
         <div class="bg-white rounded-lg border border-gray-300 p-12 text-center">
-            <i class="fas fa-check-circle text-5xl text-green-600 mb-4" aria-hidden="true"></i>
+            <i class="fas fa-check-circle text-5xl text-green-700 mb-4" aria-hidden="true"></i>
             <h3 class="text-2xl font-bold text-gray-900">Everything is paid up</h3>
             <p class="text-gray-700 mt-2 text-lg">No invoices are waiting on payment right now.</p>
             <a href="invoices.php" class="inline-flex items-center mt-6 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 font-semibold">Back to invoices</a>

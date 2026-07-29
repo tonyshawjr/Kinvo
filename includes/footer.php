@@ -29,7 +29,7 @@ if (!isset($businessSettings)) {
                         <p class="text-sm text-gray-600 mb-4">Professional invoice management system.</p>
                         <div class="flex space-x-4">
                             <?php if (!empty($businessSettings['venmo_username'])): ?>
-                            <a href="https://venmo.com/u/<?php echo htmlspecialchars($businessSettings['venmo_username']); ?>" target="_blank" class="text-gray-400 hover:text-blue-600 transition-colors" title="Venmo">
+                            <a href="https://venmo.com/u/<?php echo htmlspecialchars($businessSettings['venmo_username']); ?>" target="_blank" class="text-gray-700 hover:text-blue-800 transition-colors" title="Venmo">
                                 <i class="fab fa-venmo"></i>
                             </a>
                             <?php endif; ?>
@@ -41,10 +41,10 @@ if (!isset($businessSettings)) {
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Links</h3>
                         <ul class="space-y-2">
                             <?php if (isAdmin()): ?>
-                            <li><a href="/admin/dashboard.php" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">Dashboard</a></li>
-                            <li><a href="/admin/create-invoice.php" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">Create Invoice</a></li>
-                            <li><a href="/admin/customers.php" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">Customers</a></li>
-                            <li><a href="/admin/settings.php" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">Settings</a></li>
+                            <li><a href="/admin/dashboard.php" class="inline-flex items-center min-h-[44px] text-sm text-gray-700 hover:text-blue-800 transition-colors">Dashboard</a></li>
+                            <li><a href="/admin/create-invoice.php" class="inline-flex items-center min-h-[44px] text-sm text-gray-700 hover:text-blue-800 transition-colors">Create Invoice</a></li>
+                            <li><a href="/admin/customers.php" class="inline-flex items-center min-h-[44px] text-sm text-gray-700 hover:text-blue-800 transition-colors">Customers</a></li>
+                            <li><a href="/admin/settings.php" class="inline-flex items-center min-h-[44px] text-sm text-gray-700 hover:text-blue-800 transition-colors">Settings</a></li>
                             <?php endif; ?>
                         </ul>
                     </div>
@@ -55,23 +55,23 @@ if (!isset($businessSettings)) {
                         <ul class="space-y-2">
                             <?php if (!empty($businessSettings['business_phone'])): ?>
                             <li class="flex items-center text-sm text-gray-600">
-                                <i class="fas fa-phone mr-2 text-gray-400"></i>
-                                <a href="tel:<?php echo htmlspecialchars($businessSettings['business_phone']); ?>" class="hover:text-blue-600 transition-colors">
+                                <i class="fas fa-phone mr-2 text-gray-700"></i>
+                                <a href="tel:<?php echo htmlspecialchars($businessSettings['business_phone']); ?>" class="inline-flex items-center min-h-[44px] hover:text-blue-800 transition-colors">
                                     <?php echo htmlspecialchars($businessSettings['business_phone']); ?>
                                 </a>
                             </li>
                             <?php endif; ?>
                             <?php if (!empty($businessSettings['business_email'])): ?>
                             <li class="flex items-center text-sm text-gray-600">
-                                <i class="fas fa-envelope mr-2 text-gray-400"></i>
-                                <a href="mailto:<?php echo htmlspecialchars($businessSettings['business_email']); ?>" class="hover:text-blue-600 transition-colors">
+                                <i class="fas fa-envelope mr-2 text-gray-700"></i>
+                                <a href="mailto:<?php echo htmlspecialchars($businessSettings['business_email']); ?>" class="inline-flex items-center min-h-[44px] hover:text-blue-800 transition-colors">
                                     <?php echo htmlspecialchars($businessSettings['business_email']); ?>
                                 </a>
                             </li>
                             <?php endif; ?>
                             <?php if (!empty($businessSettings['business_ein'])): ?>
                             <li class="flex items-center text-sm text-gray-600">
-                                <i class="fas fa-building mr-2 text-gray-400"></i>
+                                <i class="fas fa-building mr-2 text-gray-700"></i>
                                 EIN: <?php echo htmlspecialchars($businessSettings['business_ein']); ?>
                             </li>
                             <?php endif; ?>
@@ -82,10 +82,10 @@ if (!isset($businessSettings)) {
                 <!-- Bottom Bar -->
                 <div class="mt-8 pt-8 border-t border-gray-200">
                     <div class="flex flex-col md:flex-row justify-between items-center">
-                        <p class="text-sm text-gray-500">
+                        <p class="text-sm text-gray-700">
                             &copy; <?php echo date('Y'); ?> Kinvo. All rights reserved.
                         </p>
-                        <p class="text-sm text-gray-500 mt-2 md:mt-0">
+                        <p class="text-sm text-gray-700 mt-2 md:mt-0">
                             Powered by <strong>Kinvo</strong>
                         </p>
                     </div>

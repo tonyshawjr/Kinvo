@@ -171,11 +171,11 @@ $businessSettings = getBusinessSettings($pdo);
                     <label for="pin" class="block text-sm font-medium text-gray-700">6-Digit PIN</label>
                     <input type="password" id="pin" name="pin" required maxlength="6" pattern="[0-9]{6}"
                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-center text-lg tracking-widest">
-                    <p class="mt-1 text-xs text-gray-500">Enter the 6-digit PIN from your welcome email</p>
+                    <p class="mt-1 text-xs text-gray-700">Enter the 6-digit PIN from your welcome email</p>
                 </div>
 
                 <div class="flex items-center">
-                    <input type="checkbox" id="remember" name="remember" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <input type="checkbox" id="remember" name="remember" class="h-4 w-4 text-blue-800 focus:ring-blue-500 border-gray-300 rounded">
                     <label for="remember" class="ml-2 block text-sm text-gray-900">Remember me for 30 days</label>
                 </div>
 

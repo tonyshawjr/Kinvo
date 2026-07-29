@@ -206,7 +206,7 @@ $balance = $invoice['total'] - $totalPaid;
         <!-- Header -->
         <div class="mb-8">
             <div class="flex items-center space-x-4">
-                <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="p-2 text-gray-500 hover:text-gray-700 transition-colors">
+                <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="p-2 text-gray-700 hover:text-gray-700 transition-colors">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <div>
@@ -220,7 +220,7 @@ $balance = $invoice['total'] - $totalPaid;
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    <i class="fas fa-check-circle text-green-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-green-900 mb-2">Success!</h3>
@@ -234,7 +234,7 @@ $balance = $invoice['total'] - $totalPaid;
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                    <i class="fas fa-exclamation-circle text-red-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-red-900 mb-2">Error</h3>
@@ -286,15 +286,15 @@ $balance = $invoice['total'] - $totalPaid;
                     <?php endif; ?>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Invoice Date *</label>
+                        <label for="date" class="block text-sm font-medium text-gray-700 mb-2">Invoice Date *</label>
                         <input type="date" name="date" value="<?php echo $invoice['date']; ?>" required
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="date">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Due Date *</label>
+                        <label for="due-date" class="block text-sm font-medium text-gray-700 mb-2">Due Date *</label>
                         <input type="date" name="due_date" value="<?php echo $invoice['due_date']; ?>" required
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="due-date">
                     </div>
                 </div>
             </div>
@@ -312,34 +312,34 @@ $balance = $invoice['total'] - $totalPaid;
                         <?php foreach ($lineItems as $index => $item): ?>
                         <div class="line-item grid grid-cols-1 md:grid-cols-12 gap-4 mb-4 p-4 border border-gray-200 rounded-lg">
                             <div class="md:col-span-5">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <label for="line-items-php-echo-index-description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                                 <input type="text" name="line_items[<?php echo $index; ?>][description]" 
                                        value="<?php echo htmlspecialchars($item['description']); ?>"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="line-items-php-echo-index-description">
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                                <label for="line-items-php-echo-index-quantity" class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                                 <input type="number" name="line_items[<?php echo $index; ?>][quantity]" 
                                        value="<?php echo $item['quantity']; ?>" step="0.01" min="0"
                                        onchange="calculateLineTotal(this)" onkeyup="calculateLineTotal(this)"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="line-items-php-echo-index-quantity">
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Rate</label>
+                                <label for="line-items-php-echo-index-unit-price" class="block text-sm font-medium text-gray-700 mb-2">Rate</label>
                                 <input type="number" name="line_items[<?php echo $index; ?>][unit_price]" 
                                        value="<?php echo $item['unit_price']; ?>" step="0.01" min="0"
                                        onchange="calculateLineTotal(this)" onkeyup="calculateLineTotal(this)"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="line-items-php-echo-index-unit-price">
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Total</label>
+                                <label for="line-items-php-echo-index-total" class="block text-sm font-medium text-gray-700 mb-2">Total</label>
                                 <input type="number" name="line_items[<?php echo $index; ?>][total]" 
                                        value="<?php echo $item['total']; ?>" step="0.01" readonly
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-700">
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-700" id="line-items-php-echo-index-total">
                             </div>
                             <div class="md:col-span-1 flex items-end">
                                 <button type="button" onclick="removeLineItem(this)" 
-                                        class="p-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                                        class="p-3 text-red-700 hover:bg-red-50 rounded-lg transition-colors">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -422,16 +422,16 @@ $balance = $invoice['total'] - $totalPaid;
                     <!-- Payment Summary -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div class="text-center">
-                            <p class="text-sm text-gray-500 mb-1">Invoice Total</p>
+                            <p class="text-sm text-gray-700 mb-1">Invoice Total</p>
                             <p class="text-2xl font-bold text-gray-900"><?php echo formatCurrency($invoice['total']); ?></p>
                         </div>
                         <div class="text-center">
-                            <p class="text-sm text-gray-500 mb-1">Total Paid</p>
-                            <p class="text-2xl font-bold text-green-600"><?php echo formatCurrency($totalPaid); ?></p>
+                            <p class="text-sm text-gray-700 mb-1">Total Paid</p>
+                            <p class="text-2xl font-bold text-green-700"><?php echo formatCurrency($totalPaid); ?></p>
                         </div>
                         <div class="text-center">
-                            <p class="text-sm text-gray-500 mb-1">Balance Due</p>
-                            <p class="text-2xl font-bold <?php echo $balance > 0 ? 'text-red-600' : 'text-green-600'; ?>">
+                            <p class="text-sm text-gray-700 mb-1">Balance Due</p>
+                            <p class="text-2xl font-bold <?php echo $balance > 0 ? 'text-red-700' : 'text-green-700'; ?>">
                                 <?php echo formatCurrency($balance); ?>
                             </p>
                         </div>
@@ -446,7 +446,7 @@ $balance = $invoice['total'] - $totalPaid;
                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-check text-green-600 text-sm"></i>
+                                        <i class="fas fa-check text-green-700 text-sm"></i>
                                     </div>
                                     <div>
                                         <div class="font-semibold text-gray-900"><?php echo formatCurrency($payment['amount']); ?></div>
@@ -456,7 +456,7 @@ $balance = $invoice['total'] - $totalPaid;
                                         </div>
                                     </div>
                                 </div>
-                                <div class="text-green-600">
+                                <div class="text-green-700">
                                     <i class="fas fa-check-circle"></i>
                                 </div>
                             </div>
@@ -474,7 +474,7 @@ $balance = $invoice['total'] - $totalPaid;
                     <?php else: ?>
                     <div class="text-center py-8">
                         <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-credit-card text-gray-400 text-2xl"></i>
+                            <i class="fas fa-credit-card text-gray-700 text-2xl"></i>
                         </div>
                         <h4 class="text-lg font-semibold text-gray-900 mb-2">No Payments Yet</h4>
                         <p class="text-gray-600 mb-4">This invoice hasn't received any payments.</p>
@@ -510,31 +510,31 @@ $balance = $invoice['total'] - $totalPaid;
             div.className = 'line-item grid grid-cols-1 md:grid-cols-12 gap-4 mb-4 p-4 border border-gray-200 rounded-lg';
             div.innerHTML = `
                 <div class="md:col-span-5">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <label for="line-items-lineitemindex-description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                     <input type="text" name="line_items[${lineItemIndex}][description]" 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="line-items-lineitemindex-description">
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                    <label for="line-items-lineitemindex-quantity" class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                     <input type="number" name="line_items[${lineItemIndex}][quantity]" 
                            step="0.01" min="0" onchange="calculateLineTotal(this)" onkeyup="calculateLineTotal(this)"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="line-items-lineitemindex-quantity">
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Rate</label>
+                    <label for="line-items-lineitemindex-unit-price" class="block text-sm font-medium text-gray-700 mb-2">Rate</label>
                     <input type="number" name="line_items[${lineItemIndex}][unit_price]" 
                            step="0.01" min="0" onchange="calculateLineTotal(this)" onkeyup="calculateLineTotal(this)"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all" id="line-items-lineitemindex-unit-price">
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Total</label>
+                    <label for="line-items-lineitemindex-total" class="block text-sm font-medium text-gray-700 mb-2">Total</label>
                     <input type="number" name="line_items[${lineItemIndex}][total]" 
                            step="0.01" readonly
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-700">
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-700" id="line-items-lineitemindex-total">
                 </div>
                 <div class="md:col-span-1 flex items-end">
                     <button type="button" onclick="removeLineItem(this)" 
-                            class="p-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                            class="p-3 text-red-700 hover:bg-red-50 rounded-lg transition-colors">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>

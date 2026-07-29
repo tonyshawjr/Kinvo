@@ -129,7 +129,7 @@ $publicUrl = $protocol . $_SERVER['HTTP_HOST'] . $baseUrl . "/public/view-estima
                     <?php echo formatEstimateStatus($estimate['status']); ?>
                     <?php if ($estimate['converted_invoice_id']): ?>
                         <a href="invoice-detail.php?id=<?php echo $estimate['converted_invoice_id']; ?>" 
-                           class="ml-2 text-sm text-green-600 hover:text-green-700">
+                           class="ml-2 text-sm text-green-700 hover:text-green-700">
                             <i class="fas fa-file-invoice"></i> View Invoice
                         </a>
                     <?php endif; ?>
@@ -168,7 +168,7 @@ $publicUrl = $protocol . $_SERVER['HTTP_HOST'] . $baseUrl . "/public/view-estima
                     <form method="POST" class="inline">
                         <?php echo getCSRFTokenField(); ?>
                         <input type="hidden" name="action" value="approve">
-                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                        <button type="submit" class="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-700 transition-colors">
                             <i class="fas fa-check mr-2"></i>Approve
                         </button>
                     </form>
@@ -184,7 +184,7 @@ $publicUrl = $protocol . $_SERVER['HTTP_HOST'] . $baseUrl . "/public/view-estima
                 
                 <?php if ($canConvert): ?>
                     <a href="convert-estimate.php?id=<?php echo $estimateId; ?>" 
-                       class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                       class="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-700 transition-colors">
                         <i class="fas fa-file-invoice mr-2"></i>Convert to Invoice
                     </a>
                 <?php endif; ?>
@@ -238,7 +238,7 @@ $publicUrl = $protocol . $_SERVER['HTTP_HOST'] . $baseUrl . "/public/view-estima
                             <p class="text-sm text-gray-600">Property</p>
                             <p class="font-medium"><?php echo htmlspecialchars($estimate['property_name']); ?></p>
                             <?php if ($estimate['property_address']): ?>
-                                <p class="text-sm text-gray-500"><?php echo nl2br(htmlspecialchars($estimate['property_address'])); ?></p>
+                                <p class="text-sm text-gray-700"><?php echo nl2br(htmlspecialchars($estimate['property_address'])); ?></p>
                             <?php endif; ?>
                         </div>
                         <?php endif; ?>
@@ -254,16 +254,16 @@ $publicUrl = $protocol . $_SERVER['HTTP_HOST'] . $baseUrl . "/public/view-estima
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                                         Description
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                                         Qty
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                                         Price
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                                         Total
                                     </th>
                                 </tr>
@@ -274,10 +274,10 @@ $publicUrl = $protocol . $_SERVER['HTTP_HOST'] . $baseUrl . "/public/view-estima
                                     <td class="px-6 py-4 text-sm text-gray-900">
                                         <?php echo htmlspecialchars($item['description']); ?>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                    <td class="px-6 py-4 text-sm text-gray-700">
                                         <?php echo number_format($item['quantity'], 2); ?>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                    <td class="px-6 py-4 text-sm text-gray-700">
                                         $<?php echo number_format($item['unit_price'], 2); ?>
                                     </td>
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900">
@@ -350,7 +350,7 @@ $publicUrl = $protocol . $_SERVER['HTTP_HOST'] . $baseUrl . "/public/view-estima
                         </div>
                         <div>
                             <dt class="text-sm text-gray-600">Expires On</dt>
-                            <dd class="font-medium <?php echo strtotime($estimate['expires_date']) < time() ? 'text-red-600' : ''; ?>">
+                            <dd class="font-medium <?php echo strtotime($estimate['expires_date']) < time() ? 'text-red-700' : ''; ?>">
                                 <?php echo date('F d, Y', strtotime($estimate['expires_date'])); ?>
                                 <?php if (strtotime($estimate['expires_date']) < time()): ?>
                                     <span class="text-xs">(Expired)</span>
@@ -376,7 +376,7 @@ $publicUrl = $protocol . $_SERVER['HTTP_HOST'] . $baseUrl . "/public/view-estima
                             <?php if ($activity['description']): ?>
                                 <p class="text-gray-600"><?php echo htmlspecialchars($activity['description']); ?></p>
                             <?php endif; ?>
-                            <p class="text-xs text-gray-500">
+                            <p class="text-xs text-gray-700">
                                 <?php echo date('M d, Y g:i A', strtotime($activity['created_at'])); ?>
                             </p>
                         </div>

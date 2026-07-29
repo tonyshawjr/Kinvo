@@ -94,7 +94,7 @@ $businessSettings = getBusinessSettings($pdo);
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    <i class="fas fa-check-circle text-green-700 text-xl"></i>
                 </div>
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Customer Created Successfully!</h3>
@@ -103,7 +103,7 @@ $businessSettings = getBusinessSettings($pdo);
                     <?php if ($clientPin): ?>
                     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                         <div class="flex items-start space-x-3">
-                            <i class="fas fa-user-shield text-blue-600 mt-1"></i>
+                            <i class="fas fa-user-shield text-blue-800 mt-1"></i>
                             <div>
                                 <h4 class="font-semibold text-blue-900">Client Portal Access Created</h4>
                                 <p class="text-sm text-blue-700 mt-1">
@@ -112,9 +112,9 @@ $businessSettings = getBusinessSettings($pdo);
                                 <div class="mt-2 p-3 bg-white rounded border border-blue-200">
                                     <p class="text-sm"><strong>Email:</strong> <?php echo htmlspecialchars($_POST['email']); ?></p>
                                     <p class="text-sm"><strong>PIN:</strong> <span class="font-mono bg-gray-100 px-2 py-1 rounded"><?php echo $clientPin; ?></span></p>
-                                    <p class="text-sm"><strong>Login URL:</strong> <a href="/client/login.php?email=<?php echo urlencode($_POST['email']); ?>" class="text-blue-600 hover:text-blue-500" target="_blank">/client/login.php</a></p>
+                                    <p class="text-sm"><strong>Login URL:</strong> <a href="/client/login.php?email=<?php echo urlencode($_POST['email']); ?>" class="text-blue-800 hover:text-blue-500" target="_blank">/client/login.php</a></p>
                                 </div>
-                                <p class="text-xs text-blue-600 mt-2">
+                                <p class="text-xs text-blue-800 mt-2">
                                     <i class="fas fa-info-circle"></i> 
                                     Send these credentials to your customer so they can access their invoices and payment history.
                                 </p>
@@ -143,7 +143,7 @@ $businessSettings = getBusinessSettings($pdo);
         <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                    <i class="fas fa-exclamation-triangle text-red-700 text-xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Error Creating Customer</h3>
@@ -202,7 +202,7 @@ $businessSettings = getBusinessSettings($pdo);
                 </div>
 
                 <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                    <a href="customers.php" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold">
+                    <a href="customers.php" aria-label="Clear filters" class="min-h-[44px] inline-flex items-center px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-semibold">
                         Cancel
                     </a>
                     <button type="submit" class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold">
