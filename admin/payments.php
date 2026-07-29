@@ -1,6 +1,7 @@
 <?php
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
+require_once '../includes/payment-functions.php';
 
 // Set security headers
 setSecurityHeaders(true, true);
@@ -81,25 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Update invoice status for any action
         if (isset($invoiceIdToUpdate)) {
-            $stmt = $pdo->prepare("
-                SELECT i.total, COALESCE(SUM(p.amount), 0) as total_paid 
-                FROM invoices i 
-                LEFT JOIN payments p ON i.id = p.invoice_id 
-                WHERE i.id = ? 
-                GROUP BY i.id, i.total
-            ");
-            $stmt->execute([$invoiceIdToUpdate]);
-            $invoiceData = $stmt->fetch();
-            
-            $newStatus = 'Unpaid';
-            if ($invoiceData && $invoiceData['total_paid'] >= $invoiceData['total']) {
-                $newStatus = 'Paid';
-            } elseif ($invoiceData && $invoiceData['total_paid'] > 0) {
-                $newStatus = 'Partial';
-            }
-            
-            $stmt = $pdo->prepare("UPDATE invoices SET status = ? WHERE id = ?");
-            $stmt->execute([$newStatus, $invoiceIdToUpdate]);
+            syncInvoiceStatus($pdo, $invoiceIdToUpdate);
         }
         
         $pdo->commit();
@@ -230,17 +213,11 @@ $recentPayments = $stmt->fetchAll();
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method *</label>
-                            <select name="method" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
-                                <option value="">Select method...</option>
-                                <option value="Zelle">💰 Zelle</option>
-                                <option value="Venmo">📱 Venmo</option>
-                                <option value="Cash App">💳 Cash App</option>
-                                <option value="Cash">💵 Cash</option>
-                                <option value="Check">📝 Check</option>
-                                <option value="Credit Card">💳 Credit Card</option>
-                                <option value="Bank Transfer">🏦 Bank Transfer</option>
-                                <option value="Other">❓ Other</option>
+                            <label for="payment-method" class="block text-sm font-medium text-gray-700 mb-2">Payment Method *</label>
+                            <select id="payment-method" name="method" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                <?php foreach (getPaymentMethods() as $paymentMethod): ?>
+                                <option value="<?php echo htmlspecialchars($paymentMethod); ?>" <?php echo $paymentMethod === getDefaultPaymentMethod() ? 'selected' : ''; ?>><?php echo htmlspecialchars($paymentMethod); ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div>

@@ -14,6 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+requireCSRFToken();
+
 if (isset($_POST['invoice_id'])) {
     $invoiceId = (int) $_POST['invoice_id'];
     

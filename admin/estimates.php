@@ -289,21 +289,21 @@ $statusCounts = $pdo->query("
                                 <?php echo formatEstimateStatus($estimate['status']); ?>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <a href="estimate-detail.php?id=<?php echo $estimate['id']; ?>" 
-                                       class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="View Details">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <?php if (canEditEstimate($estimate)): ?>
-                                        <a href="edit-estimate.php?id=<?php echo $estimate['id']; ?>" 
-                                           class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Edit Estimate">
-                                            <i class="fas fa-edit"></i>
+                                <div class="flex items-center justify-center gap-2">
+                                    <?php if (canConvertEstimate($estimate)): ?>
+                                        <a href="convert-estimate.php?id=<?php echo $estimate['id']; ?>"
+                                           class="min-h-[44px] inline-flex items-center px-3 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-semibold text-sm">
+                                            <i class="fas fa-file-invoice mr-2" aria-hidden="true"></i>Make Invoice
                                         </a>
                                     <?php endif; ?>
-                                    <?php if (canConvertEstimate($estimate)): ?>
-                                        <a href="convert-estimate.php?id=<?php echo $estimate['id']; ?>" 
-                                           class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors" title="Convert to Invoice">
-                                            <i class="fas fa-file-invoice"></i>
+                                    <a href="estimate-detail.php?id=<?php echo $estimate['id']; ?>"
+                                       class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" aria-label="View estimate <?php echo htmlspecialchars($estimate['estimate_number'], ENT_QUOTES); ?>">
+                                        <i class="fas fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <?php if (canEditEstimate($estimate)): ?>
+                                        <a href="edit-estimate.php?id=<?php echo $estimate['id']; ?>"
+                                           class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-blue-800 hover:bg-blue-100 rounded-lg transition-colors" aria-label="Edit estimate <?php echo htmlspecialchars($estimate['estimate_number'], ENT_QUOTES); ?>">
+                                            <i class="fas fa-edit" aria-hidden="true"></i>
                                         </a>
                                     <?php endif; ?>
                                     <a href="../public/view-estimate.php?id=<?php echo $estimate['unique_id']; ?>" 
