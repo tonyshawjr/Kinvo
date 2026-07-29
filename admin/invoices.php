@@ -282,108 +282,77 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                 </div>
                 <?php else: ?>
                 <table class="w-full">
+                    <caption class="sr-only">All invoices, showing customer, due date, amount owed and available actions</caption>
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-200">
-                            <th class="px-6 py-4 text-left">
-                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'invoice_number', 'order' => $sortBy === 'invoice_number' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center min-h-[44px] text-sm font-medium text-gray-700 hover:text-gray-900">
-                                    Invoice #
-                                    <?php if ($sortBy === 'invoice_number'): ?>
-                                        <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-1 text-xs"></i>
-                                    <?php endif; ?>
-                                </a>
-                            </th>
-                            <th class="px-6 py-4 text-left">
-                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'customer_name', 'order' => $sortBy === 'customer_name' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center min-h-[44px] text-sm font-medium text-gray-700 hover:text-gray-900">
-                                    Customer
+                            <th scope="col" class="w-full px-5 py-3 text-left">
+                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'customer_name', 'order' => $sortBy === 'customer_name' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="inline-flex items-center min-h-[44px] text-sm font-semibold text-gray-700 hover:text-gray-900">
+                                    Customer &amp; property
                                     <?php if ($sortBy === 'customer_name'): ?>
-                                        <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-1 text-xs"></i>
+                                        <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-2 text-xs" aria-hidden="true"></i>
                                     <?php endif; ?>
                                 </a>
                             </th>
-                            <th class="px-6 py-4 text-left">
-                                <span class="text-sm font-medium text-gray-700">Property</span>
-                            </th>
-                            <th class="px-6 py-4 text-left">
-                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'date', 'order' => $sortBy === 'date' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center min-h-[44px] text-sm font-medium text-gray-700 hover:text-gray-900">
-                                    Date
-                                    <?php if ($sortBy === 'date'): ?>
-                                        <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-1 text-xs"></i>
-                                    <?php endif; ?>
-                                </a>
-                            </th>
-                            <th class="px-6 py-4 text-left">
-                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'due_date', 'order' => $sortBy === 'due_date' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center min-h-[44px] text-sm font-medium text-gray-700 hover:text-gray-900">
-                                    Due Date
+                            <th scope="col" class="w-px whitespace-nowrap px-5 py-3 text-left">
+                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'due_date', 'order' => $sortBy === 'due_date' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="inline-flex items-center min-h-[44px] text-sm font-semibold text-gray-700 hover:text-gray-900">
+                                    Due
                                     <?php if ($sortBy === 'due_date'): ?>
-                                        <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-1 text-xs"></i>
+                                        <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-2 text-xs" aria-hidden="true"></i>
                                     <?php endif; ?>
                                 </a>
                             </th>
-                            <th class="px-6 py-4 text-right">
-                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'total', 'order' => $sortBy === 'total' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="flex items-center justify-end min-h-[44px] text-sm font-medium text-gray-700 hover:text-gray-900">
-                                    Amount
+                            <th scope="col" class="w-px whitespace-nowrap px-5 py-3 text-right">
+                                <a href="?<?php echo http_build_query(array_merge($_GET, ['sort' => 'total', 'order' => $sortBy === 'total' && $sortOrder === 'ASC' ? 'DESC' : 'ASC'])); ?>" class="inline-flex items-center justify-end min-h-[44px] text-sm font-semibold text-gray-700 hover:text-gray-900">
+                                    Owed
                                     <?php if ($sortBy === 'total'): ?>
-                                        <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-1 text-xs"></i>
+                                        <i class="fas fa-chevron-<?php echo $sortOrder === 'ASC' ? 'up' : 'down'; ?> ml-2 text-xs" aria-hidden="true"></i>
                                     <?php endif; ?>
                                 </a>
                             </th>
-                            <th class="px-6 py-4 text-center text-sm font-medium text-gray-700">Status</th>
-                            <th class="px-6 py-4 text-right text-sm font-medium text-gray-700">Balance</th>
-                            <th class="px-6 py-4 text-center text-sm font-medium text-gray-700">Actions</th>
+                            <th scope="col" class="w-px whitespace-nowrap px-5 py-3 text-right text-sm font-semibold text-gray-700">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <?php 
-                        $rowCount = 0;
-                        foreach ($invoices as $index => $invoice): 
-                            $rowCount++;
+                    <tbody class="divide-y divide-gray-200">
+                        <?php foreach ($invoices as $invoice):
+                            $isOverdue = $invoice['balance_due'] > 0 && strtotime($invoice['due_date']) < strtotime('today');
+                            $daysOverdue = $isOverdue ? (int) floor((strtotime('today') - strtotime($invoice['due_date'])) / 86400) : 0;
+                            $isPartial = $invoice['total_paid'] > 0 && $invoice['balance_due'] > 0;
                         ?>
-                        <!-- Row <?php echo $rowCount; ?>, Array Index: <?php echo $index; ?>, ID: <?php echo $invoice['id']; ?> -->
-                        <tr class="hover:bg-gray-50 transition-colors <?php echo $invoice['actual_status'] === 'Unpaid' && strtotime($invoice['due_date']) < time() ? 'bg-red-50' : ''; ?>">
-                            <td class="px-6 py-4">
-                                <div class="font-medium text-gray-900"><?php echo htmlspecialchars($invoice['invoice_number']); ?></div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-gray-900"><?php echo htmlspecialchars($invoice['customer_name']); ?></div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <?php if ($invoice['property_name']): ?>
-                                <div class="text-gray-900 font-medium"><?php echo htmlspecialchars($invoice['property_name']); ?></div>
-                                <?php if ($invoice['property_type'] && $invoice['property_type'] !== 'Other'): ?>
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
-                                    <?php echo htmlspecialchars($invoice['property_type']); ?>
-                                </span>
-                                <?php endif; ?>
-                                <?php else: ?>
-                                <div class="text-gray-700 text-sm">No property</div>
-                                <?php endif; ?>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-gray-600"><?php echo date('M d, Y', strtotime($invoice['date'])); ?></div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-gray-600">
-                                    <?php echo date('M d, Y', strtotime($invoice['due_date'])); ?>
-                                    <?php if ($invoice['actual_status'] === 'Unpaid' && strtotime($invoice['due_date']) < time()): ?>
-                                    <span class="block text-xs text-red-700 font-medium">Overdue</span>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="w-full px-5 py-3">
+                                <div class="text-base font-semibold text-gray-900"><?php echo htmlspecialchars($invoice['customer_name']); ?></div>
+                                <div class="text-gray-700">
+                                    <?php if ($invoice['property_name']): ?>
+                                        <?php echo htmlspecialchars($invoice['property_name']); ?>
+                                        <?php if ($invoice['property_type'] && $invoice['property_type'] !== 'Other'): ?>
+                                        <span class="text-gray-700">&middot; <?php echo htmlspecialchars($invoice['property_type']); ?></span>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <span class="text-gray-700">No property</span>
                                     <?php endif; ?>
                                 </div>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="font-semibold text-gray-900"><?php echo formatCurrency($invoice['total']); ?></div>
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full <?php echo getStatusBadgeClass($invoice['actual_status']); ?>">
-                                    <?php echo $invoice['actual_status']; ?>
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="font-semibold <?php echo $invoice['balance_due'] > 0 ? 'text-red-700' : 'text-green-700'; ?>">
-                                    <?php echo formatCurrency($invoice['balance_due']); ?>
+                                <div class="text-sm text-gray-700 mt-1">
+                                    <?php echo htmlspecialchars($invoice['invoice_number']); ?> &middot; sent <?php echo date('M j', strtotime($invoice['date'])); ?>
                                 </div>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center justify-center gap-2">
+                            <td class="w-px px-5 py-3 whitespace-nowrap align-top">
+                                <div class="text-gray-900"><?php echo date('M j, Y', strtotime($invoice['due_date'])); ?></div>
+                                <?php if ($isOverdue): ?>
+                                <div class="text-sm font-semibold text-red-700"><?php echo $daysOverdue; ?> days late</div>
+                                <?php elseif ($invoice['balance_due'] <= 0): ?>
+                                <div class="text-sm font-semibold text-green-700">Paid</div>
+                                <?php endif; ?>
+                            </td>
+                            <td class="w-px px-5 py-3 text-right whitespace-nowrap align-top">
+                                <div class="text-lg font-bold <?php echo $invoice['balance_due'] > 0 ? 'text-gray-900' : 'text-gray-700'; ?>">
+                                    <?php echo formatCurrency($invoice['balance_due'] > 0 ? $invoice['balance_due'] : $invoice['total']); ?>
+                                </div>
+                                <?php if ($isPartial): ?>
+                                <div class="text-sm text-gray-700">of <?php echo formatCurrency($invoice['total']); ?></div>
+                                <?php endif; ?>
+                            </td>
+                            <td class="w-px px-5 py-3 align-top">
+                                <div class="flex flex-col items-end gap-1">
                                     <?php if ($invoice['balance_due'] > 0): ?>
                                     <form method="POST" action="record-payments.php" class="inline mark-paid-form" data-invoice="<?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>" data-amount="<?php echo htmlspecialchars(formatCurrency($invoice['balance_due']), ENT_QUOTES); ?>">
                                         <?php echo getCSRFTokenField(); ?>
@@ -391,25 +360,22 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                                         <input type="hidden" name="method" value="<?php echo htmlspecialchars(getDefaultPaymentMethod()); ?>">
                                         <input type="hidden" name="payment_date" value="<?php echo date('Y-m-d'); ?>">
                                         <input type="hidden" name="return_to" value="invoices.php">
-                                        <button type="submit" class="min-h-[44px] inline-flex items-center px-3 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-semibold text-sm">
+                                        <button type="submit" class="min-h-[44px] whitespace-nowrap inline-flex items-center px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-semibold text-sm">
                                             <i class="fas fa-check mr-2" aria-hidden="true"></i>Mark Paid
                                         </button>
                                     </form>
                                     <?php endif; ?>
+                                    <div class="flex items-center justify-end gap-1">
                                     <a href="../public/view-invoice.php?id=<?php echo $invoice['unique_id']; ?>" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" aria-label="View invoice <?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>">
                                         <i class="fas fa-eye" aria-hidden="true"></i>
                                     </a>
                                     <a href="edit-invoice.php?id=<?php echo $invoice['id']; ?>" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-blue-800 hover:bg-blue-100 rounded-lg transition-colors" aria-label="Edit invoice <?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>">
                                         <i class="fas fa-edit" aria-hidden="true"></i>
                                     </a>
-                                    <?php if ($invoice['balance_due'] > 0): ?>
-                                    <a href="payments.php?invoice_id=<?php echo $invoice['id']; ?>" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Record a partial payment on invoice <?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>">
-                                        <i class="fas fa-plus-circle" aria-hidden="true"></i>
-                                    </a>
-                                    <?php endif; ?>
-                                    <button onclick="deleteInvoice(<?php echo $invoice['id']; ?>, '<?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>')" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-red-700 hover:bg-red-100 rounded-lg transition-colors" aria-label="Delete invoice <?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>">
+                                    <button onclick="deleteInvoice(<?php echo $invoice['id']; ?>, '<?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>')" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-gray-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors" aria-label="Delete invoice <?php echo htmlspecialchars($invoice['invoice_number'], ENT_QUOTES); ?>">
                                         <i class="fas fa-trash" aria-hidden="true"></i>
                                     </button>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
