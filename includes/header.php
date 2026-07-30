@@ -11,6 +11,17 @@ $appName = !empty($businessSettings['business_name']) && $businessSettings['busi
     ? $businessSettings['business_name'] 
     : 'Kinvo';
 ?>
+<style>
+    html {
+        scroll-padding-top: 6rem;
+    }
+
+    @media (min-width: 1024px) {
+        html {
+            scroll-padding-top: 10rem;
+        }
+    }
+</style>
 <!-- Modern Header with Navigation Below -->
 <header class="bg-white sticky top-0 z-50 shadow-sm">
     <!-- Top Bar with Logo and User Info -->

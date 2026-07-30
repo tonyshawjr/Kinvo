@@ -153,13 +153,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         rememberServiceUsage($pdo, array_column($items, 'description'));
 
-        $saveForReuse = $_POST['save_service'] ?? [];
-        if (is_array($saveForReuse)) {
-            foreach ($saveForReuse as $index => $flag) {
-                if (!$flag || !isset($items[$index])) {
-                    continue;
-                }
-                saveService($pdo, $items[$index]['description'], $_POST['save_service_category'][$index] ?? 'Other', $items[$index]['unit_price']);
+        if (!empty($_POST['save_new_jobs'])) {
+            foreach ($items as $item) {
+                createServiceIfMissing($pdo, $item['description'], $item['unit_price']);
             }
         }
         
@@ -400,6 +396,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
                 </div>
+                <div id="repeat-last" class="px-4 sm:px-6 py-5 bg-blue-50 border-b border-gray-200" style="display: none;">
+                    <h4 class="text-base font-semibold text-gray-900 mb-1">Same work as last time?</h4>
+                    <p class="text-gray-700 mb-4" id="repeat-last-summary">Pick a customer to see their last invoice.</p>
+                    <button type="button" id="repeat-last-button" onclick="repeatLastInvoice()"
+                            class="min-h-[44px] inline-flex items-center px-5 py-3 bg-blue-800 text-white rounded-lg font-semibold hover:bg-blue-900">
+                        <i class="fas fa-rotate-left mr-2" aria-hidden="true"></i>Copy those line items
+                    </button>
+                    <p class="mt-2 text-gray-700">This fills in the same lines. You can change anything before you save.</p>
+                </div>
+
                 <?php $servicesGrouped = getServicesGrouped($pdo); ?>
                 <?php if ($servicesGrouped): ?>
                 <div class="px-4 sm:px-6 py-5 bg-white border-b border-gray-200">
@@ -496,6 +502,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+                <label for="save-new-jobs" class="flex items-start gap-3 cursor-pointer min-h-[44px]">
+                    <input type="checkbox" id="save-new-jobs" name="save_new_jobs" value="1" class="mt-1 w-6 h-6 shrink-0 border-gray-400 rounded">
+                    <span>
+                        <span class="block text-base font-semibold text-gray-900">Remember any new jobs on this invoice</span>
+                        <span class="block text-gray-700">Adds anything you typed that is not already in your saved jobs, using this amount as its usual price. Jobs you already saved keep the price they have.</span>
+                    </span>
+                </label>
+            </div>
+
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-6">
                 <a href="dashboard.php" class="inline-flex items-center justify-center px-6 py-4 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium text-base">
@@ -531,6 +547,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 addAutoMileage(miles);
             }
             calculateTotals();
+            refreshLastInvoice();
         }
 
         function addAutoMileage(miles) {
@@ -594,6 +611,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 currentCustomerRate = defaultHourlyRate;
                 propertySelection.style.display = 'none';
             }
+
+            refreshLastInvoice();
         }
 
         function loadCustomerProperties(customerId) {
@@ -754,10 +773,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             calculateTotals();
         }
 
+        let lastInvoiceItems = null;
+        let repeatIndex = 0;
+
+        function refreshLastInvoice() {
+            const panel = document.getElementById('repeat-last');
+            const summary = document.getElementById('repeat-last-summary');
+            const customerId = document.getElementById('customer-select').value;
+            const propertySelect = document.getElementById('property-select');
+            const propertyId = propertySelect ? propertySelect.value : '';
+
+            lastInvoiceItems = null;
+
+            if (!customerId) {
+                panel.style.display = 'none';
+                return;
+            }
+
+            fetch(`get-last-invoice.php?customer_id=${encodeURIComponent(customerId)}&property_id=${encodeURIComponent(propertyId)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.found || !data.items.length) {
+                        panel.style.display = 'none';
+                        return;
+                    }
+
+                    lastInvoiceItems = data.items;
+                    const lineWord = data.items.length === 1 ? 'line' : 'lines';
+                    const scope = propertyId ? 'this property' : 'this customer';
+                    summary.textContent = `The last invoice for ${scope} was ${data.date_label} — ${data.items.length} ${lineWord}, $${data.total.toFixed(2)}.`;
+                    panel.style.display = 'block';
+                })
+                .catch(() => {
+                    panel.style.display = 'none';
+                });
+        }
+
+        function repeatLastInvoice() {
+            if (!lastInvoiceItems || !lastInvoiceItems.length) {
+                return;
+            }
+
+            document.querySelectorAll('.line-item[data-repeated="1"]').forEach(el => el.remove());
+
+            const bringsMileage = lastInvoiceItems.some(item => /^mileage/i.test(item.description));
+            if (bringsMileage) {
+                document.querySelectorAll('.line-item[data-auto-mileage="1"]').forEach(el => el.remove());
+            }
+
+            lastInvoiceItems.forEach(addRepeatedItem);
+            calculateTotals();
+        }
+
+        function addRepeatedItem(item) {
+            hideEmptyState();
+            const idx = ++repeatIndex;
+            const container = document.getElementById('line-items');
+            const safeDescription = String(item.description).replace(/"/g, '&quot;');
+            const itemHtml = `
+                <div class="line-item mb-4 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-700" data-repeated="1">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 bg-blue-800 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-rotate-left text-white text-sm" aria-hidden="true"></i>
+                            </span>
+                            <span class="text-sm font-semibold text-gray-800">From the last invoice</span>
+                        </div>
+                        <button type="button" onclick="removeLineItem(this)" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-gray-500 hover:text-red-700 rounded-lg" aria-label="Remove this line">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                        <div class="sm:col-span-6">
+                            <label for="repeat-desc-${idx}" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <input type="text" id="repeat-desc-${idx}" name="item_description[]" value="${safeDescription}" class="w-full px-3 py-3 border border-gray-400 rounded-lg text-base">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="repeat-qty-${idx}" class="block text-sm font-medium text-gray-700 mb-1">Qty</label>
+                            <input type="number" id="repeat-qty-${idx}" name="item_quantity[]" step="0.01" value="${item.quantity}" onchange="calculateTotals()" onkeyup="calculateTotals()" class="w-full px-3 py-3 border border-gray-400 rounded-lg text-base">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="repeat-price-${idx}" class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                            <input type="number" id="repeat-price-${idx}" name="item_price[]" step="0.01" value="${item.unit_price}" onchange="calculateTotals()" onkeyup="calculateTotals()" class="w-full px-3 py-3 border border-gray-400 rounded-lg text-base">
+                        </div>
+                        <div class="sm:col-span-2 flex items-center justify-between sm:justify-end pt-2">
+                            <span class="text-sm font-medium text-gray-700 sm:hidden">Total:</span>
+                            <span class="line-total text-lg font-semibold text-gray-900">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', itemHtml);
+        }
+
         function addMileageItem() {
             hideEmptyState();
             const container = document.getElementById('line-items');
-            
+
             const itemHtml = `
                 <div class="line-item mb-4 p-4 bg-orange-50 rounded-xl border-l-4 border-orange-500">
                     <!-- Mobile Layout -->
@@ -905,41 +1017,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             let subtotal = 0;
             
             document.querySelectorAll('.line-item').forEach(item => {
-                // Check if we're in mobile or desktop mode
-                const isMobile = window.innerWidth < 640; // sm breakpoint
-                
-                let quantityInput, priceInput, lineTotalElement;
-                
-                if (isMobile) {
-                    // Mobile layout selectors
-                    const mobileSection = item.querySelector('.block.sm\\:hidden');
-                    if (mobileSection) {
-                        quantityInput = mobileSection.querySelector('input[name="item_quantity[]"]');
-                        priceInput = mobileSection.querySelector('input[name="item_price[]"]');
-                        lineTotalElement = mobileSection.querySelector('.line-total');
-                    }
-                } else {
-                    // Desktop layout selectors
-                    const desktopSection = item.querySelector('.hidden.sm\\:grid');
-                    if (desktopSection) {
-                        quantityInput = desktopSection.querySelector('input[name="item_quantity[]"]');
-                        priceInput = desktopSection.querySelector('input[name="item_price[]"]');
-                        lineTotalElement = desktopSection.querySelector('.line-total');
-                    }
+                const mobileSection = item.querySelector('.block.sm\\:hidden');
+                const desktopSection = item.querySelector('.hidden.sm\\:grid');
+
+                let scope = item;
+                if (mobileSection && desktopSection) {
+                    scope = window.innerWidth < 640 ? mobileSection : desktopSection;
                 }
-                
-                if (quantityInput && priceInput && lineTotalElement) {
-                    const quantity = parseFloat(quantityInput.value) || 0;
-                    const price = parseFloat(priceInput.value) || 0;
-                    const lineTotal = quantity * price;
-                    
-                    // Update both mobile and desktop totals
-                    item.querySelectorAll('.line-total').forEach(total => {
-                        total.textContent = '$' + lineTotal.toFixed(2);
-                    });
-                    
-                    subtotal += lineTotal;
+
+                const quantityInput = scope.querySelector('input[name="item_quantity[]"]');
+                const priceInput = scope.querySelector('input[name="item_price[]"]');
+
+                if (!quantityInput || !priceInput) {
+                    return;
                 }
+
+                const quantity = parseFloat(quantityInput.value) || 0;
+                const price = parseFloat(priceInput.value) || 0;
+                const lineTotal = quantity * price;
+
+                item.querySelectorAll('.line-total').forEach(total => {
+                    total.textContent = '$' + lineTotal.toFixed(2);
+                });
+
+                subtotal += lineTotal;
             });
             
             const taxRate = parseFloat(document.querySelector('input[name="tax_rate"]').value) || 0;

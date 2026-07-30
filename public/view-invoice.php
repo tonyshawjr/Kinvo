@@ -1,6 +1,7 @@
 <?php
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
+require_once '../includes/photo-functions.php';
 
 // Set security headers for public invoice view
 setSecurityHeaders(false, true);
@@ -55,6 +56,8 @@ if (empty($invoiceId)) {
         // Calculate total paid
         $totalPaid = array_sum(array_column($payments, 'amount'));
         $balance = $invoice['total'] - $totalPaid;
+
+        $photos = getInvoicePhotos($pdo, $invoice['id']);
         
         // Get business settings
         $businessSettings = getBusinessSettings($pdo);
@@ -521,6 +524,27 @@ if (empty($invoiceId)) {
                     <div class="text-gray-700 whitespace-pre-line"><?php echo htmlspecialchars($invoice['notes']); ?></div>
                 </div>
             </div>
+            <?php endif; ?>
+
+            <?php if (!empty($photos)): ?>
+            <section aria-labelledby="work-photos-heading" class="mb-8 no-print">
+                <h3 id="work-photos-heading" class="text-lg font-semibold text-gray-900 mb-4">PHOTOS OF THE WORK:</h3>
+                <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <?php foreach ($photos as $photo): ?>
+                    <li class="border border-gray-300 rounded-lg overflow-hidden bg-white">
+                        <a href="invoice-photo.php?id=<?php echo urlencode($invoice['unique_id']); ?>&amp;photo=<?php echo (int) $photo['id']; ?>"
+                           target="_blank" rel="noopener" class="block bg-gray-100">
+                            <img src="invoice-photo.php?id=<?php echo urlencode($invoice['unique_id']); ?>&amp;photo=<?php echo (int) $photo['id']; ?>&amp;size=thumb"
+                                 alt="<?php echo htmlspecialchars($photo['caption'] ?: 'Photo of the completed work, opens full size'); ?>"
+                                 loading="lazy" class="w-full h-48 object-cover" width="500" height="192">
+                        </a>
+                        <?php if (!empty($photo['caption'])): ?>
+                        <p class="px-4 py-3 text-gray-700"><?php echo htmlspecialchars($photo['caption']); ?></p>
+                        <?php endif; ?>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </section>
             <?php endif; ?>
 
             <!-- Payment History (No Print) -->

@@ -69,6 +69,22 @@ function saveService($pdo, $name, $category, $defaultPrice, $id = null)
     return (int) $existing->fetchColumn();
 }
 
+function createServiceIfMissing($pdo, $name, $defaultPrice, $category = 'Other')
+{
+    $name = trim(preg_replace('/\s+/', ' ', (string) $name));
+    if ($name === '') {
+        return null;
+    }
+
+    $stmt = $pdo->prepare("SELECT id FROM services WHERE name = ?");
+    $stmt->execute([mb_substr($name, 0, 191)]);
+    if ($stmt->fetchColumn() !== false) {
+        return null;
+    }
+
+    return saveService($pdo, $name, $category, $defaultPrice);
+}
+
 function rememberServiceUsage($pdo, array $descriptions)
 {
     $descriptions = array_filter(array_map(function ($d) {
