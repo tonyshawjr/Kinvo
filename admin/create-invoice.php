@@ -289,8 +289,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div id="existing-customer">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Select Customer</label>
-                                <select name="customer_id" id="customer-select" aria-label="Customer" onchange="loadCustomerData()" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
+                                <label for="customer-select" class="block text-sm font-medium text-gray-700 mb-2">Select Customer</label>
+                                <select name="customer_id" id="customer-select" onchange="loadCustomerData()" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                     <option value="">Choose a customer...</option>
                                     <?php foreach ($customers as $customer): ?>
                                     <option value="<?php echo $customer['id']; ?>" 
@@ -305,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </select>
                             </div>
                             <div id="property-selection" style="<?php echo $selectedCustomerId ? 'display: block;' : 'display: none;'; ?>">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Property/Location (Optional)</label>
+                                <label for="property-select" class="block text-sm font-medium text-gray-700 mb-2">Property/Location (Optional)</label>
                                 <select name="property_id" id="property-select" onchange="onPropertyChange()" class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all">
                                     <option value="">No specific property</option>
                                     <?php foreach ($customerProperties as $property): ?>
@@ -398,7 +398,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div id="repeat-last" class="px-4 sm:px-6 py-5 bg-blue-50 border-b border-gray-200" style="display: none;">
                     <h4 class="text-base font-semibold text-gray-900 mb-1">Same work as last time?</h4>
-                    <p class="text-gray-700 mb-4" id="repeat-last-summary">Pick a customer to see their last invoice.</p>
+                    <p class="text-gray-700 mb-3" id="repeat-last-summary">Pick a customer to see their last invoice.</p>
+                    <ul id="repeat-last-items" class="mb-4 bg-white border border-gray-300 rounded-lg divide-y divide-gray-200"></ul>
                     <button type="button" id="repeat-last-button" onclick="repeatLastInvoice()"
                             class="min-h-[44px] inline-flex items-center px-5 py-3 bg-blue-800 text-white rounded-lg font-semibold hover:bg-blue-900">
                         <i class="fas fa-rotate-left mr-2" aria-hidden="true"></i>Copy those line items
@@ -799,14 +800,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
 
                     lastInvoiceItems = data.items;
-                    const lineWord = data.items.length === 1 ? 'line' : 'lines';
                     const scope = propertyId ? 'this property' : 'this customer';
-                    summary.textContent = `The last invoice for ${scope} was ${data.date_label} — ${data.items.length} ${lineWord}, $${data.total.toFixed(2)}.`;
+                    summary.textContent = `The last invoice for ${scope} was ${data.date_label}. Here is what was on it:`;
+                    renderLastInvoiceItems(data);
                     panel.style.display = 'block';
                 })
                 .catch(() => {
                     panel.style.display = 'none';
                 });
+        }
+
+        function tidyNumber(value) {
+            const number = Number(value) || 0;
+            return Number.isInteger(number) ? String(number) : String(parseFloat(number.toFixed(2)));
+        }
+
+        function renderLastInvoiceItems(data) {
+            const list = document.getElementById('repeat-last-items');
+            list.textContent = '';
+
+            data.items.forEach(item => {
+                const row = document.createElement('li');
+                row.className = 'flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-4 py-3';
+
+                const description = document.createElement('span');
+                description.className = 'text-gray-900 font-medium';
+                description.textContent = item.description;
+
+                const amount = document.createElement('span');
+                amount.className = 'text-gray-700 whitespace-nowrap';
+                amount.textContent = `${tidyNumber(item.quantity)} × $${Number(item.unit_price).toFixed(2)} = $${(item.quantity * item.unit_price).toFixed(2)}`;
+
+                row.appendChild(description);
+                row.appendChild(amount);
+                list.appendChild(row);
+            });
+
+            const totalRow = document.createElement('li');
+            totalRow.className = 'flex items-baseline justify-between gap-4 px-4 py-3 bg-gray-50';
+
+            const totalLabel = document.createElement('span');
+            totalLabel.className = 'text-gray-900 font-semibold';
+            totalLabel.textContent = 'Total';
+
+            const totalAmount = document.createElement('span');
+            totalAmount.className = 'text-gray-900 font-semibold whitespace-nowrap';
+            totalAmount.textContent = `$${Number(data.total).toFixed(2)}`;
+
+            totalRow.appendChild(totalLabel);
+            totalRow.appendChild(totalAmount);
+            list.appendChild(totalRow);
         }
 
         function repeatLastInvoice() {
