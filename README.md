@@ -34,6 +34,29 @@
 - **Touch-Friendly** - Optimized for mobile and tablet use
 - **Progressive Enhancement** - Graceful degradation for older browsers
 
+## 🧰 Tech Stack
+
+Kinvo is built with a lightweight, dependency-free stack that runs on standard PHP hosting without any build tooling.
+
+### Backend
+- **PHP 7.4+** (8.0+ recommended) - Vanilla PHP with no framework
+- **PDO** - Database access layer with prepared statements
+- **Session-based authentication** - Admin sessions with remember-me tokens and PIN-based client access
+
+### Database
+- **MySQL 5.7+** or **MariaDB 10.2+**
+
+### Frontend
+- **HTML5** and **vanilla JavaScript** - No client-side framework or bundler
+- **Tailwind CSS** - Utility-first styling (loaded via CDN)
+- **Chart.js** - Revenue and analytics visualizations
+- **Font Awesome** - Icon set
+
+### Server & Tooling
+- **Apache 2.4+** with `mod_rewrite` and `mod_headers` (configured via `.htaccess`)
+- **No build tools or package managers** - Files run directly, no compilation step
+- **PHP `mail()`** - Email notifications
+
 ## 📋 Requirements
 
 - **PHP 7.4+** (8.0+ recommended)
